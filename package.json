@@ -1,0 +1,60 @@
+{
+  "name": "tahu.js",
+  "version": "1.0.0",
+  "description": "A powerful and easy-to-use AI Agent library for Node.js. Build smart agents with plug-and-play tools, powered by OpenRouter, Gemini, and LangChain.js.",
+  "main": "index.js",
+  "type": "module",
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE",
+    "example/"
+  ],
+  "scripts": {
+    "demo": "node example/demo.js",
+    "demo:langchain": "node example/langchain-demo.js",
+    "test": "echo \"Error: no test specified. Please set up a testing framework.\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cloud-Dark/tahu.js.git"
+  },
+  "homepage": "https://github.com/Cloud-Dark/tahu.js#readme",
+  "bugs": {
+    "url": "https://github.com/Cloud-Dark/tahu.js/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "tahujs",
+    "langchain",
+    "openrouter",
+    "gemini",
+    "llm",
+    "chatbot",
+    "ai-tools",
+    "agent-executor",
+    "artificial-intelligence",
+    "nodejs"
+  ],
+  "author": {
+    "name": "Cloud-Dark",
+    "url": "https://github.com/Cloud-Dark"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@langchain/community": "^0.0.52",
+    "@langchain/google-genai": "^0.0.12",
+    "@langchain/openai": "^0.0.28",
+    "axios": "^1.6.8",
+    "chalk": "^5.3.0",
+    "cheerio": "^1.0.0-rc.12",
+    "langchain": "^0.1.36",
+    "langchainhub": "^0.0.15",
+    "mathjs": "^12.4.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
