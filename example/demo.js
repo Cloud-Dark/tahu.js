@@ -4,7 +4,7 @@ import TahuJS, { createTahu } from '../src/tahu.js';
 async function enhancedDemo() {
   console.log('🥘 Enhanced TahuJS Demo Starting...\n');
 
-  const API_KEY = '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'; // Replace with your real API key
+  const API_KEY = 'sk-or-v1-'; // Replace with your real API key
   
   if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
     console.error('❌ Please set your API key!');

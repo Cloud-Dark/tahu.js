@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TahuJS: Framework Pengembangan Aplikasi AI</title>
+    <title>TahuJS: Framework Pengembangan Aplikasi AI Komprehensif</title>
+    <meta name="description" content="TahuJS adalah framework JavaScript yang kuat untuk membangun aplikasi AI dengan integrasi LLM, alat bawaan, dan layanan kustom. Pelajari lebih lanjut tentang fitur, instalasi, dan penggunaan.">
+    <meta name="keywords" content="TahuJS, AI, JavaScript, Framework, LangChain, OpenRouter, Gemini, Web Search, Map Service, Tools, Agent, Node.js">
+    <meta name="author" content="Your Name/Organization">
+    <link rel="canonical" href="https://www.yourwebsite.com/index.html">
+
     <style>
         /* Gaya dasar untuk tampilan bersih dan ramah ATS */
         body {
@@ -11,55 +16,128 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: #f8f8f8;
             color: #333;
-            max-width: 800px; /* Batasi lebar konten untuk keterbacaan */
+            max-width: 960px; /* Lebar konten yang lebih luas untuk detail */
             margin-left: auto;
             margin-right: auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.08);
             background-color: #fff;
+            border-radius: 8px;
         }
-        h1, h2, h3 {
+        h1, h2, h3, h4 {
             color: #2c3e50;
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
+            margin-top: 1.8em;
+            margin-bottom: 0.6em;
         }
         h1 {
-            font-size: 2.5em;
+            font-size: 2.8em;
             text-align: center;
-            margin-bottom: 1em;
+            margin-bottom: 1.2em;
+            color: #1a2a3a;
         }
         h2 {
-            font-size: 1.8em;
+            font-size: 2.2em;
             border-bottom: 2px solid #eee;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
+            margin-top: 2.5em;
+        }
+        h3 {
+            font-size: 1.6em;
+            margin-top: 1.5em;
+        }
+        h4 {
+            font-size: 1.2em;
+            margin-top: 1.2em;
         }
         p {
             margin-bottom: 1em;
         }
         ul {
             list-style-type: disc;
-            margin-left: 20px;
+            margin-left: 25px;
+            margin-bottom: 1em;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 25px;
             margin-bottom: 1em;
         }
         li {
-            margin-bottom: 0.5em;
+            margin-bottom: 0.6em;
         }
         a {
             color: #3498db;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
         a:hover {
             text-decoration: underline;
+            color: #2980b9;
         }
         .container {
+            padding: 30px;
+        }
+        .header-section {
+            background-color: #eef4f8;
+            padding: 30px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px; /* Extend to edges of container */
+            text-align: center;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-item {
+            background-color: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
             padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .feature-item h3 {
+            margin-top: 0;
+            color: #34495e;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            margin-bottom: 1.5em;
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap; /* Allow wrapping */
+            word-wrap: break-word; /* Break long words */
+        }
+        .documentation-links {
+            text-align: center;
+            margin-top: 3em;
+            padding-top: 2em;
+            border-top: 1px dashed #eee;
+        }
+        .documentation-links ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .documentation-links li {
+            margin-bottom: 0;
         }
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
             font-size: 0.9em;
             color: #777;
         }
@@ -67,39 +145,109 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>TahuJS: Framework Pengembangan Aplikasi AI</h1>
+        <header class="header-section">
+            <h1>TahuJS: Framework Pengembangan Aplikasi AI Komprehensif</h1>
+            <p>Mempermudah pembangunan aplikasi berbasis kecerdasan buatan dengan integrasi LLM, alat bawaan, dan layanan kustom.</p>
         </header>
 
         <main>
-            <section>
+            <section id="introduction">
                 <h2>Pendahuluan</h2>
-                <p>TahuJS adalah framework JavaScript yang dirancang untuk mempermudah pengembangan aplikasi berbasis kecerdasan buatan. Framework ini mengintegrasikan berbagai alat dan layanan AI, memungkinkan Anda membangun agen cerdas, melakukan pencarian web, analisis lokasi, perhitungan matematis, dan banyak lagi, dengan mudah.</p>
+                <p>TahuJS adalah framework JavaScript yang dirancang untuk menyederhanakan dan mempercepat pengembangan aplikasi berbasis kecerdasan buatan. Dengan mengintegrasikan berbagai pustaka AI terkemuka dan menyediakan serangkaian alat bawaan yang kuat, TahuJS memungkinkan pengembang untuk fokus pada logika inti aplikasi mereka, bukan pada kompleksitas integrasi AI.</p>
+                <p>Baik Anda ingin membangun agen cerdas yang dapat berinteraksi secara dinamis, mengotomatiskan pencarian informasi di web, menganalisis data lokasi, atau melakukan perhitungan kompleks, TahuJS menyediakan fondasi yang kokoh dan mudah digunakan.</p>
             </section>
 
-            <section>
+            <section id="key-features">
                 <h2>Fitur Utama</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <h3>Orkestrasi AI dengan LangChain.js</h3>
+                        <p>Manfaatkan kekuatan LangChain.js untuk membangun agen AI yang kompleks, merantai panggilan Large Language Model (LLM), dan mengintegrasikan berbagai alat secara mulus. TahuJS menyediakan abstraksi yang memudahkan Anda dalam mendefinisikan perilaku agen dan alur kerja AI.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Dukungan Multi-Penyedia LLM</h3>
+                        <p>Fleksibilitas untuk memilih penyedia LLM favorit Anda. TahuJS mendukung integrasi dengan:</p>
+                        <ul>
+                            <li>**OpenRouter:** Akses berbagai model canggih seperti Claude, GPT, dan Gemini dari satu API.</li>
+                            <li>**Google Gemini:** Manfaatkan kemampuan model Gemini langsung dari Google.</li>
+                        </ul>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Alat Bawaan yang Komprehensif</h3>
+                        <p>TahuJS dilengkapi dengan serangkaian alat yang siap pakai untuk berbagai kebutuhan:</p>
+                        <ul>
+                            <li>**Pencarian Web (`webSearch`):** Menggunakan SerpApi, DuckDuckGo, dan scraping Google.</li>
+                            <li>**Pencarian Lokasi (`findLocation`):** Menemukan lokasi dengan detail koordinat, elevasi, dan tautan peta.</li>
+                            <li>**Petunjuk Arah (`getDirections`):** Memberikan rute perjalanan antara dua titik.</li>
+                            <li>**Perhitungan Matematis (`calculate`):** Mengevaluasi ekspresi matematika kompleks.</li>
+                            <li>**Web Scraping (`webScrape`):** Mengekstrak konten relevan dari halaman web.</li>
+                            <li>**Informasi Tanggal & Waktu (`dateTime`):** Mendapatkan waktu saat ini di berbagai zona waktu.</li>
+                            <li>**Ketinggian (`getElevation`):** Mendapatkan data ketinggian untuk koordinat geografis.</li>
+                        </ul>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Layanan Kustom yang Kuat</h3>
+                        <p>Dibangun di atas layanan khusus seperti `SearchService` dan `MapService`, TahuJS menyediakan fungsionalitas pencarian dan pemetaan yang robust dan dapat diperluas, memastikan hasil yang akurat dan relevan.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Validasi Konfigurasi</h3>
+                        <p>Dengan `ConfigValidator` bawaan, TahuJS membantu Anda memastikan bahwa semua pengaturan API dan konfigurasi penting lainnya telah diatur dengan benar, meminimalkan kesalahan dan mempercepat proses pengembangan.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Mudah Digunakan & Diperluas</h3>
+                        <p>Dirancang dengan modularitas, TahuJS mudah diintegrasikan ke dalam proyek Node.js yang ada dan memungkinkan Anda untuk mendaftarkan alat kustom Anda sendiri, memperluas kemampuannya sesuai kebutuhan spesifik aplikasi Anda.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tech-stack">
+                <h2>Ikhtisar Tumpukan Teknologi</h2>
+                <p>TahuJS dibangun di atas fondasi teknologi modern dan teruji:</p>
                 <ul>
-                    <li>**Orkestrasi AI:** Memanfaatkan LangChain.js untuk membangun agen AI yang kompleks dan rantai panggilan LLM.</li>
-                    <li>**Penyedia LLM:** Dukungan untuk OpenRouter (mendukung berbagai model seperti Claude, GPT, Gemini) dan Google Gemini.</li>
-                    <li>**Alat Bawaan:** Dilengkapi dengan alat untuk pencarian web, pencarian lokasi, petunjuk arah, perhitungan, web scraping, dan informasi tanggal/waktu.</li>
-                    <li>**Layanan Kustom:** Menggunakan `SearchService` dan `MapService` untuk fungsionalitas pencarian dan peta yang kuat.</li>
-                    <li>**Validasi Konfigurasi:** Memastikan pengaturan aplikasi Anda valid dengan `ConfigValidator`.</li>
+                    <li>**Core Language & Runtime:** JavaScript (ESM) berjalan di Node.js.</li>
+                    <li>**AI Orchestration:** LangChain.js (`@langchain/openai`, `@langchain/google-genai`, `langchain`).</li>
+                    <li>**HTTP Requests:** Axios untuk semua panggilan API eksternal.</li>
+                    <li>**Web Scraping:** Cheerio untuk parsing HTML.</li>
+                    <li>**Mathematical Operations:** Math.js untuk perhitungan.</li>
+                    <li>**Terminal Utilities:** `chalk` untuk output berwarna dan `qrcode-terminal` untuk kode QR.</li>
+                    <li>**Search Services:** `SearchService` kustom (SerpApi, DuckDuckGo, Google scraping).</li>
+                    <li>**Mapping & Location Services:** `MapService` kustom (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).</li>
+                    <li>**Configuration Management:** `ConfigValidator` kustom.</li>
                 </ul>
             </section>
 
-            <section>
+            <section id="getting-started">
                 <h2>Memulai</h2>
-                <p>Untuk detail lebih lanjut tentang instalasi, konfigurasi, dan penggunaan TahuJS, silakan lihat dokumentasi lengkap kami:</p>
-                <ul>
-                    <li><a href="docs/id.md">Dokumentasi dalam Bahasa Indonesia</a></li>
-                    <li><a href="docs/en.md">Documentation in English</a></li>
-                </ul>
+                <p>Untuk memulai dengan TahuJS, ikuti langkah-langkah sederhana ini:</p>
+                <ol>
+                    <li>**Pastikan Node.js Terinstal:** TahuJS membutuhkan Node.js versi 18 atau lebih tinggi.</li>
+                    <li>**Kloning Repositori:**
+<div class="code-block"><pre>git clone https://github.com/yourusername/tahujs.git
+cd tahujs</pre></div>
+                    </li>
+                    <li>**Instal Dependensi:**
+<div class="code-block"><pre>npm install</pre></div>
+                    </li>
+                    <li>**Konfigurasi API Key:** Edit file konfigurasi Anda (misalnya, di `src/tahu.js` atau di tempat Anda membuat instansi TahuJS) dengan API key yang diperlukan dari penyedia LLM dan layanan lainnya.</li>
+                    <li>**Jalankan Contoh:** Jelajahi folder `example/` untuk melihat bagaimana TahuJS dapat digunakan dalam skenario nyata.</li>
+                </ol>
+            </section>
+
+            <section id="documentation">
+                <h2>Dokumentasi Lengkap</h2>
+                <p>Untuk panduan yang lebih mendalam tentang instalasi, konfigurasi, penggunaan API, dan contoh kode, silakan kunjungi dokumentasi lengkap kami:</p>
+                <div class="documentation-links">
+                    <ul>
+                        <li><a href="docs/id.md">Dokumentasi dalam Bahasa Indonesia</a></li>
+                        <li><a href="docs/en.md">Documentation in English</a></li>
+                    </ul>
+                </div>
             </section>
         </main>
 
         <footer class="footer">
             <p>&copy; 2024 TahuJS. Hak Cipta Dilindungi.</p>
+            <p>Dibuat dengan ❤️ untuk komunitas AI.</p>
         </footer>
     </div>
 </body>
