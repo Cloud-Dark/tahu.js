@@ -1,22 +1,22 @@
-# TahuJS: Framework Pengembangan Aplikasi AI
+# TahuJS: AI Application Development Framework
 
-Selamat datang di TahuJS, sebuah framework JavaScript yang dirancang untuk mempermudah pengembangan aplikasi berbasis kecerdasan buatan. TahuJS mengintegrasikan berbagai alat dan layanan AI, memungkinkan Anda membangun agen cerdas, melakukan pencarian web, analisis lokasi, perhitungan matematis, dan banyak lagi, dengan mudah.
+Welcome to TahuJS, a JavaScript framework designed to simplify the development of AI-powered applications. TahuJS integrates various AI tools and services, allowing you to build intelligent agents, perform web searches, location analysis, mathematical calculations, and much more, with ease.
 
-## Fitur Utama
+## Key Features
 
-*   **Orkestrasi AI:** Memanfaatkan LangChain.js untuk membangun agen AI yang kompleks dan rantai panggilan LLM.
-*   **Penyedia LLM:** Dukungan untuk OpenRouter (mendukung berbagai model seperti Claude, GPT, Gemini) dan Google Gemini.
-*   **Alat Bawaan:** Dilengkapi dengan alat untuk pencarian web, pencarian lokasi, petunjuk arah, perhitungan, web scraping, dan informasi tanggal/waktu.
-*   **Layanan Kustom:** Menggunakan `SearchService` dan `MapService` untuk fungsionalitas pencarian dan peta yang kuat.
-*   **Validasi Konfigurasi:** Memastikan pengaturan aplikasi Anda valid dengan `ConfigValidator`.
+*   **AI Orchestration:** Leverages LangChain.js for building complex AI agents and chaining LLM calls.
+*   **LLM Providers:** Supports OpenRouter (including models like Claude, GPT, Gemini) and Google Gemini.
+*   **Built-in Tools:** Comes equipped with tools for web search, location finding, directions, calculations, web scraping, and date/time information.
+*   **Custom Services:** Utilizes `SearchService` and `MapService` for robust search and mapping functionalities.
+*   **Configuration Validation:** Ensures your application settings are valid with `ConfigValidator`.
 
-## Memulai
+## Getting Started
 
-Untuk detail lebih lanjut tentang instalasi, konfigurasi, dan penggunaan TahuJS, silakan lihat dokumentasi lengkap kami:
+For more detailed information on installation, configuration, and usage of TahuJS, please refer to our comprehensive documentation:
 
-*   **[Dokumentasi dalam Bahasa Indonesia](docs/id.md)**
+*   **[Documentation in Indonesian](docs/id.md)**
 *   **[Documentation in English](docs/en.md)**
 
 ---
 
-Terima kasih telah menggunakan TahuJS!
+Thank you for using TahuJS!
