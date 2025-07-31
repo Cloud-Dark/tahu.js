@@ -268,7 +268,7 @@ class TahuJS {
 
         this.registerTool(getDirectionsTool.name, {
             description: getDirectionsTool.description,
-            execute: (from, to) => getDirectionsTool.execute(from, to, this.mapService)
+            execute: (input) => getDirectionsTool.execute(input, this.mapService) // FIX: Pass input and mapService correctly
         });
 
         this.registerTool(getElevationTool.name, {
