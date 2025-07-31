@@ -1,5 +1,5 @@
 // langchain-demo.js - Demo for TahuJS + LangChain Integration
-import TahuJS, { createTahu } from '../index.js';
+import TahuJS, { createTahu } from '../src/tahu.js';
 
 async function langchainDemo() {
     console.log('🍲 TahuJS & LangChain Demo Starting...\n');

@@ -1,5 +1,5 @@
 // examples/enhanced-demo.js - Test all the new features
-import TahuJS, { createTahu } from '../index.js';
+import TahuJS, { createTahu } from '../src/tahu.js';
 
 async function enhancedDemo() {
   console.log('🥘 Enhanced TahuJS Demo Starting...\n');
@@ -36,13 +36,13 @@ async function enhancedDemo() {
 
     // Test Directions
     console.log('🗺️  Testing Directions:');
-    const directionsResult = await tahu.useTool('getDirections', 'Jakarta', 'Bandung');
+    const directionsResult = await tahu.useTool('getDirections', 'from Jakarta to Bandung');
     console.log(directionsResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
     // Test Elevation
     console.log('⛰️  Testing Elevation:');
-    const elevationResult = await tahu.useTool('getElevation', -6.2088, 106.8456); // Jakarta coordinates
+    const elevationResult = await tahu.useTool('getElevation', '-6.2088,106.8456'); // Jakarta coordinates
     console.log('Elevation Result:', elevationResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
