@@ -14,6 +14,7 @@ import { ToolManager } from './core/tool-manager.js';
 import { AgentManager } from './core/agent-manager.js';
 import { WorkflowManager } from './core/workflow-manager.js';
 import { PluginManager } from './core/plugin-manager.js';
+import { AnalyticsManager } from './core/analytics-manager.js'; // Import AnalyticsManager
 
 class TahuJS {
     constructor(config = {}) {
@@ -46,13 +47,17 @@ class TahuJS {
 
         this.searchService = new SearchService(this.config);
         this.mapService = new MapService(this.config);
+        this.analyticsManager = new AnalyticsManager(); // Inisialisasi AnalyticsManager
 
         this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
-        this.llmManager = new LLMManager(this.config, this.tools, this.conversations);
-        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager); // Teruskan this.llmManager
+        this.llmManager = new LLMManager(this.config, this.tools, this.conversations, this.analyticsManager); // Teruskan analyticsManager
+        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager);
         this.agentManager = new AgentManager(this.agents, this.llmManager, this.memoryManager);
         this.workflowManager = new WorkflowManager(this.llmManager, this.agentManager);
         this.pluginManager = new PluginManager(this); // Pass 'this' for plugin registration
+
+        // Expose analytics manager
+        this.analytics = this.analyticsManager;
 
         console.log('🥘 TahuJS initialized successfully!');
     }
@@ -133,7 +138,47 @@ class TahuJS {
         this.llmManager.clearConversation(conversationId);
     }
 
-    // estimateTokens is now part of LLMManager
+    // AgentBuilder (tetap di sini atau bisa dipindahkan ke AgentManager jika lebih kompleks)
+    builder() {
+        const tahuInstance = this; // Capture 'this' for the builder methods
+        const agentConfig = {
+            name: 'NewAgent',
+            systemPrompt: 'You are a helpful AI assistant.',
+            capabilities: [],
+            personality: 'helpful',
+            memoryType: 'volatile',
+            maxMemorySize: 10,
+            memoryPath: undefined
+        };
+
+        return {
+            name: function(name) {
+                agentConfig.name = name;
+                return this;
+            },
+            systemPrompt: function(prompt) {
+                agentConfig.systemPrompt = prompt;
+                return this;
+            },
+            addCapabilities: function(...capabilities) {
+                agentConfig.capabilities = [...new Set([...agentConfig.capabilities, ...capabilities])];
+                return this;
+            },
+            addPersonality: function(traits, mood, expertise) {
+                agentConfig.personality = { traits, mood, expertise };
+                return this;
+            },
+            addMemory: function(type, options = {}) {
+                agentConfig.memoryType = type;
+                agentConfig.maxMemorySize = options.maxMemorySize || agentConfig.maxMemorySize;
+                agentConfig.memoryPath = options.memoryPath;
+                return this;
+            },
+            build: function() {
+                return tahuInstance.createAgent(agentConfig.name, agentConfig);
+            }
+        };
+    }
 }
 
 // Factory functions

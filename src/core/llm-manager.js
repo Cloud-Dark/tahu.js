@@ -9,10 +9,11 @@ import { ChatOllama } from "@langchain/community/chat_models/ollama";
 import chalk from 'chalk';
 
 export class LLMManager {
-    constructor(config, toolsMap, conversationsMap) {
+    constructor(config, toolsMap, conversationsMap, analyticsManager) { // Tambahkan analyticsManager
         this.config = config;
         this.toolsMap = toolsMap; // Reference to the main tools Map
         this.conversations = conversationsMap; // Reference to the main conversations Map
+        this.analyticsManager = analyticsManager; // Simpan instance AnalyticsManager
         this.chatModel = null;
         this.initializeChatModel();
     }
@@ -140,6 +141,8 @@ export class LLMManager {
             return null; // Should not happen with 'user' and 'assistant' roles
         }).filter(Boolean);
 
+        const startTime = process.hrtime.bigint(); // Start timer
+
         try {
             console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
             const response = await this.chatModel.invoke(lcMessages, {
@@ -147,16 +150,27 @@ export class LLMManager {
                 maxTokens: options.maxTokens || this.config.maxTokens,
             });
 
+            const endTime = process.hrtime.bigint(); // End timer
+            const duration = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
+
             const responseContent = response.content;
             history.push({ role: 'assistant', content: responseContent });
+
+            // Record analytics
+            const estimatedTokens = this.estimateTokens(message + responseContent);
+            this.analyticsManager.recordCompletion(estimatedTokens, duration, this.config.model, this.config.provider);
 
             return {
                 response: responseContent,
                 conversationId: conversation,
-                tokenUsage: options.includeUsage ? this.estimateTokens(message + responseContent) : undefined
+                tokenUsage: options.includeUsage ? estimatedTokens : undefined
             };
 
         } catch (error) {
+            const endTime = process.hrtime.bigint(); // End timer even on error
+            const duration = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
+            this.analyticsManager.recordError(duration); // Record error in analytics
+
             console.error(chalk.red(`❌ LLM Chat Error (${this.config.provider}):`), error);
             let errorMessage = `TahuJS Chat Error with ${this.config.provider}: ${error.message}`;
 

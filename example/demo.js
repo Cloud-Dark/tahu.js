@@ -248,6 +248,22 @@ async function comprehensiveDemo() {
     console.log('Hasil Pemrosesan Batch:', batchResults.map(r => r.response));
     console.log('\n' + '='.repeat(50) + '\n');
 
+    // --- 9. Pengujian Analitik Real-time ---
+    console.log('--- 9. Pengujian Analitik Real-time ---');
+    const stats = tahu.analytics.getStats();
+    console.log('📊 Statistik Penggunaan LLM:');
+    console.log(`   Total Permintaan: ${stats.totalRequests}`);
+    console.log(`   Permintaan Berhasil: ${stats.successfulRequests}`);
+    console.log(`   Permintaan Gagal: ${stats.failedRequests}`);
+    console.log(`   Tingkat Keberhasilan: ${stats.successRate}%`);
+    console.log(`   Total Token Digunakan: ${stats.totalTokensUsed}`);
+    console.log(`   Perkiraan Total Biaya: $${stats.estimatedCost}`);
+    console.log(`   Total Waktu Respons: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
+    console.log(`   Rata-rata Waktu Respons: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
+    
+    // Anda juga bisa mereset statistik
+    // tahu.analytics.resetStats();
+    // console.log('\nStatistik setelah reset:', tahu.analytics.getStats());
 
     console.log('\n🎉 Demo Komprehensif Selesai!');
     console.log('📊 Alat yang Tersedia:', tahu.listTools());
