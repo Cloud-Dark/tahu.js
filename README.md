@@ -1,78 +1,78 @@
-# 🥘 TahuJS: Framework Pengembangan Aplikasi AI Komprehensif
+# 🥘 TahuJS: Comprehensive AI Application Development Framework
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Cloud-Dark/tahujs?style=social)](https://github.com/Cloud-Dark/tahujs/stargazers)
 
-Selamat datang di **TahuJS**! Sebuah framework JavaScript yang dirancang untuk menyederhanakan dan mempercepat pengembangan aplikasi berbasis Kecerdasan Buatan (AI). Dengan TahuJS, Anda dapat dengan mudah mengintegrasikan Large Language Models (LLM), memanfaatkan berbagai alat bawaan, dan membangun agen AI yang cerdas dan dinamis.
+Welcome to **TahuJS**! A JavaScript framework designed to simplify and accelerate the development of Artificial Intelligence (AI) powered applications. With TahuJS, you can easily integrate Large Language Models (LLMs), leverage a variety of built-in tools, and build intelligent and dynamic AI agents.
 
-Fokus kami adalah memberikan pengalaman pengembangan backend yang luar biasa, memungkinkan Anda untuk fokus pada logika inti aplikasi Anda, bukan pada kompleksitas integrasi AI.
+Our focus is on providing an exceptional backend development experience, allowing you to concentrate on your application's core logic, rather than the complexities of AI integration.
 
-## ✨ Mengapa Memilih TahuJS?
+## ✨ Why Choose TahuJS?
 
-*   **Dukungan Multi-LLM Provider**: Fleksibilitas untuk memilih penyedia LLM favorit Anda, termasuk **OpenRouter**, **OpenAI**, **Google Gemini**, dan **Ollama** (lokal).
-*   **Alat Bawaan yang Kuat**: Dilengkapi dengan alat untuk pencarian web (dengan fallback cerdas), layanan peta canggih (lokasi, arah, elevasi, QR Code), kalkulasi, web scraping, dan informasi tanggal/waktu.
-*   **Orkestrasi Agen Tingkat Lanjut**: Bangun agen AI yang cerdas dengan manajemen memori persisten (JSON/SQLite), alur kerja multi-agen, dan kemampuan pemrosesan paralel.
-*   **Arsitektur Plugin yang Fleksibel**: Perluas fungsionalitas TahuJS dengan mudah melalui sistem plugin yang dapat ditemukan secara otomatis.
-*   **Pengalaman Developer yang Optimal**: Dirancang untuk kemudahan penggunaan, dengan logging yang jelas dan penanganan kesalahan yang robust.
+*   **Multi-LLM Provider Support**: Flexibility to choose your favorite LLM provider, including **OpenRouter**, **OpenAI**, **Google Gemini**, and **Ollama** (local).
+*   **Powerful Built-in Tools**: Equipped with tools for web search (with smart fallbacks), advanced map services (location, directions, elevation, QR Code), calculations, web scraping, and date/time information.
+*   **Advanced Agent Orchestration**: Build intelligent AI agents with persistent memory management (JSON/SQLite), multi-agent workflows, and parallel processing capabilities.
+*   **Flexible Plugin Architecture**: Easily extend TahuJS functionality through an auto-discoverable plugin system.
+*   **Optimal Developer Experience**: Designed for ease of use, with clear logging and robust error handling.
 
-## 🚀 Mulai Cepat
+## 🚀 Quick Start
 
-Ikuti langkah-langkah sederhana ini untuk memulai proyek TahuJS Anda:
+Follow these simple steps to get your TahuJS project up and running:
 
-### 1. Instalasi
+### 1. Installation
 
-Pastikan Anda memiliki **Node.js versi 18 atau lebih tinggi** terinstal di sistem Anda.
+Ensure you have **Node.js version 18 or higher** installed on your system.
 
 ```bash
-# Kloning repositori TahuJS
+# Clone the TahuJS repository
 git clone https://github.com/Cloud-Dark/tahujs.git
 cd tahujs
 
-# Instal semua dependensi yang diperlukan
+# Install all necessary dependencies
 npm install
 ```
 
-### 2. Konfigurasi Kunci API
+### 2. API Key Configuration
 
-TahuJS membutuhkan kunci API untuk berinteraksi dengan penyedia LLM dan layanan eksternal lainnya. Anda dapat mengaturnya saat membuat instansi TahuJS.
+TahuJS requires API keys to interact with LLM providers and other external services. You can set them when creating a TahuJS instance.
 
-Contoh konfigurasi dasar:
+Basic configuration example:
 
 ```javascript
 const config = {
-  provider: 'openrouter', // Pilih 'openrouter', 'openai', 'gemini', atau 'ollama'
-  apiKey: 'YOUR_API_KEY_HERE', // Ganti dengan kunci API Anda yang sebenarnya
-  model: 'google/gemini-2.0-flash-exp:free', // Model LLM yang ingin Anda gunakan
-  // ollamaBaseUrl: 'http://localhost:11434', // Hanya jika menggunakan Ollama lokal
-  // serpApiKey: 'YOUR_SERPAPI_KEY', // Opsional, untuk pencarian web yang lebih baik
-  // googleMapsApiKey: 'YOUR_GOOGLE_MAPS_KEY' // Opsional, untuk fitur peta yang ditingkatkan
+  provider: 'openrouter', // Choose 'openrouter', 'openai', 'gemini', or 'ollama'
+  apiKey: 'YOUR_API_KEY_HERE', // Replace with your actual API key
+  model: 'google/gemini-2.0-flash-exp:free', // The LLM model you want to use
+  // ollamaBaseUrl: 'http://localhost:11434', // Only if using local Ollama
+  // serpApiKey: 'YOUR_SERPAPI_KEY', // Optional, for better web search
+  // googleMapsApiKey: 'YOUR_GOOGLE_MAPS_KEY' // Optional, for enhanced map features
 };
 ```
 
-### 3. Jalankan Contoh `quick-start.js`
+### 3. Run the `quick-start.js` Example
 
-File ini akan memberikan Anda gambaran cepat tentang cara menggunakan TahuJS untuk chat AI dan alat bawaan.
+This file will give you a quick overview of how to use TahuJS for AI chat and built-in tools.
 
 ```bash
 node example/quick-start.js
 ```
 
-### 4. Jelajahi `demo.js`
+### 4. Explore `demo.js`
 
-Untuk melihat semua fitur TahuJS secara komprehensif, termasuk dukungan multi-penyedia, manajemen agen, alur kerja, dan pemrosesan paralel, jalankan `demo.js`:
+To see all TahuJS features comprehensively, including multi-provider support, agent management, workflows, and parallel processing, run `demo.js`:
 
 ```bash
 node example/demo.js
 ```
 
-## 📚 Dokumentasi Lengkap
+## 📚 Full Documentation
 
-Untuk panduan yang lebih mendalam tentang instalasi, konfigurasi, penggunaan API, dan contoh kode, silakan kunjungi dokumentasi kami:
+For more in-depth guides on installation, configuration, API usage, and code examples, please visit our comprehensive documentation:
 
-*   **[Dokumentasi dalam Bahasa Indonesia](docs/id.md)**
 *   **[Documentation in English](docs/en.md)**
+*   **[Dokumentasi dalam Bahasa Indonesia](docs/id.md)**
 
 ---
 
-Terima kasih telah menggunakan TahuJS! Kami berharap framework ini dapat mempercepat perjalanan pengembangan aplikasi AI Anda.
+Thank you for using TahuJS! We hope this framework accelerates your AI application development journey.
