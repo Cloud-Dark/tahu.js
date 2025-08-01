@@ -26,7 +26,6 @@ TahuJS is a powerful and flexible JavaScript framework for building AI-powered a
 15. [Contributing](#contributing)
 16. [License](#license)
 17. [Roadmap](#roadmap)
-18. [RAG Testing Example](#rag-testing-example)
 
 ---
 
@@ -53,7 +52,7 @@ Whether you aim to build intelligent agents that can interact dynamically, autom
 -   **📊 Real-time Monitoring & Analytics**: Track token usage, estimated costs, response times, and success rates.
 -   **🔌 Flexible Plugin Architecture**: Easily extend TahuJS functionality through an auto-discoverable plugin system.
 -   **✅ Configuration Validation**: Ensures essential API settings are correctly set up.
--   **📚 Knowledge Base (RAG)**: Ingest custom data and retrieve it for AI augmentation using SQLite, ChromaDB, or Supabase. **New**: Supports training from text, local files, and URLs, including similarity scores.
+-   **📚 Knowledge Base (RAG)**: Ingest custom data and retrieve it for AI augmentation using SQLite, ChromaDB, or Supabase. **New**: Supports training from text, local files, and URLs.
 
 ## Tech Stack Overview
 
@@ -79,8 +78,8 @@ To get started with TahuJS, follow these simple steps:
 1.  **Ensure Node.js is Installed:** TahuJS requires Node.js version 18 or higher.
 2.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/Cloud-Dark/tahu.js.git
-    cd tahu.js
+    git clone https://github.com/Cloud-Dark/tahujs.git
+    cd tahujs
     ```
 3.  **Install Dependencies:**
     ```bash
@@ -125,7 +124,7 @@ const config = {
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
-import { createTahu } from 'tahu.js';
+import { createTahu } from 'tahujs';
 const tahu = createTahu(config);
 ```
 
@@ -134,7 +133,7 @@ const tahu = createTahu(config);
 ### Creating a TahuJS Instance
 
 ```javascript
-import { createTahu } from 'tahu.js';
+import { createTahu } from 'tahujs';
 
 const tahu = createTahu({
     provider: 'openrouter',
@@ -148,7 +147,7 @@ const tahu = createTahu({
 ### Performing AI Chat
 
 ```javascript
-import { createTahu } from 'tahu.js';
+import { createTahu } from 'tahujs';
 
 async function runChat() {
     const tahu = createTahu({ /* your config */ });
@@ -161,12 +160,12 @@ runChat();
 ### Using Tools
 
 ```javascript
-import { createTahu, tools } from 'tahu.js';
+import { createTahu, tools } from 'tahujs';
 
 async function useTools() {
     const tahu = createTahu({ /* your config */ });
     // Web Search
-    const searchResult = await tahu.useTool(tools.webSearchTool.name, 'latest technology news 2024');
+    const searchResult = await tahu.useTool(tools.webSearchTool.name, 'latest technology news');
     console.log('Web Search Result:', searchResult);
 
     // Mathematical Calculation
@@ -183,7 +182,7 @@ async function useTools() {
 
     // Elevation
     const elevationResult = await tahu.useTool(tools.getElevationTool.name, '-6.2088,106.8456'); // Jakarta coordinates
-    console.log('Elevation Result:', elevationResult);
+    console.log('Elevation:', elevationResult);
 
     // Web Scraping
     const scrapeResult = await tahu.useTool(tools.webScrapeTool.name, 'https://www.wikipedia.org');
@@ -204,7 +203,7 @@ useTools();
 ### Creating and Running AI Agents
 
 ```javascript
-import { createTahu } from 'tahu.js';
+import { createTahu } from 'tahujs';
 
 async function runAgentDemo() {
     const tahu = createTahu({ /* your config */ });
@@ -231,7 +230,7 @@ runAgentDemo();
 TahuJS leverages LangChain.js under the hood, and you can directly create and use LangChain agents for more advanced scenarios.
 
 ```javascript
-import { createTahu } from 'tahu.js';
+import { createTahu } from 'tahujs';
 
 async function langchainIntegrationDemo() {
     const tahu = createTahu({
@@ -257,7 +256,7 @@ langchainIntegrationDemo();
 The `AgentBuilder` provides a fluent API to construct and configure agents with various capabilities, personalities, and memory settings.
 
 ```javascript
-import { createTahu, tools } from 'tahu.js';
+import { createTahu, tools } from 'tahujs';
 
 const tahu = createTahu({ /* your config */ });
 
@@ -277,7 +276,7 @@ const omniAgent = tahu.builder()
 console.log(`Agent '${omniAgent.name}' created. Memory Type: ${omniAgent.memoryType}`);
 console.log('Capabilities:', omniAgent.capabilities.join(', '));
 
-const omniResult = await tahu.runAgent('OmniAgent', 'What is the current price of Bitcoin, then find the location of the Eiffel Tower, and provide a brief summary of its history.');
+const omniResult = await tahu.runAgent('OmniAgent', 'What is the current price of Bitcoin, and what are the top social trends on Twitter?');
 console.log('OmniAgent Response:', omniResult.response);
 ```
 
@@ -286,15 +285,21 @@ console.log('OmniAgent Response:', omniResult.response);
 Define and execute complex workflows where different agents collaborate on tasks, with dependencies between them.
 
 ```javascript
-tahu.createAgent('DataGatherer', { systemPrompt: 'Gathers raw data.' });
-tahu.createAgent('ReportGenerator', { systemPrompt: 'Generates reports from data.' });
+import { createTahu } from 'tahujs';
+
+const tahu = createTahu({ /* your config */ });
+
+tahu.createAgent('WorkflowResearcher', { systemPrompt: 'You are a researcher who gathers information.' });
+tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'You are an analyst who processes research data.' });
+tahu.createAgent('WorkflowWriter', { systemPrompt: 'You are a writer who summarizes analysis results.' });
 
 const workflow = tahu.createWorkflow([
-  { agent: 'DataGatherer', task: 'collect_market_data' },
-  { agent: 'ReportGenerator', task: 'create_summary_report', depends: ['collect_market_data'] }
+    { agent: 'WorkflowResearcher', task: 'research_ai_trends' },
+    { agent: 'WorkflowAnalyst', task: 'analyze_research', depends: ['research_ai_trends'] },
+    { agent: 'WorkflowWriter', task: 'summarize_analysis', depends: ['analyze_research'] }
 ]);
 
-const workflowResults = await workflow.execute('Market trends for renewable energy.');
+const workflowResults = await workflow.execute('Latest AI trends in healthcare.');
 console.log('Final Workflow Results:', workflowResults);
 ```
 
@@ -303,19 +308,26 @@ console.log('Final Workflow Results:', workflowResults);
 Efficiently handle multiple LLM calls or agent tasks simultaneously.
 
 ```javascript
-// Parallel execution of agent tasks
-const parallelResults = await tahu.parallel([
-  { agent: 'MyCoder', input: 'Explain recursion.' },
-  { agent: 'MyResearcher', input: 'What is quantum computing?' }
-]);
-console.log('Parallel Results:', parallelResults.map(r => r.response));
+import { createTahu } from 'tahujs';
+
+const tahu = createTahu({ /* your config */ });
+
+// Parallel execution of agent tasks or chat prompts
+const parallelTasks = [
+    { prompt: 'Explain quantum computing briefly.' },
+    { prompt: 'What is the capital of France?' },
+    { agent: 'MySmartResearcherJSON', input: 'Summarize the last research topic.' } // Assuming MySmartResearcherJSON agent exists
+];
+const parallelResults = await tahu.parallel(parallelTasks);
+console.log('Parallel Results:', parallelResults.map(r => r.response || r));
 
 // Simple batch processing of chat prompts
-const batchResults = await tahu.batch([
-  { prompt: 'Tell me a short story about a space cat.' },
-  { prompt: 'List 5 benefits of cloud computing.' },
-  { prompt: 'What is the main purpose of blockchain?' }
-]);
+const batchPrompts = [
+    { prompt: 'Tell a short story about a robot.' },
+    { prompt: 'List 3 benefits of cloud computing.' },
+    { prompt: 'What is the main purpose of blockchain?' }
+];
+const batchResults = await tahu.batch(batchPrompts);
 console.log('Batch Results:', batchResults.map(r => r.response));
 ```
 
@@ -324,15 +336,24 @@ console.log('Batch Results:', batchResults.map(r => r.response));
 TahuJS provides real-time analytics to monitor your LLM usage and performance.
 
 ```javascript
-// Get real-time statistics
-const stats = tahu.analytics.getStats();
-console.log(`Total Tokens Used: ${stats.totalTokensUsed}`);
-console.log(`Estimated Cost: $${stats.estimatedCost.toFixed(6)}`);
-console.log(`Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
-console.log(`Success Rate: ${stats.successRate.toFixed(2)}%`);
+import { createTahu } from 'tahujs';
 
-// Reset stats
-tahu.analytics.resetStats();
+const tahu = createTahu({ /* your config */ });
+
+// After some LLM calls or agent runs
+const stats = tahu.analytics.getStats();
+console.log('📊 LLM Usage Statistics:');
+console.log(`   Total Requests: ${stats.totalRequests}`);
+console.log(`   Successful Requests: ${stats.successfulRequests}`);
+console.log(`   Failed Requests: ${stats.failedRequests}`);
+console.log(`   Success Rate: ${stats.successRate.toFixed(2)}%`);
+console.log(`   Total Tokens Used: ${stats.totalTokensUsed}`);
+console.log(`   Estimated Total Cost: $${stats.estimatedCost.toFixed(6)}`);
+console.log(`   Total Response Time: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
+console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
+
+// You can also reset the statistics
+// tahu.analytics.resetStats();
 ```
 
 ## Plugin System
@@ -340,7 +361,7 @@ tahu.analytics.resetStats();
 Extend TahuJS by creating and loading custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
 
 ```javascript
-import { createTahu, plugins } from 'tahu.js';
+import { createTahu, plugins } from 'tahujs';
 
 const tahu = createTahu({ /* your config */ });
 
@@ -388,7 +409,7 @@ TahuJS allows you to "train" (ingest) your own custom knowledge and retrieve it 
     *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
     *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
     *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
-*   **Supabase (PostgreSQL dengan pgvector)**:
+*   **Supabase (PostgreSQL with pgvector)**:
     *   **Type**: `supabase`
     *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
     *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
@@ -420,13 +441,12 @@ We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for de
 ### Development Setup
 
 ```bash
-git clone https://github.com/Cloud-Dark/tahu.js.git
-cd tahu.js
+git clone https://github.com/Cloud-Dark/tahujs.git
+cd tahujs
 npm install
 # Run examples
 node example/quick-start.js
 node example/demo.js
-node example/test_rag.js
 ```
 
 ## License

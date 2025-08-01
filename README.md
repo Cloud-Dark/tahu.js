@@ -37,7 +37,6 @@ console.log(response.response);
 -   **🌍 Multi-Provider**: Seamless integration with OpenRouter, OpenAI, Google Gemini, and Ollama (local).
 -   **🤖 Agent Framework**: Build complex multi-agent workflows with persistent memory.
 -   **📊 Production Ready**: Robust error handling, configuration validation, and real-time analytics.
--   **📚 Knowledge Base & RAG**: Train, test, and validate your AI's knowledge base with support for text, file, and URL data sources, including similarity scores.
 
 ## 🚀 Quick Start
 
@@ -398,7 +397,6 @@ npm install
 # Run examples
 node example/quick-start.js
 node example/demo.js
-node example/test_rag.js
 ```
 
 ## License

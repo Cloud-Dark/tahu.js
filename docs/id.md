@@ -26,7 +26,6 @@ TahuJS adalah framework JavaScript yang kuat dan fleksibel untuk membangun aplik
 15. [Kontribusi](#kontribusi)
 16. [Lisensi](#lisensi)
 17. [Peta Jalan (Roadmap)](#peta-jalan-roadmap)
-18. [Contoh Pengujian RAG](#contoh-pengujian-rag)
 
 ---
 
@@ -53,7 +52,7 @@ Baik Anda bertujuan untuk membangun agen cerdas yang dapat berinteraksi secara d
 -   **📊 Pemantauan & Analitik Real-time**: Melacak penggunaan token, perkiraan biaya, waktu respons, dan tingkat keberhasilan.
 -   **🔌 Arsitektur Plugin Fleksibel**: Mudah memperluas fungsionalitas TahuJS melalui sistem plugin yang dapat ditemukan secara otomatis.
 -   **✅ Validasi Konfigurasi**: Memastikan pengaturan API penting diatur dengan benar.
--   **📚 Basis Pengetahuan (RAG)**: Masukkan data kustom dan ambil untuk augmentasi AI menggunakan SQLite, ChromaDB, atau Supabase. **Baru**: Mendukung pelatihan dari teks, file lokal, dan URL, termasuk skor kemiripan.
+-   **📚 Basis Pengetahuan (RAG)**: Masukkan data kustom dan ambil untuk augmentasi AI menggunakan SQLite, ChromaDB, atau Supabase. **Baru**: Mendukung pelatihan dari teks, file lokal, dan URL.
 
 ## Ikhtisar Teknologi
 
@@ -123,9 +122,10 @@ const config = {
   // Untuk Supabase (membutuhkan integrasi Supabase)
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+
 };
 
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 const tahu = createTahu(config);
 ```
 
@@ -395,24 +395,24 @@ TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda se
 *   **`retrieveKnowledge`**:
     *   **Deskripsi**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
     *   **Format Input**: `"knowledgeBaseName|storeType|query_text|k"` (k opsional, default 3)
-    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
-    *   **Example**: `"my_docs|sqlite|What are TahuJS features?|2"`
+    *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
+    *   **Contoh**: `"my_docs|sqlite|What are TahuJS features?|2"`
 
-### Storage Options:
+### Opsi Penyimpanan:
 *   **SQLite**:
-    *   **Type**: `sqlite`
-    *   **Description**: A simple, file-based local database. Ideal for small to medium-sized knowledge bases or local development. No external server required.
-    *   **Configuration**: Automatically uses a `.sqlite` file in the `memory` directory.
+    *   **Tipe**: `sqlite`
+    *   **Deskripsi**: Basis data lokal berbasis file yang sederhana. Ideal untuk basis pengetahuan berukuran kecil hingga menengah atau pengembangan lokal. Tidak memerlukan server eksternal.
+    *   **Konfigurasi**: Secara otomatis menggunakan file `.sqlite` di direktori `memory`.
 *   **ChromaDB**:
-    *   **Type**: `chroma`
-    *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
-    *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
-    *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
+    *   **Tipe**: `chroma`
+    *   **Deskripsi**: Basis data vektor open-source khusus. Cocok untuk basis pengetahuan yang lebih besar dan pencarian kemiripan yang lebih efisien. Membutuhkan server ChromaDB terpisah untuk berjalan.
+    *   **Konfigurasi**: Atur `chromaDbUrl` di konfigurasi TahuJS (default `http://localhost:8000`).
+    *   **Pengaturan**: Anda perlu menjalankan instansi ChromaDB. Lihat [dokumentasi ChromaDB](https://www.trychroma.com/) untuk instalasi.
 *   **Supabase (PostgreSQL dengan pgvector)**:
-    *   **Type**: `supabase`
-    *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
-    *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
-    *   **Setup**: You need to set up a Supabase project, enable the `pgvector` extension, and configure your tables. See example SQL in the "Basic Usage" section above.
+    *   **Tipe**: `supabase`
+    *   **Deskripsi**: Basis data PostgreSQL berbasis cloud yang kuat dan skalabel dengan ekstensi `pgvector` untuk penyimpanan vektor. Ideal untuk aplikasi produksi yang membutuhkan manajemen data yang kuat dan skalabilitas.
+    *   **Konfigurasi**: Membutuhkan `supabaseUrl` dan `supabaseAnonKey` di konfigurasi TahuJS.
+    *   **Pengaturan**: Anda perlu menyiapkan proyek Supabase, mengaktifkan ekstensi `pgvector`, dan mengkonfigurasi tabel Anda. Lihat contoh SQL di bagian "Penggunaan Dasar" di atas.
 
 ## Built-in Tools List
 
@@ -446,7 +446,6 @@ npm install
 # Run examples
 node example/quick-start.js
 node example/demo.js
-node example/test_rag.js
 ```
 
 ## License
