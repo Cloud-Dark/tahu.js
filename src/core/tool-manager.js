@@ -9,12 +9,14 @@ import { getDirectionsTool } from '../tools/get-directions-tool.js';
 import { getElevationTool } from '../tools/get-elevation-tool.js';
 import { webScrapeTool } from '../tools/web-scrape-tool.js';
 import { dateTimeTool } from '../tools/date-time-tool.js';
+import { summarizeTool } from '../tools/summarize-tool.js'; // Import alat baru
 
 export class ToolManager {
-    constructor(toolsMap, searchService, mapService) {
+    constructor(toolsMap, searchService, mapService, llmManager) { // Tambahkan llmManager di sini
         this.tools = toolsMap; // Reference to the main tools Map
         this.searchService = searchService;
         this.mapService = mapService;
+        this.llmManager = llmManager; // Simpan llmManager
         this.initializeBuiltInTools();
     }
 
@@ -52,6 +54,12 @@ export class ToolManager {
         this.registerTool(dateTimeTool.name, {
             description: dateTimeTool.description,
             execute: dateTimeTool.execute
+        });
+
+        // Daftarkan alat summarizeText yang baru
+        this.registerTool(summarizeTool.name, {
+            description: summarizeTool.description,
+            execute: (text) => summarizeTool.execute(text, this.llmManager) // Teruskan llmManager ke alat
         });
     }
 

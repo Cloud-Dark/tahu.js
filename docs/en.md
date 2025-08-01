@@ -175,5 +175,6 @@ The enhanced TahuJS now includes:
 -   ✅ **Configurable Short-Term Memory**: Limit the in-memory conversation history for agents.
 -   ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
 -   ✅ **Support for OpenAI, Gemini, OpenRouter, and Ollama LLM providers.**
+-   ✅ **Text Summarization**: Summarize long texts using the AI model.
 
 Perfect for production use! 🚀

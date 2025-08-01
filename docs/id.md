@@ -175,5 +175,6 @@ TahuJS yang ditingkatkan sekarang mencakup:
 -   ✅ **Memori Jangka Pendek yang Dapat Dikonfigurasi**: Batasi riwayat percakapan dalam memori untuk agen.
 -   ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
 -   ✅ **Dukungan untuk penyedia LLM OpenAI, Gemini, OpenRouter, dan Ollama.**
+-   ✅ **Rangkuman Teks**: Meringkas teks panjang menggunakan model AI.
 
 Sempurna untuk penggunaan produksi! 🚀

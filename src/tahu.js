@@ -49,7 +49,7 @@ class TahuJS {
 
         this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
         this.llmManager = new LLMManager(this.config, this.tools, this.conversations);
-        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService);
+        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager); // Teruskan this.llmManager
         this.agentManager = new AgentManager(this.agents, this.llmManager, this.memoryManager);
         this.workflowManager = new WorkflowManager(this.llmManager, this.agentManager);
         this.pluginManager = new PluginManager(this); // Pass 'this' for plugin registration
