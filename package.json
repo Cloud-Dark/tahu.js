@@ -1,4 +1,35 @@
 {
+  "name": "tahujs",
+  "version": "1.0.0",
+  "description": "A powerful and flexible JavaScript framework for building AI-powered applications with LLM integration, built-in tools, and custom services.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "javascript",
+    "framework",
+    "langchain",
+    "openrouter",
+    "gemini",
+    "web-search",
+    "map-service",
+    "tools",
+    "agent",
+    "node.js"
+  ],
+  "author": "Cloud-Dark",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cloud-Dark/tahujs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cloud-Dark/tahujs/issues"
+  },
+  "homepage": "https://github.com/Cloud-Dark/tahujs#readme",
   "dependencies": {
     "@langchain/community": "^0.0.52",
     "@langchain/google-genai": "^0.0.12",
