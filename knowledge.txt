@@ -1,0 +1,4 @@
+Apipedia adalah sebuah website yang menyediakan layanan console / whatsapp gateway.
+Apipedia didirikan oleh Syahdan.
+TahuJS adalah framework AI yang sangat berguna untuk developer Node.js.
+TahuJS mendukung berbagai LLM dan memiliki banyak tool bawaan.

@@ -52,7 +52,7 @@ Baik Anda bertujuan untuk membangun agen cerdas yang dapat berinteraksi secara d
 -   **📊 Pemantauan & Analitik Real-time**: Melacak penggunaan token, perkiraan biaya, waktu respons, dan tingkat keberhasilan.
 -   **🔌 Arsitektur Plugin Fleksibel**: Mudah memperluas fungsionalitas TahuJS melalui sistem plugin yang dapat ditemukan secara otomatis.
 -   **✅ Validasi Konfigurasi**: Memastikan pengaturan API penting diatur dengan benar.
--   **📚 Basis Pengetahuan (RAG)**: Masukkan data kustom dan ambil untuk augmentasi AI menggunakan SQLite, ChromaDB, atau Supabase.
+-   **📚 Basis Pengetahuan (RAG)**: Masukkan data kustom dan ambil untuk augmentasi AI menggunakan SQLite, ChromaDB, atau Supabase. **Baru**: Mendukung pelatihan dari teks, file lokal, dan URL.
 
 ## Ikhtisar Teknologi
 
@@ -384,14 +384,18 @@ TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda se
 ### Alat:
 *   **`trainKnowledge`**:
     *   **Deskripsi**: Menambahkan data teks ke basis pengetahuan yang ditentukan untuk pengambilan nanti.
-    *   **Format Input**: `"namaBasisPengetahuan|tipePenyimpanan|teks_untuk_dilatih"`
+    *   **Format Input**: `"knowledgeBaseName|storeType|source_type|source_data"`
     *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
-    *   **Contoh**: `"dokumen_perusahaan_saya|sqlite|TahuJS adalah framework AI yang komprehensif untuk Node.js."`
+    *   **Tipe Sumber yang Didukung**: `text`, `file`, `url`
+    *   **Contoh**:
+        *   `"my_docs|sqlite|text|This is a document about TahuJS features."`
+        *   `"my_docs|sqlite|file|/path/to/your/knowledge.txt"`
+        *   `"my_docs|sqlite|url|https://example.com/knowledge.txt"`
 *   **`retrieveKnowledge`**:
     *   **Deskripsi**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
-    *   **Format Input**: `"namaBasisPengetahuan|tipePenyimpanan|teks_kueri|k"` (k opsional, default 3)
+    *   **Format Input**: `"knowledgeBaseName|storeType|query_text|k"` (k opsional, default 3)
     *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
-    *   **Contoh**: `"dokumen_perusahaan_saya|sqlite|Apa saja fitur TahuJS?|2"`
+    *   **Contoh**: `"my_docs|sqlite|What are TahuJS features?|2"`
 
 ### Opsi Penyimpanan:
 *   **SQLite**:
@@ -421,7 +425,7 @@ TahuJS comes with the following pre-registered tools:
 *   **`webScrape`**: Extract content from web pages.
 *   **`dateTime`**: Get current date and time information for a specified timezone.
 *   **`summarizeText`**: Summarize a given text using the AI model.
-*   **`trainKnowledge`**: Add text data to a specified knowledge base.
+*   **`trainKnowledge`**: Add text data to a specified knowledge base. Supports `text`, `file`, and `url` sources.
 *   **`retrieveKnowledge`**: Retrieve relevant information from a specified knowledge base.
 
 ## Error Handling

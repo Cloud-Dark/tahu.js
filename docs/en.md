@@ -52,7 +52,7 @@ Whether you aim to build intelligent agents that can interact dynamically, autom
 -   **📊 Real-time Monitoring & Analytics**: Track token usage, estimated costs, response times, and success rates.
 -   **🔌 Flexible Plugin Architecture**: Easily extend TahuJS functionality through an auto-discoverable plugin system.
 -   **✅ Configuration Validation**: Ensures essential API settings are correctly set up.
--   **📚 Knowledge Base (RAG)**: Ingest custom data and retrieve it for AI augmentation using SQLite, ChromaDB, or Supabase.
+-   **📚 Knowledge Base (RAG)**: Ingest custom data and retrieve it for AI augmentation using SQLite, ChromaDB, or Supabase. **New**: Supports training from text, local files, and URLs.
 
 ## Tech Stack Overview
 
@@ -305,7 +305,7 @@ console.log('Final Workflow Results:', workflowResults);
 
 ## Parallel & Batch Processing
 
-Efficiently handle multiple LLM requests or agent tasks simultaneously.
+Efficiently handle multiple LLM calls or agent tasks simultaneously.
 
 ```javascript
 import { createTahu } from 'tahujs';
@@ -358,7 +358,7 @@ console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)}
 
 ## Plugin System
 
-Extend TahuJS by creating and loading custom plugins. Plugins can register new tools, add custom logic, or integrate with external services.
+Extend TahuJS by creating and loading custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
 
 ```javascript
 import { createTahu, plugins } from 'tahujs';
@@ -386,9 +386,13 @@ TahuJS allows you to "train" (ingest) your own custom knowledge and retrieve it 
 ### Tools:
 *   **`trainKnowledge`**:
     *   **Description**: Adds text data to a specified knowledge base for later retrieval.
-    *   **Input Format**: `"knowledgeBaseName|storeType|text_to_train"`
+    *   **Input Format**: `"knowledgeBaseName|storeType|source_type|source_data"`
     *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
-    *   **Example**: `"my_docs|sqlite|TahuJS is a comprehensive AI framework for Node.js."`
+    *   **Supported Source Types**: `text`, `file`, `url`
+    *   **Examples**:
+        *   `"my_docs|sqlite|text|This is a document about TahuJS features."`
+        *   `"my_docs|sqlite|file|/path/to/your/knowledge.txt"`
+        *   `"my_docs|sqlite|url|https://example.com/knowledge.txt"`
 *   **`retrieveKnowledge`**:
     *   **Description**: Retrieves relevant information from a specified knowledge base.
     *   **Input Format**: `"knowledgeBaseName|storeType|query_text|k"` (k is optional, default 3)
@@ -423,7 +427,7 @@ TahuJS comes with the following pre-registered tools:
 *   **`webScrape`**: Extract content from web pages.
 *   **`dateTime`**: Get current date and time information for a specified timezone.
 *   **`summarizeText`**: Summarize a given text using the AI model.
-*   **`trainKnowledge`**: Add text data to a specified knowledge base.
+*   **`trainKnowledge`**: Add text data to a specified knowledge base. Supports `text`, `file`, and `url` sources.
 *   **`retrieveKnowledge`**: Retrieve relevant information from a specified knowledge base.
 
 ## Error Handling
