@@ -385,16 +385,6 @@ For more in-depth guides on installation, configuration, API usage, and code exa
 
 ## 🗺️ Roadmap
 
-### Current (v1.0)
--   ✅ Core agent framework
--   ✅ Multi-provider LLM integration (OpenRouter, OpenAI, Gemini, Ollama)
--   ✅ Comprehensive built-in tools (web search, maps, calculations, scraping, summarization)
--   ✅ Persistent memory (JSON, SQLite)
--   ✅ Multi-agent workflows, parallel, and batch processing
--   ✅ Plugin system
--   ✅ Real-time analytics
--   ✅ Knowledge Base (RAG) with SQLite and ChromaDB support
-
 ### Next (v1.1)
 -   🔄 Enhanced agent communication protocols
 -   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
