@@ -7,3 +7,5 @@ export { getElevationTool } from '../tools/get-elevation-tool.js';
 export { webScrapeTool } from '../tools/web-scrape-tool.js';
 export { dateTimeTool } from '../tools/date-time-tool.js';
 export { summarizeTool } from '../tools/summarize-tool.js';
+export { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // New tool
+export { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // New tool

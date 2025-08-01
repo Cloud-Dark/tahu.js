@@ -29,24 +29,29 @@ async function comprehensiveDemo() {
     model: 'google/gemini-2.0-flash-exp:free', // Atau 'anthropic/claude-3-sonnet', 'openai/gpt-4'
     // httpReferer: 'your-website.com', // Diperlukan untuk OpenRouter jika diatur
     // xTitle: 'Your App Name', // Diperlukan untuk OpenRouter jika diatur
+    embeddingModel: 'text-embedding-ada-002', // Model embedding untuk OpenRouter/OpenAI
+    chromaDbUrl: 'http://localhost:8000', // URL server ChromaDB jika digunakan
   });
 
   const tahuOpenAI = createTahu({
     provider: 'openai',
     apiKey: OPENAI_API_KEY,
     model: 'gpt-3.5-turbo', // Atau 'gpt-4'
+    embeddingModel: 'text-embedding-ada-002',
   });
 
   const tahuGemini = createTahu({
     provider: 'gemini',
     apiKey: GEMINI_API_KEY,
     model: 'gemini-pro',
+    embeddingModel: 'embedding-001',
   });
 
   const tahuOllama = createTahu({
     provider: 'ollama',
     model: 'llama2', // Pastikan model ini diunduh di instansi Ollama Anda
     ollamaBaseUrl: OLLAMA_BASE_URL,
+    embeddingModel: 'nomic-embed-text', // Pastikan model embedding ini diunduh di Ollama
   });
 
   // --- Muat plugin ke instansi OpenRouter (bisa juga ke instansi lain) ---
@@ -192,7 +197,8 @@ async function comprehensiveDemo() {
             tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
             tools.dateTimeTool.name, tools.summarizeTool.name, // Built-in tools
             plugins.tahuCryptoPlugin.name, plugins.tahuSocialPlugin.name, 
-            plugins.tahuFinancePlugin.name, plugins.tahuCurrencyPlugin.name // Plugin tools
+            plugins.tahuFinancePlugin.name, plugins.tahuCurrencyPlugin.name, // Plugin tools
+            tools.trainKnowledgeTool.name, tools.retrieveKnowledgeTool.name // New knowledge tools
         )
         .addMemory('json', { maxMemorySize: 10, memoryPath: './omni_agent_memory.json' })
         .build();
@@ -264,6 +270,65 @@ async function comprehensiveDemo() {
     // Anda juga bisa mereset statistik
     // tahu.analytics.resetStats();
     // console.log('\nStatistik setelah reset:', tahu.analytics.getStats());
+
+    console.log('\n' + '='.repeat(50) + '\n');
+    // --- 10. Pengujian Pelatihan dan Pengambilan Pengetahuan (RAG) ---
+    console.log('--- 10. Pengujian Pelatihan dan Pengambilan Pengetahuan (RAG) ---');
+
+    // Latih pengetahuan ke SQLite
+    console.log('\n📚 Melatih pengetahuan ke SQLite...');
+    const trainResultSqlite = await tahu.useTool(
+        'trainKnowledge', 
+        'my_company_docs|sqlite|TahuJS adalah framework AI yang komprehensif untuk Node.js. Ini mendukung berbagai LLM dan alat bawaan.'
+    );
+    console.log(trainResultSqlite);
+
+    const trainResultSqlite2 = await tahu.useTool(
+        'trainKnowledge', 
+        'my_company_docs|sqlite|Fitur utama TahuJS meliputi manajemen agen, alur kerja multi-agen, dan analitik real-time.'
+    );
+    console.log(trainResultSqlite2);
+
+    // Ambil pengetahuan dari SQLite
+    console.log('\n🔍 Mengambil pengetahuan dari SQLite...');
+    const retrieveResultSqlite = await tahu.useTool(
+        'retrieveKnowledge', 
+        'my_company_docs|sqlite|Apa saja fitur TahuJS?'
+    );
+    console.log(retrieveResultSqlite);
+
+    // Latih pengetahuan ke ChromaDB (pastikan server ChromaDB berjalan di http://localhost:8000)
+    console.log('\n📚 Melatih pengetahuan ke ChromaDB...');
+    const trainResultChroma = await tahu.useTool(
+        'trainKnowledge', 
+        'product_info|chroma|Produk unggulan kami adalah TahuAI, sebuah platform yang menyederhanakan pengembangan AI.'
+    );
+    console.log(trainResultChroma);
+
+    const trainResultChroma2 = await tahu.useTool(
+        'trainKnowledge', 
+        'product_info|chroma|TahuAI menawarkan integrasi LLM yang mudah dan alat kustomisasi yang kuat.'
+    );
+    console.log(trainResultChroma2);
+
+    // Ambil pengetahuan dari ChromaDB
+    console.log('\n🔍 Mengambil pengetahuan dari ChromaDB...');
+    const retrieveResultChroma = await tahu.useTool(
+        'retrieveKnowledge', 
+        'product_info|chroma|Apa itu TahuAI?'
+    );
+    console.log(retrieveResultChroma);
+
+    // Contoh penggunaan Supabase (akan gagal jika belum diintegrasikan)
+    console.log('\n📚 Mencoba melatih pengetahuan ke Supabase (akan meminta integrasi jika belum ada)...');
+    const trainResultSupabase = await tahu.useTool(
+        'trainKnowledge', 
+        'customer_feedback|supabase|Pelanggan menyukai kecepatan dan kemudahan penggunaan TahuJS.'
+    );
+    console.log(trainResultSupabase);
+    console.log('💡 Untuk menggunakan Supabase, Anda perlu menambahkan integrasi Supabase ke proyek Anda.');
+    console.log('\n' + '='.repeat(50) + '\n');
+
 
     console.log('\n🎉 Demo Komprehensif Selesai!');
     console.log('📊 Alat yang Tersedia:', tahu.listTools());

@@ -63,15 +63,17 @@ const tahu = createTahu({
   provider: 'openrouter', // or 'openai', 'gemini', 'ollama'
   apiKey: process.env.OPENROUTER_API_KEY, // Use environment variables for production
   model: 'google/gemini-2.0-flash-exp:free',
+  embeddingModel: 'text-embedding-ada-002', // Required for knowledge base features
   // ollamaBaseUrl: 'http://localhost:11434', // Only if using local Ollama
   // serpApiKey: process.env.SERPAPI_KEY, // Optional, for better web search
+  // chromaDbUrl: 'http://localhost:8000', // Optional, for ChromaDB
 });
 
 // Simple LLM chat
 const chatResponse = await tahu.chat('What is the future of AI?');
 console.log(chatResponse.response);
 
-// Create a specialized agent using the builder
+// Create a specialized agent
 const coder = tahu.builder()
   .name('CodeAssistant')
   .systemPrompt('You are an expert JavaScript developer.')
@@ -90,6 +92,11 @@ console.log('Calculation Result:', calcResult);
 tahu.use(plugins.tahuCryptoPlugin);
 const cryptoPrice = await tahu.useTool('cryptoPrice', 'BTC');
 console.log('Bitcoin Price:', cryptoPrice);
+
+// Train custom knowledge
+await tahu.useTool('trainKnowledge', 'my_docs|sqlite|TahuJS is a comprehensive AI framework.');
+const retrievedKnowledge = await tahu.useTool('retrieveKnowledge', 'my_docs|sqlite|What is TahuJS?');
+console.log('Retrieved:', retrievedKnowledge);
 ```
 
 ## 🎯 Core Features
@@ -127,6 +134,36 @@ await tahu.runAgent('MyPersistentAgent', 'My favorite color is blue.');
 // Later...
 const response = await tahu.runAgent('MyPersistentAgent', 'What is my favorite color?');
 console.log(response.response); // "Your favorite color is blue."
+```
+
+### Knowledge Base & RAG (Retrieval Augmented Generation)
+
+TahuJS enables you to "train" (ingest) your own custom knowledge and retrieve it for AI augmentation.
+-   **`trainKnowledge`**: Add text data to a specified knowledge base.
+-   **`retrieveKnowledge`**: Fetch relevant information from a knowledge base based on a query.
+-   **Multiple Storage Options**:
+    -   **SQLite**: Simple, file-based local storage.
+    -   **ChromaDB**: Dedicated vector database (requires running a ChromaDB server).
+    -   **Supabase (SQL/pgvector)**: For robust, scalable cloud-based vector storage (requires Supabase integration).
+
+```javascript
+// Train knowledge into a SQLite-backed knowledge base
+await tahu.useTool('trainKnowledge', 'my_product_info|sqlite|Our new product features include real-time analytics and AI-powered recommendations.');
+await tahu.useTool('trainKnowledge', 'my_product_info|sqlite|The product is available globally starting Q3 2024.');
+
+// Retrieve relevant information from the knowledge base
+const productFeatures = await tahu.useTool('retrieveKnowledge', 'my_product_info|sqlite|What are the key features of the new product?');
+console.log('Product Features:', productFeatures);
+
+// Example with ChromaDB (ensure ChromaDB server is running)
+// await tahu.useTool('trainKnowledge', 'company_handbook|chroma|Our company values innovation and customer satisfaction.');
+// const companyValues = await tahu.useTool('retrieveKnowledge', 'company_handbook|chroma|What are our company values?');
+// console.log('Company Values:', companyValues);
+
+// For Supabase (requires Supabase integration and pgvector setup)
+// await tahu.useTool('trainKnowledge', 'user_data|supabase|User John Doe prefers dark mode and has subscribed to premium features.');
+// const userData = await tahu.useTool('retrieveKnowledge', 'user_data|supabase|What are John Doe's preferences?');
+// console.log('User Data:', userData);
 ```
 
 ### Tool Integration
@@ -270,7 +307,9 @@ console.log(story.response);
 -   Node.js 18+
 -   API key from your chosen LLM provider (OpenRouter, OpenAI, Google Gemini)
 -   Ollama (optional, for local LLM models)
--   `better-sqlite3` (for SQLite memory persistence)
+-   `better-sqlite3` (for SQLite memory persistence and knowledge base)
+-   `chromadb` (optional, for ChromaDB vector store)
+-   Supabase integration (optional, for Supabase vector store)
 
 ## 🔧 Configuration
 
@@ -281,6 +320,7 @@ const config = {
   provider: 'openrouter', // 'openrouter', 'gemini', 'openai', 'ollama'
   apiKey: 'your-api-key', // Not needed for Ollama if running locally without auth
   model: 'anthropic/claude-3-sonnet', // Model name varies by provider
+  embeddingModel: 'text-embedding-ada-002', // Recommended for knowledge base features
   temperature: 0.7,
   maxTokens: 2000,
 
@@ -294,7 +334,14 @@ const config = {
   // Optional service keys for enhanced features
   serpApiKey: 'your-serpapi-key', // Better web search
   googleMapsApiKey: 'your-google-maps-key', // Enhanced maps
-  mapboxKey: 'your-mapbox-key' // Premium maps
+  mapboxKey: 'your-mapbox-key', // Premium maps
+
+  // For ChromaDB
+  chromaDbUrl: 'http://localhost:8000', // Default ChromaDB server URL
+  
+  // For Supabase (requires Supabase integration)
+  // supabaseUrl: process.env.SUPABASE_URL,
+  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
 const tahu = createTahu(config);
@@ -324,6 +371,11 @@ For more in-depth guides on installation, configuration, API usage, and code exa
 -   ✅ Agent builder for custom agent creation
 -   ✅ Personality customization
 
+### Knowledge Base (RAG)
+-   ✅ Ingest custom text data for AI reference
+-   ✅ Retrieve relevant information from knowledge bases
+-   ✅ Multiple storage options: SQLite, ChromaDB, Supabase (via integration)
+
 ### Developer Experience
 -   ✅ Modular and extensible design
 -   ✅ Clear console logging with `chalk`
@@ -340,12 +392,14 @@ For more in-depth guides on installation, configuration, API usage, and code exa
 -   ✅ Multi-agent workflows, parallel, and batch processing
 -   ✅ Plugin system
 -   ✅ Real-time analytics
+-   ✅ Knowledge Base (RAG) with SQLite and ChromaDB support
 
 ### Next (v1.1)
 -   🔄 Enhanced agent communication protocols
--   🔄 More advanced memory types (e.g., vector stores)
+-   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
 -   🔄 Improved cost optimization strategies
 -   🔄 Deeper integration with external data sources
+-   🔄 Supabase (PostgreSQL with pgvector) integration for knowledge base
 
 ### Future (v2.0)
 -   🔄 Multi-modal support (image, audio, video processing)

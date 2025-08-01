@@ -14,7 +14,8 @@ import { ToolManager } from './core/tool-manager.js';
 import { AgentManager } from './core/agent-manager.js';
 import { WorkflowManager } from './core/workflow-manager.js';
 import { PluginManager } from './core/plugin-manager.js';
-import { AnalyticsManager } from './core/analytics-manager.js'; // Import AnalyticsManager
+import { AnalyticsManager } from './core/analytics-manager.js';
+import { VectorStoreManager } from './core/vector-store-manager.js'; // Import VectorStoreManager
 
 class TahuJS {
     constructor(config = {}) {
@@ -30,6 +31,8 @@ class TahuJS {
             ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434',
             httpReferer: config.httpReferer,
             xTitle: config.xTitle,
+            embeddingModel: config.embeddingModel, // New: for specific embedding model
+            chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
             ...config
         };
 
@@ -43,21 +46,26 @@ class TahuJS {
 
         // Initialize core components and managers
         this.memoryDir = './memory';
+        if (!fs.existsSync(this.memoryDir)) {
+            fs.mkdirSync(this.memoryDir);
+        }
         this.sqliteDb = new Database(`${this.memoryDir}/tahu_memory.db`);
 
         this.searchService = new SearchService(this.config);
         this.mapService = new MapService(this.config);
-        this.analyticsManager = new AnalyticsManager(); // Inisialisasi AnalyticsManager
+        this.analyticsManager = new AnalyticsManager();
 
         this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
-        this.llmManager = new LLMManager(this.config, this.tools, this.conversations, this.analyticsManager); // Teruskan analyticsManager
-        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager);
+        this.llmManager = new LLMManager(this.config, this.tools, this.conversations, this.analyticsManager);
+        this.vectorStoreManager = new VectorStoreManager(this.config, this.llmManager, this.memoryDir, this.sqliteDb); // New: Initialize VectorStoreManager
+        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager, this.vectorStoreManager); // Pass vectorStoreManager
         this.agentManager = new AgentManager(this.agents, this.llmManager, this.memoryManager);
         this.workflowManager = new WorkflowManager(this.llmManager, this.agentManager);
-        this.pluginManager = new PluginManager(this); // Pass 'this' for plugin registration
+        this.pluginManager = new PluginManager(this);
 
-        // Expose analytics manager
+        // Expose managers
         this.analytics = this.analyticsManager;
+        this.vectorStore = this.vectorStoreManager; // New: Expose vectorStoreManager
 
         console.log('🥘 TahuJS initialized successfully!');
     }

@@ -1,6 +1,6 @@
 // src/core/llm-manager.js
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { DynamicTool } from "@langchain/community/tools/dynamic";
 import { AgentExecutor, createReactAgent } from "langchain/agents";
 import { pull } from "langchain/hub";
@@ -9,13 +9,15 @@ import { ChatOllama } from "@langchain/community/chat_models/ollama";
 import chalk from 'chalk';
 
 export class LLMManager {
-    constructor(config, toolsMap, conversationsMap, analyticsManager) { // Tambahkan analyticsManager
+    constructor(config, toolsMap, conversationsMap, analyticsManager) {
         this.config = config;
-        this.toolsMap = toolsMap; // Reference to the main tools Map
-        this.conversations = conversationsMap; // Reference to the main conversations Map
-        this.analyticsManager = analyticsManager; // Simpan instance AnalyticsManager
+        this.toolsMap = toolsMap;
+        this.conversations = conversationsMap;
+        this.analyticsManager = analyticsManager;
         this.chatModel = null;
+        this.embeddingModel = null; // New: Embedding model
         this.initializeChatModel();
+        this.initializeEmbeddingModel(); // New: Initialize embedding model
     }
 
     initializeChatModel() {
@@ -71,14 +73,73 @@ export class LLMManager {
         }
     }
 
+    // New: Initialize embedding model based on provider
+    initializeEmbeddingModel() {
+        try {
+            switch (this.config.provider) {
+                case 'openrouter':
+                case 'openai':
+                    // OpenRouter and OpenAI can use OpenAIEmbeddings
+                    this.embeddingModel = new OpenAIEmbeddings({
+                        openAIApiKey: this.config.apiKey,
+                        configuration: this.config.provider === 'openrouter' ? {
+                            baseURL: 'https://openrouter.ai/api/v1',
+                            defaultHeaders: {
+                                'HTTP-Referer': this.config.httpReferer,
+                                'X-Title': this.config.xTitle,
+                            },
+                        } : {},
+                        modelName: this.config.embeddingModel || 'text-embedding-ada-002', // Default embedding model
+                    });
+                    break;
+                case 'gemini':
+                    this.embeddingModel = new GoogleGenerativeAIEmbeddings({
+                        apiKey: this.config.apiKey,
+                        model: this.config.embeddingModel || 'embedding-001', // Default embedding model
+                    });
+                    break;
+                case 'ollama':
+                    // Ollama embeddings (requires Ollama server to be running with an embedding model like 'nomic-embed-text')
+                    this.embeddingModel = new OpenAIEmbeddings({ // Using OpenAIEmbeddings as a wrapper for Ollama embeddings
+                        openAIApiKey: "ollama", // Dummy API key for Ollama
+                        configuration: {
+                            baseURL: `${this.config.ollamaBaseUrl}/api`,
+                        },
+                        modelName: this.config.embeddingModel || 'nomic-embed-text', // Default Ollama embedding model
+                    });
+                    break;
+                default:
+                    console.warn(chalk.yellow(`⚠️  No embedding model configured for provider: ${this.config.provider}`));
+                    this.embeddingModel = null;
+            }
+            if (this.embeddingModel) {
+                console.log(`🔗 LangChain embedding model initialized for provider: ${this.config.provider}`);
+            }
+        } catch (error) {
+            console.error(chalk.red('❌ Failed to initialize LangChain embedding model:', error.message));
+            this.embeddingModel = null;
+        }
+    }
+
+    // New: Method to get embeddings for a text
+    async getEmbeddings(text) {
+        if (!this.embeddingModel) {
+            throw new Error("Embedding model is not initialized. Please check your configuration and API key/Ollama setup.");
+        }
+        try {
+            console.log(chalk.blue(`🧠 Generating embeddings for text (length: ${text.length})...`));
+            const embeddings = await this.embeddingModel.embedQuery(text);
+            return embeddings;
+        } catch (error) {
+            console.error(chalk.red('❌ Embedding generation failed:', error.message));
+            throw new Error(`Failed to generate embeddings: ${error.message}`);
+        }
+    }
+
     getLangChainTools() {
         const lcTools = [];
         for (const [name, tool] of this.toolsMap.entries()) {
-            // LangChain agents work best with tools that expect a single string input.
-            // We adapt our multi-argument tools here if necessary.
             const func = async (input) => {
-                // For tools that might take multiple args in the future, but are simple now.
-                // This ensures they are called correctly by the agent.
                 return await tool.execute(input);
             };
 
@@ -98,7 +159,6 @@ export class LLMManager {
         console.log('🤖 Creating LangChain agent...');
         const tools = this.getLangChainTools();
 
-        // Pull a pre-designed "ReAct" (Reasoning and Acting) agent prompt from LangChain Hub
         const prompt = await pull("hwchase17/react");
 
         const agent = await createReactAgent({
@@ -110,7 +170,7 @@ export class LLMManager {
         const agentExecutor = new AgentExecutor({
             agent,
             tools,
-            verbose: true, // Set to true to see the agent's thought process
+            verbose: true,
         });
 
         console.log('🤖 LangChain Agent Executor created successfully!');
@@ -131,17 +191,16 @@ export class LLMManager {
         const history = this.conversations.get(conversation);
         history.push({ role: 'user', content: message });
 
-        // Convert history to LangChain message format
         const lcMessages = history.map(msg => {
             if (msg.role === 'user') {
                 return new HumanMessage({ content: msg.content });
             } else if (msg.role === 'assistant') {
                 return new AIMessage({ content: msg.content });
             }
-            return null; // Should not happen with 'user' and 'assistant' roles
+            return null;
         }).filter(Boolean);
 
-        const startTime = process.hrtime.bigint(); // Start timer
+        const startTime = process.hrtime.bigint();
 
         try {
             console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
@@ -150,13 +209,12 @@ export class LLMManager {
                 maxTokens: options.maxTokens || this.config.maxTokens,
             });
 
-            const endTime = process.hrtime.bigint(); // End timer
-            const duration = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
+            const endTime = process.hrtime.bigint();
+            const duration = Number(endTime - startTime) / 1_000_000;
 
             const responseContent = response.content;
             history.push({ role: 'assistant', content: responseContent });
 
-            // Record analytics
             const estimatedTokens = this.estimateTokens(message + responseContent);
             this.analyticsManager.recordCompletion(estimatedTokens, duration, this.config.model, this.config.provider);
 
@@ -167,9 +225,9 @@ export class LLMManager {
             };
 
         } catch (error) {
-            const endTime = process.hrtime.bigint(); // End timer even on error
-            const duration = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
-            this.analyticsManager.recordError(duration); // Record error in analytics
+            const endTime = process.hrtime.bigint();
+            const duration = Number(endTime - startTime) / 1_000_000;
+            this.analyticsManager.recordError(duration);
 
             console.error(chalk.red(`❌ LLM Chat Error (${this.config.provider}):`), error);
             let errorMessage = `TahuJS Chat Error with ${this.config.provider}: ${error.message}`;

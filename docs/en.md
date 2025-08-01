@@ -20,11 +20,12 @@ TahuJS is a powerful and flexible JavaScript framework for building AI-powered a
 9.  [Parallel & Batch Processing](#parallel--batch-processing)
 10. [Monitoring & Analytics](#monitoring--analytics)
 11. [Plugin System](#plugin-system)
-12. [Built-in Tools List](#built-in-tools-list)
-13. [Error Handling](#error-handling)
-14. [Contributing](#contributing)
-15. [License](#license)
-16. [Roadmap](#roadmap)
+12. [Knowledge Base & RAG](#knowledge-base--rag)
+13. [Built-in Tools List](#built-in-tools-list)
+14. [Error Handling](#error-handling)
+15. [Contributing](#contributing)
+16. [License](#license)
+17. [Roadmap](#roadmap)
 
 ---
 
@@ -51,6 +52,7 @@ Whether you aim to build intelligent agents that can interact dynamically, autom
 -   **📊 Real-time Monitoring & Analytics**: Track token usage, estimated costs, response times, and success rates.
 -   **🔌 Flexible Plugin Architecture**: Easily extend TahuJS functionality through an auto-discoverable plugin system.
 -   **✅ Configuration Validation**: Ensures essential API settings are correctly set up.
+-   **📚 Knowledge Base (RAG)**: Ingest custom data and retrieve it for AI augmentation using SQLite, ChromaDB, or Supabase.
 
 ## Tech Stack Overview
 
@@ -66,7 +68,8 @@ TahuJS is built on a foundation of modern and proven technologies:
 *   **Search Services:** Custom `SearchService` (SerpApi, DuckDuckGo, Google scraping).
 *   **Mapping & Location Services:** Custom `MapService` (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).
 *   **Configuration Management:** Custom `ConfigValidator`.
-*   **Database:** `better-sqlite3` for SQLite memory persistence.
+*   **Database:** `better-sqlite3` for SQLite memory persistence and knowledge base.
+*   **Vector Database:** `chromadb` for ChromaDB integration.
 
 ## Installation
 
@@ -97,6 +100,7 @@ const config = {
   
   // Optional AI settings
   model: 'anthropic/claude-3-sonnet', // Model name varies by provider
+  embeddingModel: 'text-embedding-ada-002', // Recommended for knowledge base features
   temperature: 0.7, // Controls randomness (0.0 - 2.0)
   maxTokens: 2000, // Maximum tokens in the response
 
@@ -110,7 +114,14 @@ const config = {
   // Optional service keys for enhanced features
   serpApiKey: process.env.SERPAPI_KEY, // For better web search via SerpApi
   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY, // For enhanced map features
-  mapboxKey: process.env.MAPBOX_KEY // For premium Mapbox features
+  mapboxKey: process.env.MAPBOX_KEY, // For premium Mapbox features
+
+  // For ChromaDB
+  chromaDbUrl: 'http://localhost:8000', // Default ChromaDB server URL
+  
+  // For Supabase (requires Supabase integration)
+  // supabaseUrl: process.env.SUPABASE_URL,
+  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
 import { createTahu } from 'tahujs';
@@ -128,7 +139,8 @@ const tahu = createTahu({
     provider: 'openrouter',
     apiKey: 'YOUR_API_KEY_HERE',
     model: 'google/gemini-2.0-flash-exp:free',
-    serpApiKey: 'YOUR_SERPAPI_KEY' // If available
+    serpApiKey: 'YOUR_SERPAPI_KEY', // If available
+    embeddingModel: 'text-embedding-ada-002', // Required for knowledge base
 });
 ```
 
@@ -255,7 +267,8 @@ const omniAgent = tahu.builder()
     .addCapabilities(
         tools.webSearchTool.name, tools.calculateTool.name, tools.findLocationTool.name, 
         tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
-        tools.dateTimeTool.name, tools.summarizeTool.name
+        tools.dateTimeTool.name, tools.summarizeTool.name,
+        tools.trainKnowledgeTool.name, tools.retrieveKnowledgeTool.name // New knowledge tools
     )
     .addMemory('sqlite', { maxMemorySize: 10 }) // Persist memory to SQLite
     .build();
@@ -361,6 +374,45 @@ console.log(cryptoPrice);
 tahu.loadPlugins('./src/plugins'); // Assumes plugins are in this directory
 ```
 
+## Knowledge Base & RAG
+
+TahuJS allows you to "train" (ingest) your own custom knowledge and retrieve it for AI augmentation. This is crucial for providing your AI with up-to-date or domain-specific information beyond its initial training data.
+
+### How it Works:
+1.  **Ingestion (`trainKnowledge`)**: You provide text data. TahuJS converts this text into numerical representations called "embeddings" using an embedding model. These embeddings, along with the original text, are stored in a chosen vector store.
+2.  **Retrieval (`retrieveKnowledge`)**: When you have a query, TahuJS converts the query into an embedding and searches the vector store for the most semantically similar pieces of stored knowledge.
+3.  **Augmentation**: The retrieved knowledge can then be passed to an LLM as context, allowing it to generate more informed and accurate responses.
+
+### Tools:
+*   **`trainKnowledge`**:
+    *   **Description**: Adds text data to a specified knowledge base for later retrieval.
+    *   **Input Format**: `"knowledgeBaseName|storeType|text_to_train"`
+    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
+    *   **Example**: `"my_docs|sqlite|TahuJS is a comprehensive AI framework for Node.js."`
+*   **`retrieveKnowledge`**:
+    *   **Description**: Retrieves relevant information from a specified knowledge base.
+    *   **Input Format**: `"knowledgeBaseName|storeType|query_text|k"` (k is optional, default 3)
+    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
+    *   **Example**: `"my_docs|sqlite|What are TahuJS features?|2"`
+
+### Storage Options:
+*   **SQLite**:
+    *   **Type**: `sqlite`
+    *   **Description**: A simple, file-based local database. Ideal for small to medium-sized knowledge bases or local development. No external server required.
+    *   **Configuration**: Automatically uses a `.sqlite` file in the `memory` directory.
+*   **ChromaDB**:
+    *   **Type**: `chroma`
+    *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
+    *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
+    *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
+*   **Supabase (PostgreSQL with pgvector)**:
+    *   **Type**: `supabase`
+    *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
+    *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
+    *   **Setup**: You need to set up a Supabase project, enable the `pgvector` extension, and configure your tables.
+    *   **Integration**: To use Supabase, you will need to add Supabase integration to your project.
+        <dyad-add-integration provider="supabase"></dyad-add-integration>
+
 ## Built-in Tools List
 
 TahuJS comes with the following pre-registered tools:
@@ -373,6 +425,8 @@ TahuJS comes with the following pre-registered tools:
 *   **`webScrape`**: Extract content from web pages.
 *   **`dateTime`**: Get current date and time information for a specified timezone.
 *   **`summarizeText`**: Summarize a given text using the AI model.
+*   **`trainKnowledge`**: Add text data to a specified knowledge base.
+*   **`retrieveKnowledge`**: Retrieve relevant information from a specified knowledge base.
 
 ## Error Handling
 
@@ -407,12 +461,14 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 -   ✅ Multi-agent workflows, parallel, and batch processing
 -   ✅ Plugin system
 -   ✅ Real-time analytics
+-   ✅ Knowledge Base (RAG) with SQLite and ChromaDB support
 
 ### Next (v1.1)
 -   🔄 Enhanced agent communication protocols
--   🔄 More advanced memory types (e.g., vector stores)
+-   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
 -   🔄 Improved cost optimization strategies
 -   🔄 Deeper integration with external data sources
+-   🔄 Supabase (PostgreSQL with pgvector) integration for knowledge base
 
 ### Future (v2.0)
 -   🔄 Multi-modal support (image, audio, video processing)

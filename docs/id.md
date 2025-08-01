@@ -20,11 +20,12 @@ TahuJS adalah framework JavaScript yang kuat dan fleksibel untuk membangun aplik
 9.  [Pemrosesan Paralel & Batch](#pemrosesan-paralel--batch)
 10. [Pemantauan & Analitik](#pemantauan--analitik)
 11. [Sistem Plugin](#sistem-plugin)
-12. [Daftar Alat Bawaan](#daftar-alat-bawaan)
-13. [Penanganan Kesalahan](#penanganan-kesalahan)
-14. [Kontribusi](#kontribusi)
-15. [Lisensi](#lisensi)
-16. [Peta Jalan (Roadmap)](#peta-jalan-roadmap)
+12. [Basis Pengetahuan & RAG](#basis-pengetahuan--rag)
+13. [Daftar Alat Bawaan](#daftar-alat-bawaan)
+14. [Penanganan Kesalahan](#penanganan-kesalahan)
+15. [Kontribusi](#kontribusi)
+16. [Lisensi](#lisensi)
+17. [Peta Jalan (Roadmap)](#peta-jalan-roadmap)
 
 ---
 
@@ -51,6 +52,7 @@ Baik Anda bertujuan untuk membangun agen cerdas yang dapat berinteraksi secara d
 -   **📊 Pemantauan & Analitik Real-time**: Melacak penggunaan token, perkiraan biaya, waktu respons, dan tingkat keberhasilan.
 -   **🔌 Arsitektur Plugin Fleksibel**: Mudah memperluas fungsionalitas TahuJS melalui sistem plugin yang dapat ditemukan secara otomatis.
 -   **✅ Validasi Konfigurasi**: Memastikan pengaturan API penting diatur dengan benar.
+-   **📚 Basis Pengetahuan (RAG)**: Masukkan data kustom dan ambil untuk augmentasi AI menggunakan SQLite, ChromaDB, atau Supabase.
 
 ## Ikhtisar Teknologi
 
@@ -66,7 +68,8 @@ TahuJS dibangun di atas fondasi teknologi modern dan terbukti:
 *   **Layanan Pencarian:** `SearchService` kustom (SerpApi, DuckDuckGo, Google scraping).
 *   **Layanan Pemetaan & Lokasi:** `MapService` kustom (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).
 *   **Manajemen Konfigurasi:** `ConfigValidator` kustom.
-*   **Database:** `better-sqlite3` untuk persistensi memori SQLite.
+*   **Database:** `better-sqlite3` untuk persistensi memori SQLite dan basis pengetahuan.
+*   **Basis Data Vektor:** `chromadb` untuk integrasi ChromaDB.
 
 ## Instalasi
 
@@ -97,6 +100,7 @@ const config = {
   
   // Pengaturan AI opsional
   model: 'anthropic/claude-3-sonnet', // Nama model bervariasi berdasarkan penyedia
+  embeddingModel: 'text-embedding-ada-002', // Direkomendasikan untuk fitur basis pengetahuan
   temperature: 0.7, // Mengontrol keacakan (0.0 - 2.0)
   maxTokens: 2000, // Token maksimum dalam respons
 
@@ -110,7 +114,14 @@ const config = {
   // Kunci layanan opsional untuk fitur yang ditingkatkan
   serpApiKey: process.env.SERPAPI_KEY, // Untuk pencarian web yang lebih baik melalui SerpApi
   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY, // Untuk fitur peta yang ditingkatkan
-  mapboxKey: process.env.MAPBOX_KEY // Untuk fitur Mapbox premium
+  mapboxKey: process.env.MAPBOX_KEY, // Untuk fitur Mapbox premium
+
+  // Untuk ChromaDB
+  chromaDbUrl: 'http://localhost:8000', // URL server ChromaDB default
+  
+  // Untuk Supabase (membutuhkan integrasi Supabase)
+  // supabaseUrl: process.env.SUPABASE_URL,
+  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
 import { createTahu } from 'tahujs';
@@ -128,7 +139,8 @@ const tahu = createTahu({
     provider: 'openrouter',
     apiKey: 'KUNCI_API_ANDA_DI_SINI',
     model: 'google/gemini-2.0-flash-exp:free',
-    serpApiKey: 'KUNCI_SERPAPI_ANDA' // Jika tersedia
+    serpApiKey: 'KUNCI_SERPAPI_ANDA', // Jika tersedia
+    embeddingModel: 'text-embedding-ada-002', // Diperlukan untuk basis pengetahuan
 });
 ```
 
@@ -255,7 +267,8 @@ const omniAgent = tahu.builder()
     .addCapabilities(
         tools.webSearchTool.name, tools.calculateTool.name, tools.findLocationTool.name, 
         tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
-        tools.dateTimeTool.name, tools.summarizeTool.name
+        tools.dateTimeTool.name, tools.summarizeTool.name,
+        tools.trainKnowledgeTool.name, tools.retrieveKnowledgeTool.name // Alat pengetahuan baru
     )
     .addMemory('sqlite', { maxMemorySize: 10 }) // Pertahankan memori ke SQLite
     .build();
@@ -359,6 +372,45 @@ console.log(cryptoPrice);
 tahu.loadPlugins('./src/plugins'); // Asumsi plugin ada di direktori ini
 ```
 
+## Basis Pengetahuan & RAG
+
+TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda sendiri dan mengambilnya untuk augmentasi AI. Ini sangat penting untuk menyediakan AI Anda dengan informasi terbaru atau spesifik domain di luar data pelatihan awalnya.
+
+### Cara Kerjanya:
+1.  **Pemasukan (`trainKnowledge`)**: Anda menyediakan data teks. TahuJS mengubah teks ini menjadi representasi numerik yang disebut "embeddings" menggunakan model embedding. Embeddings ini, bersama dengan teks aslinya, disimpan dalam penyimpanan vektor yang dipilih.
+2.  **Pengambilan (`retrieveKnowledge`)**: Ketika Anda memiliki kueri, TahuJS mengubah kueri menjadi embedding dan mencari penyimpanan vektor untuk potongan pengetahuan yang paling relevan secara semantik.
+3.  **Augmentasi**: Pengetahuan yang diambil kemudian dapat diteruskan ke LLM sebagai konteks, memungkinkannya menghasilkan respons yang lebih terinformasi dan akurat.
+
+### Alat:
+*   **`trainKnowledge`**:
+    *   **Deskripsi**: Menambahkan data teks ke basis pengetahuan yang ditentukan untuk pengambilan nanti.
+    *   **Format Input**: `"namaBasisPengetahuan|tipePenyimpanan|teks_untuk_dilatih"`
+    *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
+    *   **Contoh**: `"dokumen_perusahaan_saya|sqlite|TahuJS adalah framework AI yang komprehensif untuk Node.js."`
+*   **`retrieveKnowledge`**:
+    *   **Deskripsi**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
+    *   **Format Input**: `"namaBasisPengetahuan|tipePenyimpanan|teks_kueri|k"` (k opsional, default 3)
+    *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
+    *   **Contoh**: `"dokumen_perusahaan_saya|sqlite|Apa saja fitur TahuJS?|2"`
+
+### Opsi Penyimpanan:
+*   **SQLite**:
+    *   **Tipe**: `sqlite`
+    *   **Deskripsi**: Basis data lokal berbasis file yang sederhana. Ideal untuk basis pengetahuan berukuran kecil hingga menengah atau pengembangan lokal. Tidak memerlukan server eksternal.
+    *   **Konfigurasi**: Secara otomatis menggunakan file `.sqlite` di direktori `memory`.
+*   **ChromaDB**:
+    *   **Tipe**: `chroma`
+    *   **Deskripsi**: Basis data vektor open-source khusus. Cocok untuk basis pengetahuan yang lebih besar dan pencarian kemiripan yang lebih efisien. Membutuhkan server ChromaDB terpisah untuk berjalan.
+    *   **Konfigurasi**: Atur `chromaDbUrl` di konfigurasi TahuJS (default `http://localhost:8000`).
+    *   **Pengaturan**: Anda perlu menjalankan instansi ChromaDB. Lihat [dokumentasi ChromaDB](https://www.trychroma.com/) untuk instalasi.
+*   **Supabase (PostgreSQL dengan pgvector)**:
+    *   **Tipe**: `supabase`
+    *   **Deskripsi**: Basis data PostgreSQL berbasis cloud yang kuat dan skalabel dengan ekstensi `pgvector` untuk penyimpanan vektor. Ideal untuk aplikasi produksi yang membutuhkan manajemen data yang kuat dan skalabilitas.
+    *   **Konfigurasi**: Membutuhkan `supabaseUrl` dan `supabaseAnonKey` di konfigurasi TahuJS.
+    *   **Pengaturan**: Anda perlu menyiapkan proyek Supabase, mengaktifkan ekstensi `pgvector`, dan mengkonfigurasi tabel Anda.
+    *   **Integrasi**: Untuk menggunakan Supabase, Anda perlu menambahkan integrasi Supabase ke proyek Anda.
+        <dyad-add-integration provider="supabase"></dyad-add-integration>
+
 ## Daftar Alat Bawaan
 
 TahuJS dilengkapi dengan alat-alat yang sudah terdaftar berikut:
@@ -371,6 +423,8 @@ TahuJS dilengkapi dengan alat-alat yang sudah terdaftar berikut:
 *   **`webScrape`**: Mengekstrak konten dari halaman web.
 *   **`dateTime`**: Mendapatkan informasi tanggal dan waktu saat ini untuk zona waktu yang ditentukan.
 *   **`summarizeText`**: Meringkas teks yang diberikan menggunakan model AI.
+*   **`trainKnowledge`**: Menambahkan data teks ke basis pengetahuan yang ditentukan.
+*   **`retrieveKnowledge`**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
 
 ## Penanganan Kesalahan
 
@@ -405,12 +459,14 @@ Lisensi MIT - lihat file [LICENSE](./LICENSE) untuk detailnya.
 -   ✅ Alur kerja multi-agen, pemrosesan paralel, dan batch
 -   ✅ Sistem plugin
 -   ✅ Analitik real-time
+-   ✅ Basis Pengetahuan (RAG) dengan dukungan SQLite dan ChromaDB
 
 ### Berikutnya (v1.1)
 -   🔄 Protokol komunikasi agen yang ditingkatkan
--   🔄 Jenis memori yang lebih canggih (misalnya, penyimpanan vektor)
+-   🔄 Jenis memori yang lebih canggih (misalnya, penyimpanan vektor khusus untuk RAG)
 -   🔄 Strategi optimasi biaya yang ditingkatkan
 -   🔄 Integrasi yang lebih dalam dengan sumber data eksternal
+-   🔄 Integrasi Supabase (PostgreSQL dengan pgvector) untuk basis pengetahuan
 
 ### Masa Depan (v2.0)
 -   🔄 Dukungan multi-modal (pemrosesan gambar, audio, video)

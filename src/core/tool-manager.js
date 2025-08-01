@@ -9,14 +9,17 @@ import { getDirectionsTool } from '../tools/get-directions-tool.js';
 import { getElevationTool } from '../tools/get-elevation-tool.js';
 import { webScrapeTool } from '../tools/web-scrape-tool.js';
 import { dateTimeTool } from '../tools/date-time-tool.js';
-import { summarizeTool } from '../tools/summarize-tool.js'; // Import alat baru
+import { summarizeTool } from '../tools/summarize-tool.js';
+import { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // Import alat baru
+import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // Import alat baru
 
 export class ToolManager {
-    constructor(toolsMap, searchService, mapService, llmManager) { // Tambahkan llmManager di sini
+    constructor(toolsMap, searchService, mapService, llmManager, vectorStoreManager) { // Tambahkan vectorStoreManager
         this.tools = toolsMap; // Reference to the main tools Map
         this.searchService = searchService;
         this.mapService = mapService;
-        this.llmManager = llmManager; // Simpan llmManager
+        this.llmManager = llmManager;
+        this.vectorStoreManager = vectorStoreManager; // Simpan vectorStoreManager
         this.initializeBuiltInTools();
     }
 
@@ -56,10 +59,21 @@ export class ToolManager {
             execute: dateTimeTool.execute
         });
 
-        // Daftarkan alat summarizeText yang baru
         this.registerTool(summarizeTool.name, {
             description: summarizeTool.description,
-            execute: (text) => summarizeTool.execute(text, this.llmManager) // Teruskan llmManager ke alat
+            execute: (text) => summarizeTool.execute(text, this.llmManager)
+        });
+
+        // Daftarkan alat trainKnowledge yang baru
+        this.registerTool(trainKnowledgeTool.name, {
+            description: trainKnowledgeTool.description,
+            execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) // Teruskan vectorStoreManager
+        });
+
+        // Daftarkan alat retrieveKnowledge yang baru
+        this.registerTool(retrieveKnowledgeTool.name, {
+            description: retrieveKnowledgeTool.description,
+            execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) // Teruskan vectorStoreManager
         });
     }
 
