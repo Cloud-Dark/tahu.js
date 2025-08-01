@@ -55,31 +55,26 @@ TahuJS now seamlessly integrates with multiple Large Language Model (LLM) provid
 
 Get up and running in no time!
 
-```bash
-npm install tahujs
-```
-
 ```javascript
+// See example/quick-start.js for a minimal setup
 import { createTahu } from 'tahujs';
 
-// Example with OpenAI
-const tahuOpenAI = createTahu({
-  provider: 'openai',
-  apiKey: 'your-openai-api-key',
-  model: 'gpt-3.5-turbo'
-});
-const chatResult = await tahuOpenAI.chat('Explain the concept of AI briefly.');
-console.log(chatResult.response);
+async function quickStartExample() {
+  const tahu = createTahu({
+    provider: 'openrouter', // or 'openai', 'gemini', 'ollama'
+    apiKey: 'your-api-key',
+    model: 'google/gemini-2.0-flash-exp:free',
+  });
 
-// Example with Ollama (ensure Ollama server is running locally)
-const tahuOllama = createTahu({
-  provider: 'ollama',
-  model: 'llama2', // Ensure this model is downloaded in your Ollama instance
-  ollamaBaseUrl: 'http://localhost:11434' // Default Ollama URL
-});
-const ollamaResult = await tahuOllama.chat('What is the capital of France?');
-console.log(ollamaResult.response);
+  const chatResult = await tahu.chat('Explain AI briefly.');
+  console.log(chatResult.response);
+
+  const calcResult = await tahu.useTool('calculate', '10 + 5 * 2');
+  console.log(calcResult);
+}
+quickStartExample();
 ```
+For a comprehensive demonstration of all features, refer to `example/demo.js`.
 
 ## 🎯 Use Cases
 
@@ -175,10 +170,10 @@ The enhanced TahuJS now includes:
 -   ✅ Complete workflow examples
 -   ✅ **Persistent Agent Memory**: Save agent conversations to JSON files or SQLite database.
 -   ✅ **Multi-Agent Workflows**: Orchestrate sequences of agent tasks with dependencies.
--   **NEW**: ✅ **Parallel Processing**: Run multiple agent tasks or chat prompts concurrently.
--   **NEW**: ✅ **Simple Batch Processing**: Process multiple chat prompts in parallel.
+-   ✅ **Parallel Processing**: Run multiple agent tasks or chat prompts concurrently.
+-   ✅ **Simple Batch Processing**: Process multiple chat prompts in parallel.
 -   ✅ **Configurable Short-Term Memory**: Limit the in-memory conversation history for agents.
--   **NEW**: ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
--   **NEW**: ✅ **Support for OpenAI, Gemini, OpenRouter, and Ollama LLM providers.**
+-   ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
+-   ✅ **Support for OpenAI, Gemini, OpenRouter, and Ollama LLM providers.**
 
 Perfect for production use! 🚀

@@ -55,31 +55,26 @@ TahuJS sekarang terintegrasi dengan mulus dengan beberapa penyedia Large Languag
 
 Mulai dan jalankan dalam waktu singkat!
 
-```bash
-npm install tahujs
-```
-
 ```javascript
+// Lihat example/quick-start.js untuk pengaturan minimal
 import { createTahu } from 'tahujs';
 
-// Contoh dengan OpenAI
-const tahuOpenAI = createTahu({
-  provider: 'openai',
-  apiKey: 'kunci-api-openai-anda',
-  model: 'gpt-3.5-turbo'
-});
-const chatResult = await tahuOpenAI.chat('Jelaskan konsep keterikatan kuantum secara sederhana.');
-console.log(chatResult.response);
+async function quickStartExample() {
+  const tahu = createTahu({
+    provider: 'openrouter', // atau 'openai', 'gemini', 'ollama'
+    apiKey: 'kunci-api-anda',
+    model: 'google/gemini-2.0-flash-exp:free',
+  });
 
-// Contoh dengan Ollama (pastikan server Ollama berjalan secara lokal)
-const tahuOllama = createTahu({
-  provider: 'ollama',
-  model: 'llama2', // Pastikan model ini diunduh di instansi Ollama Anda
-  ollamaBaseUrl: 'http://localhost:11434' // URL Ollama default
-});
-const ollamaResult = await tahuOllama.chat('Apa ibu kota Prancis?');
-console.log(ollamaResult.response);
+  const chatResult = await tahu.chat('Jelaskan AI secara singkat.');
+  console.log(chatResult.response);
+
+  const calcResult = await tahu.useTool('calculate', '10 + 5 * 2');
+  console.log(calcResult);
+}
+quickStartExample();
 ```
+Untuk demonstrasi komprehensif semua fitur, lihat `example/demo.js`.
 
 ## 🎯 Kasus Penggunaan
 
@@ -175,10 +170,10 @@ TahuJS yang ditingkatkan sekarang mencakup:
 -   ✅ Contoh alur kerja lengkap
 -   ✅ **Memori Agen Persisten**: Simpan percakapan agen ke file JSON atau database SQLite.
 -   ✅ **Alur Kerja Multi-Agen**: Mengatur urutan tugas agen dengan dependensi.
--   **BARU**: ✅ **Pemrosesan Paralel**: Menjalankan beberapa tugas agen atau prompt chat secara bersamaan.
--   **BARU**: ✅ **Pemrosesan Batch Sederhana**: Memproses beberapa prompt chat secara paralel.
+-   ✅ **Pemrosesan Paralel**: Menjalankan beberapa tugas agen atau prompt chat secara bersamaan.
+-   ✅ **Pemrosesan Batch Sederhana**: Memproses beberapa prompt chat secara paralel.
 -   ✅ **Memori Jangka Pendek yang Dapat Dikonfigurasi**: Batasi riwayat percakapan dalam memori untuk agen.
--   **BARU**: ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
--   **BARU**: ✅ **Dukungan untuk penyedia LLM OpenAI, Gemini, OpenRouter, dan Ollama.**
+-   ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
+-   ✅ **Dukungan untuk penyedia LLM OpenAI, Gemini, OpenRouter, dan Ollama.**
 
 Sempurna untuk penggunaan produksi! 🚀
