@@ -1,6 +1,6 @@
 {
   "name": "tahujs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A comprehensive Node.js library for AI Agents & LLM Integration, simplifying the creation of intelligent applications.",
   "main": "index.js",
   "type": "module",
