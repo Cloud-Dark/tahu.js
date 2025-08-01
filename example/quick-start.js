@@ -1,9 +1,9 @@
-// example/quick-start.js - Contoh Penggunaan TahuJS Sederhana
+// example/quick-start.js - Contoh Penggunaan TahuJS Sederhana dengan AgentBuilder
 
 import { createTahu } from 'tahujs'; // Menggunakan impor gaya library
 
 async function quickStart() {
-  console.log('🚀 TahuJS Quick Start Demo\n');
+  console.log('🚀 TahuJS Quick Start Demo with AgentBuilder\n');
 
   // --- PENTING: Ganti dengan kunci API OpenRouter Anda yang sebenarnya ---
   const OPENROUTER_API_KEY = 'sk-or-v1-XXXXXXXXXXXXX'; 
@@ -13,7 +13,7 @@ async function quickStart() {
     return;
   }
 
-  // 1. Inisialisasi TahuJS dengan penyedia dan kunci API Anda
+  // 1. Inisialisasi TahuJS
   const tahu = createTahu({
     provider: 'openrouter', // Anda bisa mengganti ini dengan 'openai', 'gemini', atau 'ollama'
     apiKey: OPENROUTER_API_KEY,
@@ -21,16 +21,26 @@ async function quickStart() {
   });
 
   try {
-    // 2. Lakukan percakapan AI sederhana
-    console.log('💬 Melakukan percakapan AI...');
-    const chatResult = await tahu.chat('Jelaskan konsep kecerdasan buatan dalam satu kalimat.');
-    console.log('AI Response:', chatResult.response);
+    // 2. Buat agen sederhana menggunakan AgentBuilder
+    console.log('🤖 Membuat agen sederhana menggunakan AgentBuilder...');
+    const simpleAgent = tahu.builder()
+      .name('SimpleAssistant')
+      .systemPrompt('Anda adalah asisten AI yang ramah dan membantu.')
+      .addCapabilities('chat', 'calculate') // Beri agen kemampuan untuk chat dan kalkulasi
+      .build();
+
+    console.log(`✅ Agen '${simpleAgent.name}' berhasil dibuat.`);
+
+    // 3. Jalankan tugas dengan agen yang baru dibuat
+    console.log('\n💬 Menjalankan tugas dengan SimpleAssistant:');
+    const agentChatResult = await tahu.runAgent('SimpleAssistant', 'Berapa hasil dari 150 dibagi 3 dikurangi 10?');
+    console.log('SimpleAssistant Response:', agentChatResult.response);
 
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // 3. Gunakan alat bawaan (misalnya, kalkulator)
-    console.log('🧮 Menggunakan alat kalkulator...');
-    const calcResult = await tahu.useTool('calculate', '123 * 45 + (100 / 5)');
+    // 4. Contoh penggunaan alat langsung (opsional, untuk menunjukkan fleksibilitas)
+    console.log('🧮 Menggunakan alat kalkulator secara langsung (di luar agen)...');
+    const calcResult = await tahu.useTool('calculate', '75 * 2 + (200 / 4)');
     console.log('Calculation Result:', calcResult);
 
   } catch (error) {
