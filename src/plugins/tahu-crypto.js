@@ -1,5 +1,4 @@
-// src/plugins/tahu-crypto.js
-// Plugin untuk analisis kripto (menggunakan data tiruan)
+// Plugin for crypto analysis (using mock data)
 
 export default function tahuCryptoPlugin(tahuInstance) {
     tahuInstance.registerTool('cryptoPrice', {

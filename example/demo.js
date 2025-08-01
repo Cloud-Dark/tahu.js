@@ -1,42 +1,42 @@
-// example/demo.js - Demonstrasi Komprehensif Semua Fitur TahuJS
+// example/demo.js - Comprehensive Demo of All TahuJS Features
 
-import TahuJS, { createTahu, tools, plugins } from 'tahujs'; // Menggunakan impor gaya library
+import TahuJS, { createTahu, tools, plugins } from 'tahujs'; // Using library-style imports
 
 async function comprehensiveDemo() {
   console.log('🥘 TahuJS Comprehensive Demo Starting...\n');
 
-  // --- PENTING: Ganti dengan kunci API Anda yang sebenarnya atau pastikan Ollama berjalan ---
+  // --- IMPORTANT: Replace with your actual API keys or ensure Ollama is running ---
   const OPENROUTER_API_KEY = 'sk-or-v1-XXXXXXXXXXXXX'; 
   const OPENAI_API_KEY = 'sk-XXXXXXXXXXXXX'; 
   const GEMINI_API_KEY = 'AIzaSyXXXXXXXXXXXXX'; 
-  const OLLAMA_BASE_URL = 'http://localhost:11434'; // URL Ollama default
+  const OLLAMA_BASE_URL = 'http://localhost:11434'; // Default Ollama URL
 
-  // Periksa kunci API
+  // Check API keys
   if (OPENROUTER_API_KEY.includes('XXXXXXXXXXXXX')) {
-    console.warn('⚠️  Peringatan: Kunci API OpenRouter belum diatur. Beberapa demo mungkin gagal.');
+    console.warn('⚠️  Warning: OpenRouter API key not set. Some demos may fail.');
   }
   if (OPENAI_API_KEY.includes('XXXXXXXXXXXXX')) {
-    console.warn('⚠️  Peringatan: Kunci API OpenAI belum diatur. Beberapa demo mungkin gagal.');
+    console.warn('⚠️  Warning: OpenAI API key not set. Some demos may fail.');
   }
   if (GEMINI_API_KEY.includes('XXXXXXXXXXXXX')) {
-    console.warn('⚠️  Peringatan: Kunci API Gemini belum diatur. Beberapa demo mungkin gagal.');
+    console.warn('⚠️  Warning: Gemini API key not set. Some demos may fail.');
   }
 
-  // --- Inisialisasi TahuJS untuk berbagai penyedia ---
+  // --- Initialize TahuJS for various providers ---
   const tahuOpenRouter = createTahu({
     provider: 'openrouter',
     apiKey: OPENROUTER_API_KEY,
-    model: 'google/gemini-2.0-flash-exp:free', // Atau 'anthropic/claude-3-sonnet', 'openai/gpt-4'
-    // httpReferer: 'your-website.com', // Diperlukan untuk OpenRouter jika diatur
-    // xTitle: 'Your App Name', // Diperlukan untuk OpenRouter jika diatur
-    embeddingModel: 'text-embedding-ada-002', // Model embedding untuk OpenRouter/OpenAI
-    chromaDbUrl: 'http://localhost:8000', // URL server ChromaDB jika digunakan
+    model: 'google/gemini-2.0-flash-exp:free', // Or 'anthropic/claude-3-sonnet', 'openai/gpt-4'
+    // httpReferer: 'your-website.com', // Required for OpenRouter if configured
+    // xTitle: 'Your App Name', // Required for OpenRouter if configured
+    embeddingModel: 'text-embedding-ada-002', // Embedding model for OpenRouter/OpenAI
+    chromaDbUrl: 'http://localhost:8000', // ChromaDB server URL if used
   });
 
   const tahuOpenAI = createTahu({
     provider: 'openai',
     apiKey: OPENAI_API_KEY,
-    model: 'gpt-3.5-turbo', // Atau 'gpt-4'
+    model: 'gpt-3.5-turbo', // Or 'gpt-4'
     embeddingModel: 'text-embedding-ada-002',
   });
 
@@ -49,145 +49,145 @@ async function comprehensiveDemo() {
 
   const tahuOllama = createTahu({
     provider: 'ollama',
-    model: 'llama2', // Pastikan model ini diunduh di instansi Ollama Anda
+    model: 'llama2', // Ensure this model is downloaded on your Ollama instance
     ollamaBaseUrl: OLLAMA_BASE_URL,
-    embeddingModel: 'nomic-embed-text', // Pastikan model embedding ini diunduh di Ollama
+    embeddingModel: 'nomic-embed-text', // Ensure this embedding model is downloaded on Ollama
   });
 
-  // --- Muat plugin ke instansi OpenRouter (bisa juga ke instansi lain) ---
+  // --- Load plugins into OpenRouter instance (can also be other instances) ---
   tahuOpenRouter.use(plugins.tahuCryptoPlugin);
   tahuOpenRouter.use(plugins.tahuSocialPlugin);
   tahuOpenRouter.use(plugins.tahuFinancePlugin);
   tahuOpenRouter.use(plugins.tahuCurrencyPlugin);
-  console.log('🔌 Plugin dimuat secara manual.');
+  console.log('🔌 Plugins loaded manually.');
 
-  // --- Otomatis temukan plugin dari direktori ---
-  console.log('🔌 Mencoba menemukan plugin secara otomatis dari ./src/plugins...');
-  tahuOpenRouter.loadPlugins('./src/plugins'); // Ini akan memuat ulang plugin yang sama, hanya untuk demo
+  // --- Automatically discover plugins from directory ---
+  console.log('🔌 Attempting to automatically discover plugins from ./src/plugins...');
+  tahuOpenRouter.loadPlugins('./src/plugins'); // This will reload the same plugins, for demo purposes only
 
-  // Gunakan instansi OpenRouter untuk sebagian besar demo, karena memiliki semua plugin dan alat
+  // Use OpenRouter instance for most demos, as it has all plugins and tools
   const tahu = tahuOpenRouter; 
 
   try {
-    // --- 1. Pengujian Chat dengan Berbagai Penyedia ---
-    console.log('\n--- 1. Pengujian Chat dengan Berbagai Penyedia ---');
+    // --- 1. Chat Testing with Various Providers ---
+    console.log('\n--- 1. Chat Testing with Various Providers ---');
     
-    console.log('\n💬 Chat dengan OpenRouter:');
-    const chatResultOpenRouter = await tahuOpenRouter.chat('Jelaskan konsep quantum entanglement dalam istilah sederhana.');
+    console.log('\n💬 Chat with OpenRouter:');
+    const chatResultOpenRouter = await tahuOpenRouter.chat('Explain the concept of quantum entanglement in simple terms.');
     console.log('OpenRouter Response:', chatResultOpenRouter.response);
 
-    console.log('\n💬 Chat dengan OpenAI:');
-    const chatResultOpenAI = await tahuOpenAI.chat('Apa manfaat utama menggunakan cloud computing?');
+    console.log('\n💬 Chat with OpenAI:');
+    const chatResultOpenAI = await tahuOpenAI.chat('What are the main benefits of cloud computing?');
     console.log('OpenAI Response:', chatResultOpenAI.response);
 
-    console.log('\n💬 Chat dengan Gemini:');
-    const chatResultGemini = await tahuGemini.chat('Ceritakan kisah singkat yang menginspirasi tentang inovasi.');
+    console.log('\n💬 Chat with Gemini:');
+    const chatResultGemini = await tahuGemini.chat('Tell a short inspiring story about innovation.');
     console.log('Gemini Response:', chatResultGemini.response);
 
-    console.log('\n💬 Chat dengan Ollama:');
-    const chatResultOllama = await tahuOllama.chat('Apa ibu kota Prancis?');
+    console.log('\n💬 Chat with Ollama:');
+    const chatResultOllama = await tahuOllama.chat('What is the capital of France?');
     console.log('Ollama Response:', chatResultOllama.response);
-    console.log('💡 Pastikan server Ollama berjalan dan model (misalnya, "llama2") diunduh jika ada kesalahan Ollama.');
+    console.log('💡 Ensure Ollama server is running and model (e.g., "llama2") is downloaded if Ollama errors occur.');
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 2. Pengujian Alat Bawaan ---
-    console.log('--- 2. Pengujian Alat Bawaan ---');
+    // --- 2. Built-in Tool Testing ---
+    console.log('--- 2. Built-in Tool Testing ---');
 
-    console.log('\n🔍 Pengujian Pencarian Web yang Ditingkatkan:');
-    const searchResult = await tahu.useTool('webSearch', 'framework JavaScript terbaru 2024');
+    console.log('\n🔍 Enhanced Web Search Testing:');
+    const searchResult = await tahu.useTool('webSearch', 'latest JavaScript frameworks 2024');
     console.log(searchResult);
 
-    console.log('\n📍 Pengujian Pencarian Lokasi yang Ditingkatkan:');
+    console.log('\n📍 Enhanced Location Search Testing:');
     const locationResult = await tahu.useTool('findLocation', 'Monas Jakarta');
     console.log(locationResult);
 
-    console.log('\n🗺️  Pengujian Petunjuk Arah:');
+    console.log('\n🗺️  Directions Testing:');
     const directionsResult = await tahu.useTool('getDirections', 'from Jakarta to Bandung');
     console.log(directionsResult);
 
-    console.log('\n⛰️  Pengujian Ketinggian:');
-    const elevationResult = await tahu.useTool('getElevation', '-6.2088,106.8456'); // Koordinat Jakarta
-    console.log('Hasil Ketinggian:', elevationResult);
+    console.log('\n⛰️  Elevation Testing:');
+    const elevationResult = await tahu.useTool('getElevation', '-6.2088,106.8456'); // Jakarta coordinates
+    console.log('Elevation Result:', elevationResult);
 
-    console.log('\n🧮 Pengujian Kalkulator:');
+    console.log('\n🧮 Calculator Testing:');
     const calcResult = await tahu.useTool('calculate', '25 * 4 + sqrt(16)');
     console.log(calcResult);
 
-    console.log('\n🌐 Pengujian Web Scraping:');
+    console.log('\n🌐 Web Scraping Testing:');
     const scrapeResult = await tahu.useTool('webScrape', 'https://www.wikipedia.org');
     console.log(scrapeResult);
 
-    console.log('\n🕐 Pengujian Tanggal & Waktu:');
+    console.log('\n🕐 Date & Time Testing:');
     const dateTimeResult = await tahu.useTool('dateTime', 'America/New_York');
-    console.log('Tanggal & Waktu:', dateTimeResult);
+    console.log('Date & Time:', dateTimeResult);
 
-    console.log('\n📝 Pengujian Rangkuman Teks:');
-    const longText = "Ini adalah teks yang sangat panjang yang perlu diringkas. Teks ini berisi banyak informasi tentang berbagai topik, dan tujuannya adalah untuk menunjukkan bagaimana alat ringkasan dapat bekerja secara efektif. Semakin panjang teksnya, semakin berguna alat ini untuk mengekstrak poin-poin utama dan menyajikannya dalam format yang lebih ringkas dan mudah dicerna. Ini sangat membantu dalam skenario di mana Anda berurusan dengan dokumen, artikel, atau transkrip yang besar dan hanya membutuhkan gambaran umum yang cepat.";
+    console.log('\n📝 Text Summarization Testing:');
+    const longText = "This is a very long text that needs to be summarized. It contains a lot of information about various topics, and the purpose is to demonstrate how the summarization tool can work effectively. The longer the text, the more useful this tool becomes for extracting key points and presenting them in a more concise and digestible format. This is particularly helpful in scenarios where you are dealing with large documents, articles, or transcripts and just need a quick overview.";
     const summaryResult = await tahu.useTool('summarizeText', longText);
     console.log(summaryResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 3. Pengujian Alat Plugin ---
-    console.log('--- 3. Pengujian Alat Plugin ---');
+    // --- 3. Plugin Tool Testing ---
+    console.log('--- 3. Plugin Tool Testing ---');
     const cryptoPrice = await tahu.useTool('cryptoPrice', 'BTC');
-    console.log('Harga Kripto:', cryptoPrice);
+    console.log('Crypto Price:', cryptoPrice);
 
     const socialTrends = await tahu.useTool('socialTrends', 'Twitter');
-    console.log('Tren Sosial:', socialTrends);
+    console.log('Social Trends:', socialTrends);
 
     const stockPrice = await tahu.useTool('stockPrice', 'MSFT');
-    console.log('Harga Saham:', stockPrice);
+    console.log('Stock Price:', stockPrice);
 
     const currencyConversion = await tahu.useTool('convertCurrency', '100 USD to IDR');
-    console.log('Konversi Mata Uang:', currencyConversion);
+    console.log('Currency Conversion:', currencyConversion);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 4. Pengujian Manajemen Agen ---
-    console.log('--- 4. Pengujian Manajemen Agen ---');
+    // --- 4. Agent Management Testing ---
+    console.log('--- 4. Agent Management Testing ---');
     
-    // Agen Perjalanan (menggunakan createAgent yang ada untuk contoh kustom)
+    // Travel Agent (using existing createAgent for custom example)
     const travelAgent = tahu.createAgent('TravelExpert', {
-      systemPrompt: 'Anda adalah agen perjalanan profesional. Anda membantu merencanakan perjalanan, menemukan lokasi, dan memberikan saran perjalanan.',
+      systemPrompt: 'You are a professional travel agent. You help plan trips, find locations, and provide travel advice.',
       capabilities: ['search', 'location', 'directions', 'recommendations'],
-      personality: { // Kepribadian yang ditingkatkan
-        traits: ['terorganisir', 'ramah'],
-        mood: 'optimis',
-        expertise: ['perencanaan perjalanan', 'pengetahuan destinasi']
+      personality: { // Enhanced personality
+        traits: ['organized', 'friendly'],
+        mood: 'optimistic',
+        expertise: ['travel planning', 'destination knowledge']
       },
       memoryType: 'volatile' // Default in-memory
     });
-    const travelResult = await tahu.runAgent('TravelExpert', 'Rencanakan perjalanan sehari ke Jakarta. Temukan tempat menarik untuk dikunjungi dan berikan petunjuk arah.');
-    console.log('Agen Perjalanan:', travelResult.response);
+    const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Jakarta. Find interesting places to visit and provide directions.');
+    console.log('Travel Agent:', travelResult.response);
 
-    // Agen Peneliti (menggunakan createPrebuiltAgent baru) dengan memori JSON
-    console.log('\n🔬 Pengujian Agen Peneliti Pra-bangun dengan memori JSON:');
+    // Researcher Agent (using new createPrebuiltAgent) with JSON memory
+    console.log('\n🔬 Pre-built Researcher Agent Testing with JSON memory:');
     const researchAgent = tahu.createPrebuiltAgent('researcher', { 
         name: 'MySmartResearcherJSON',
-        memoryType: 'json', // Simpan memori ke file JSON
-        maxMemorySize: 3 // Batasi memori hingga 3 entri
+        memoryType: 'json', // Save memory to JSON file
+        maxMemorySize: 3 // Limit memory to 3 entries
     });
-    const researchResult = await tahu.runAgent('MySmartResearcherJSON', 'Teliti keadaan pengembangan AI saat ini di Indonesia');
-    console.log('Agen Peneliti (JSON):', researchResult.response);
-    // Jalankan lagi untuk menunjukkan persistensi dan pemangkasan memori
-    const researchResult2 = await tahu.runAgent('MySmartResearcherJSON', 'Apa hal terakhir yang saya tanyakan kepada Anda?');
-    console.log('Agen Peneliti (JSON, lanjutan):', researchResult2.response);
+    const researchResult = await tahu.runAgent('MySmartResearcherJSON', 'Research the current state of AI development in Indonesia');
+    console.log('Researcher Agent (JSON):', researchResult.response);
+    // Run again to demonstrate memory persistence and trimming
+    const researchResult2 = await tahu.runAgent('MySmartResearcherJSON', 'What was the last thing I asked you?');
+    console.log('Researcher Agent (JSON, continued):', researchResult2.response);
 
-    // Agen Coder (menggunakan createPrebuiltAgent baru) dengan memori SQLite
-    console.log('\n👨‍💻 Pengujian Agen Coder Pra-bangun dengan memori SQLite:');
+    // Coder Agent (using new createPrebuiltAgent) with SQLite memory
+    console.log('\n👨‍💻 Pre-built Coder Agent Testing with SQLite memory:');
     const coderAgent = tahu.createPrebuiltAgent('coder', { 
         name: 'MyCoderAgentSQLite',
-        memoryType: 'sqlite', // Simpan memori ke database SQLite
-        maxMemorySize: 5 // Batasi memori hingga 5 entri
+        memoryType: 'sqlite', // Save memory to SQLite database
+        maxMemorySize: 5 // Limit memory to 5 entries
     }); 
-    const coderResult = await tahu.runAgent('MyCoderAgentSQLite', 'Tulis fungsi Python sederhana untuk menghitung faktorial.');
-    console.log('Agen Coder (SQLite):', coderResult.response);
-    // Jalankan lagi untuk menunjukkan persistensi memori
-    const coderResult2 = await tahu.runAgent('MyCoderAgentSQLite', 'Bisakah Anda mengingatkan saya tentang fungsi Python yang baru saja Anda tulis?');
-    console.log('Agen Coder (SQLite, lanjutan):', coderResult2.response);
+    const coderResult = await tahu.runAgent('MyCoderAgentSQLite', 'Write a simple Python function to calculate factorial.');
+    console.log('Coder Agent (SQLite):', coderResult.response);
+    // Run again to demonstrate memory persistence
+    const coderResult2 = await tahu.runAgent('MyCoderAgentSQLite', 'Can you remind me about the Python function you just wrote?');
+    console.log('Coder Agent (SQLite, continued):', coderResult2.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 5. Pengujian AgentBuilder dengan Semua Fitur ---
-    console.log('--- 5. Pengujian AgentBuilder dengan Semua Fitur ---');
+    // --- 5. AgentBuilder Testing with All Features ---
+    console.log('--- 5. AgentBuilder Testing with All Features ---');
     const allCapabilitiesAgent = tahu.builder()
         .name('OmniAgent')
         .systemPrompt('You are an all-knowing AI assistant capable of performing any task using all available tools and remembering past interactions.')
@@ -203,24 +203,24 @@ async function comprehensiveDemo() {
         .addMemory('json', { maxMemorySize: 10, memoryPath: './omni_agent_memory.json' })
         .build();
 
-    console.log(`\n🤖 Agen 'OmniAgent' dibuat dengan builder. Memori: ${allCapabilitiesAgent.memoryType}`);
-    console.log('Kemampuan:', allCapabilitiesAgent.capabilities.join(', '));
+    console.log(`\n🤖 Agent 'OmniAgent' created with builder. Memory: ${allCapabilitiesAgent.memoryType}`);
+    console.log('Capabilities:', allCapabilitiesAgent.capabilities.join(', '));
 
-    console.log('\nRunning OmniAgent task: "Cari harga Bitcoin saat ini, lalu cari lokasi Menara Eiffel, dan berikan ringkasan singkat tentang sejarahnya."');
-    const omniResult1 = await tahu.runAgent('OmniAgent', 'Cari harga Bitcoin saat ini, lalu cari lokasi Menara Eiffel, dan berikan ringkasan singkat tentang sejarahnya.');
+    console.log('\nRunning OmniAgent task: "Find the current price of Bitcoin, then find the location of the Eiffel Tower, and provide a brief summary of its history."');
+    const omniResult1 = await tahu.runAgent('OmniAgent', 'Find the current price of Bitcoin, then find the location of the Eiffel Tower, and provide a brief summary of its history.');
     console.log('OmniAgent Response 1:', omniResult1.response);
 
-    console.log('\nRunning OmniAgent task: "Berapa 123 dibagi 45, dan apa tren sosial teratas di TikTok?"');
-    const omniResult2 = await tahu.runAgent('OmniAgent', 'Berapa 123 dibagi 45, dan apa tren sosial teratas di TikTok?');
+    console.log('\nRunning OmniAgent task: "What is 123 divided by 45, and what are the top social trends on TikTok?"');
+    const omniResult2 = await tahu.runAgent('OmniAgent', 'What is 123 divided by 45, and what are the top social trends on TikTok?');
     console.log('OmniAgent Response 2:', omniResult2.response);
 
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 6. Pengujian Alur Kerja Multi-Agen ---
-    console.log('--- 6. Pengujian Alur Kerja Multi-Agen ---');
-    tahu.createAgent('WorkflowResearcher', { systemPrompt: 'Anda adalah peneliti yang mengumpulkan informasi.' });
-    tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'Anda adalah analis yang memproses data penelitian.' });
-    tahu.createAgent('WorkflowWriter', { systemPrompt: 'Anda adalah penulis yang meringkas hasil analisis.' });
+    // --- 6. Multi-Agent Workflow Testing ---
+    console.log('--- 6. Multi-Agent Workflow Testing ---');
+    tahu.createAgent('WorkflowResearcher', { systemPrompt: 'You are a researcher who gathers information.' });
+    tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'You are an analyst who processes research data.' });
+    tahu.createAgent('WorkflowWriter', { systemPrompt: 'You are a writer who summarizes analysis results.' });
 
     const workflow = tahu.createWorkflow([
         { agent: 'WorkflowResearcher', task: 'research_ai_trends' },
@@ -228,116 +228,116 @@ async function comprehensiveDemo() {
         { agent: 'WorkflowWriter', task: 'summarize_analysis', depends: ['analyze_research'] }
     ]);
 
-    const workflowResults = await workflow.execute('Tren AI terbaru dalam perawatan kesehatan.');
-    console.log('Hasil Akhir Alur Kerja:', workflowResults);
+    const workflowResults = await workflow.execute('Latest AI trends in healthcare.');
+    console.log('Final Workflow Results:', workflowResults);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 7. Pengujian Pemrosesan Paralel ---
-    console.log('--- 7. Pengujian Pemrosesan Paralel ---');
+    // --- 7. Parallel Processing Testing ---
+    console.log('--- 7. Parallel Processing Testing ---');
     const parallelTasks = [
-        { prompt: 'Jelaskan komputasi kuantum secara singkat.' },
-        { prompt: 'Apa ibu kota Prancis?' },
-        { agent: 'MySmartResearcherJSON', input: 'Ringkas topik penelitian terakhir.' }
+        { prompt: 'Explain quantum computing briefly.' },
+        { prompt: 'What is the capital of France?' },
+        { agent: 'MySmartResearcherJSON', input: 'Summarize the last research topic.' }
     ];
     const parallelResults = await tahu.parallel(parallelTasks);
-    console.log('Hasil Pemrosesan Paralel:', parallelResults.map(r => r.response || r));
+    console.log('Parallel Processing Results:', parallelResults.map(r => r.response || r));
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 8. Pengujian Pemrosesan Batch Sederhana ---
-    console.log('--- 8. Pengujian Pemrosesan Batch Sederhana ---');
+    // --- 8. Simple Batch Processing Testing ---
+    console.log('--- 8. Simple Batch Processing Testing ---');
     const batchPrompts = [
-        { prompt: 'Ceritakan kisah singkat tentang robot.' },
-        { prompt: 'Sebutkan 3 manfaat cloud computing.' },
-        { prompt: 'Apa tujuan utama blockchain?' }
+        { prompt: 'Tell a short story about a robot.' },
+        { prompt: 'List 3 benefits of cloud computing.' },
+        { prompt: 'What is the main purpose of blockchain?' }
     ];
     const batchResults = await tahu.batch(batchPrompts);
-    console.log('Hasil Pemrosesan Batch:', batchResults.map(r => r.response));
+    console.log('Batch Processing Results:', batchResults.map(r => r.response));
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 9. Pengujian Analitik Real-time ---
-    console.log('--- 9. Pengujian Analitik Real-time ---');
+    // --- 9. Real-time Analytics Testing ---
+    console.log('--- 9. Real-time Analytics Testing ---');
     const stats = tahu.analytics.getStats();
-    console.log('📊 Statistik Penggunaan LLM:');
-    console.log(`   Total Permintaan: ${stats.totalRequests}`);
-    console.log(`   Permintaan Berhasil: ${stats.successfulRequests}`);
-    console.log(`   Permintaan Gagal: ${stats.failedRequests}`);
-    console.log(`   Tingkat Keberhasilan: ${stats.successRate}%`);
-    console.log(`   Total Token Digunakan: ${stats.totalTokensUsed}`);
-    console.log(`   Perkiraan Total Biaya: $${stats.estimatedCost}`);
-    console.log(`   Total Waktu Respons: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
-    console.log(`   Rata-rata Waktu Respons: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
+    console.log('📊 LLM Usage Statistics:');
+    console.log(`   Total Requests: ${stats.totalRequests}`);
+    console.log(`   Successful Requests: ${stats.successfulRequests}`);
+    console.log(`   Failed Requests: ${stats.failedRequests}`);
+    console.log(`   Success Rate: ${stats.successRate}%`);
+    console.log(`   Total Tokens Used: ${stats.totalTokensUsed}`);
+    console.log(`   Estimated Total Cost: $${stats.estimatedCost}`);
+    console.log(`   Total Response Time: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
+    console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
     
-    // Anda juga bisa mereset statistik
+    // You can also reset the statistics
     // tahu.analytics.resetStats();
-    // console.log('\nStatistik setelah reset:', tahu.analytics.getStats());
+    // console.log('\nStats after reset:', tahu.analytics.getStats());
 
     console.log('\n' + '='.repeat(50) + '\n');
-    // --- 10. Pengujian Pelatihan dan Pengambilan Pengetahuan (RAG) ---
-    console.log('--- 10. Pengujian Pelatihan dan Pengambilan Pengetahuan (RAG) ---');
+    // --- 10. Knowledge Training and Retrieval (RAG) Testing ---
+    console.log('--- 10. Knowledge Training and Retrieval (RAG) Testing ---');
 
-    // Latih pengetahuan ke SQLite
-    console.log('\n📚 Melatih pengetahuan ke SQLite...');
+    // Train knowledge to SQLite
+    console.log('\n📚 Training knowledge to SQLite...');
     const trainResultSqlite = await tahu.useTool(
         'trainKnowledge', 
-        'my_company_docs|sqlite|TahuJS adalah framework AI yang komprehensif untuk Node.js. Ini mendukung berbagai LLM dan alat bawaan.'
+        'my_company_docs|sqlite|TahuJS is a comprehensive AI framework for Node.js. It supports various LLMs and built-in tools.'
     );
     console.log(trainResultSqlite);
 
     const trainResultSqlite2 = await tahu.useTool(
         'trainKnowledge', 
-        'my_company_docs|sqlite|Fitur utama TahuJS meliputi manajemen agen, alur kerja multi-agen, dan analitik real-time.'
+        'my_company_docs|sqlite|TahuJS key features include agent management, multi-agent workflows, and real-time analytics.'
     );
     console.log(trainResultSqlite2);
 
-    // Ambil pengetahuan dari SQLite
-    console.log('\n🔍 Mengambil pengetahuan dari SQLite...');
+    // Retrieve knowledge from SQLite
+    console.log('\n🔍 Retrieving knowledge from SQLite...');
     const retrieveResultSqlite = await tahu.useTool(
         'retrieveKnowledge', 
-        'my_company_docs|sqlite|Apa saja fitur TahuJS?'
+        'my_company_docs|sqlite|What are TahuJS features?'
     );
     console.log(retrieveResultSqlite);
 
-    // Latih pengetahuan ke ChromaDB (pastikan server ChromaDB berjalan di http://localhost:8000)
-    console.log('\n📚 Melatih pengetahuan ke ChromaDB...');
+    // Train knowledge to ChromaDB (ensure ChromaDB server is running at http://localhost:8000)
+    console.log('\n📚 Training knowledge to ChromaDB (ensure ChromaDB server is running at http://localhost:8000)...');
     const trainResultChroma = await tahu.useTool(
         'trainKnowledge', 
-        'product_info|chroma|Produk unggulan kami adalah TahuAI, sebuah platform yang menyederhanakan pengembangan AI.'
+        'product_info|chroma|Our flagship product is TahuAI, a platform that simplifies AI development.'
     );
     console.log(trainResultChroma);
 
     const trainResultChroma2 = await tahu.useTool(
         'trainKnowledge', 
-        'product_info|chroma|TahuAI menawarkan integrasi LLM yang mudah dan alat kustomisasi yang kuat.'
+        'product_info|chroma|TahuAI offers easy LLM integration and powerful customization tools.'
     );
     console.log(trainResultChroma2);
 
-    // Ambil pengetahuan dari ChromaDB
-    console.log('\n🔍 Mengambil pengetahuan dari ChromaDB...');
+    // Retrieve knowledge from ChromaDB
+    console.log('\n🔍 Retrieving knowledge from ChromaDB...');
     const retrieveResultChroma = await tahu.useTool(
         'retrieveKnowledge', 
-        'product_info|chroma|Apa itu TahuAI?'
+        'product_info|chroma|What is TahuAI?'
     );
     console.log(retrieveResultChroma);
 
-    // Contoh penggunaan Supabase (akan gagal jika belum diintegrasikan)
-    console.log('\n📚 Mencoba melatih pengetahuan ke Supabase (akan meminta integrasi jika belum ada)...');
+    // Supabase usage example (will fail if not integrated)
+    console.log('\n📚 Attempting to train knowledge to Supabase (will prompt for integration if not already set up)...');
     const trainResultSupabase = await tahu.useTool(
         'trainKnowledge', 
-        'customer_feedback|supabase|Pelanggan menyukai kecepatan dan kemudahan penggunaan TahuJS.'
+        'customer_feedback|supabase|Customers love TahuJS speed and ease of use.'
     );
     console.log(trainResultSupabase);
-    console.log('💡 Untuk menggunakan Supabase, Anda perlu menambahkan integrasi Supabase ke proyek Anda.');
+    console.log('💡 To use Supabase, you need to add Supabase integration to your project.');
     console.log('\n' + '='.repeat(50) + '\n');
 
 
-    console.log('\n🎉 Demo Komprehensif Selesai!');
-    console.log('📊 Alat yang Tersedia:', tahu.listTools());
-    console.log('🤖 Agen yang Tersedia:', tahu.listAgents());
+    console.log('\n🎉 Comprehensive Demo Finished!');
+    console.log('📊 Available Tools:', tahu.listTools());
+    console.log('🤖 Available Agents:', tahu.listAgents());
 
   } catch (error) {
     console.error('❌ Demo Error:', error.message);
   }
 }
 
-// Jalankan demo komprehensif
+// Run comprehensive demo
 comprehensiveDemo().catch(console.error);

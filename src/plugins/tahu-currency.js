@@ -1,5 +1,4 @@
-// src/plugins/tahu-currency.js
-// Plugin untuk konversi mata uang (menggunakan data tiruan)
+// Plugin for currency conversion (using mock data)
 
 export default function tahuCurrencyPlugin(tahuInstance) {
     tahuInstance.registerTool('convertCurrency', {

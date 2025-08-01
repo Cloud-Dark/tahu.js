@@ -1,5 +1,4 @@
-// src/plugins/tahu-finance.js
-// Plugin untuk data keuangan (menggunakan data tiruan)
+// Plugin for financial data (using mock data)
 
 export default function tahuFinancePlugin(tahuInstance) {
     tahuInstance.registerTool('stockPrice', {

@@ -1,5 +1,4 @@
-// src/plugins/tahu-social.js
-// Plugin untuk tren media sosial (menggunakan data tiruan)
+// Plugin for social media trends (using mock data)
 
 export default function tahuSocialPlugin(tahuInstance) {
     tahuInstance.registerTool('socialTrends', {

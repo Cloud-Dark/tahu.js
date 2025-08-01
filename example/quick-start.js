@@ -1,45 +1,45 @@
-// example/quick-start.js - Contoh Penggunaan TahuJS Sederhana dengan AgentBuilder
+// example/quick-start.js - Simple TahuJS Usage Example with AgentBuilder
 
-import { createTahu, tools } from 'tahujs'; // Menggunakan impor gaya library
+import { createTahu, tools } from 'tahujs'; // Using library-style imports
 
 async function quickStart() {
   console.log('🚀 TahuJS Quick Start Demo with AgentBuilder\n');
 
-  // --- PENTING: Ganti dengan kunci API OpenRouter Anda yang sebenarnya ---
+  // --- IMPORTANT: Replace with your actual OpenRouter API key ---
   const OPENROUTER_API_KEY = 'sk-or-v1-XXXXXXXXXXXXX'; 
 
   if (OPENROUTER_API_KEY.includes('XXXXXXXXXXXXX')) {
-    console.error('❌ Harap ganti OPENROUTER_API_KEY dengan kunci API Anda yang sebenarnya di quick-start.js!');
+    console.error('❌ Please replace OPENROUTER_API_KEY with your actual API key in quick-start.js!');
     return;
   }
 
-  // 1. Inisialisasi TahuJS
+  // 1. Initialize TahuJS
   const tahu = createTahu({
-    provider: 'openrouter', // Anda bisa mengganti ini dengan 'openai', 'gemini', atau 'ollama'
+    provider: 'openrouter', // You can change this to 'openai', 'gemini', or 'ollama'
     apiKey: OPENROUTER_API_KEY,
-    model: 'google/gemini-2.0-flash-exp:free', // Model yang ingin Anda gunakan
+    model: 'google/gemini-2.0-flash-exp:free', // The model you want to use
   });
 
   try {
-    // 2. Buat agen sederhana menggunakan AgentBuilder
-    console.log('🤖 Membuat agen sederhana menggunakan AgentBuilder...');
+    // 2. Create a simple agent using AgentBuilder
+    console.log('🤖 Creating a simple agent using AgentBuilder...');
     const simpleAgent = tahu.builder()
       .name('SimpleAssistant')
-      .systemPrompt('Anda adalah asisten AI yang ramah dan membantu.')
-      .addCapabilities(tools.calculateTool.name) // Beri agen kemampuan untuk kalkulasi
+      .systemPrompt('You are a friendly and helpful AI assistant.')
+      .addCapabilities(tools.calculateTool.name) // Give the agent calculation capability
       .build();
 
-    console.log(`✅ Agen '${simpleAgent.name}' berhasil dibuat.`);
+    console.log(`✅ Agent '${simpleAgent.name}' created successfully.`);
 
-    // 3. Jalankan tugas dengan agen yang baru dibuat
-    console.log('\n💬 Menjalankan tugas dengan SimpleAssistant:');
-    const agentChatResult = await tahu.runAgent('SimpleAssistant', 'Berapa hasil dari 150 dibagi 3 dikurangi 10?');
+    // 3. Run a task with the newly created agent
+    console.log('\n💬 Running task with SimpleAssistant:');
+    const agentChatResult = await tahu.runAgent('SimpleAssistant', 'What is 150 divided by 3 minus 10?');
     console.log('SimpleAssistant Response:', agentChatResult.response);
 
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // 4. Contoh penggunaan alat langsung (opsional, untuk menunjukkan fleksibilitas)
-    console.log('🧮 Menggunakan alat kalkulator secara langsung (di luar agen)...');
+    // 4. Example of direct tool usage (optional, to show flexibility)
+    console.log('🧮 Using calculator tool directly (outside of agent)...');
     const calcResult = await tahu.useTool('calculate', '75 * 2 + (200 / 4)');
     console.log('Calculation Result:', calcResult);
 
@@ -47,7 +47,7 @@ async function quickStart() {
     console.error('❌ Quick Start Demo Error:', error.message);
   }
 
-  console.log('\n🎉 Quick Start Demo Selesai!');
+  console.log('\n🎉 Quick Start Demo Finished!');
 }
 
 quickStart().catch(console.error);

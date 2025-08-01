@@ -146,7 +146,7 @@ class TahuJS {
         this.llmManager.clearConversation(conversationId);
     }
 
-    // AgentBuilder (tetap di sini atau bisa dipindahkan ke AgentManager jika lebih kompleks)
+    // AgentBuilder (remains here or can be moved to AgentManager if more complex)
     builder() {
         const tahuInstance = this; // Capture 'this' for the builder methods
         const agentConfig = {

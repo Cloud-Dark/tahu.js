@@ -10,16 +10,16 @@ import { getElevationTool } from '../tools/get-elevation-tool.js';
 import { webScrapeTool } from '../tools/web-scrape-tool.js';
 import { dateTimeTool } from '../tools/date-time-tool.js';
 import { summarizeTool } from '../tools/summarize-tool.js';
-import { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // Import alat baru
-import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // Import alat baru
+import { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // Import new tool
+import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // Import new tool
 
 export class ToolManager {
-    constructor(toolsMap, searchService, mapService, llmManager, vectorStoreManager) { // Tambahkan vectorStoreManager
+    constructor(toolsMap, searchService, mapService, llmManager, vectorStoreManager) { // Add vectorStoreManager
         this.tools = toolsMap; // Reference to the main tools Map
         this.searchService = searchService;
         this.mapService = mapService;
         this.llmManager = llmManager;
-        this.vectorStoreManager = vectorStoreManager; // Simpan vectorStoreManager
+        this.vectorStoreManager = vectorStoreManager; // Store vectorStoreManager
         this.initializeBuiltInTools();
     }
 
@@ -64,16 +64,16 @@ export class ToolManager {
             execute: (text) => summarizeTool.execute(text, this.llmManager)
         });
 
-        // Daftarkan alat trainKnowledge yang baru
+        // Register the new trainKnowledge tool
         this.registerTool(trainKnowledgeTool.name, {
             description: trainKnowledgeTool.description,
-            execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) // Teruskan vectorStoreManager
+            execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) // Pass vectorStoreManager
         });
 
-        // Daftarkan alat retrieveKnowledge yang baru
+        // Register the new retrieveKnowledge tool
         this.registerTool(retrieveKnowledgeTool.name, {
             description: retrieveKnowledgeTool.description,
-            execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) // Teruskan vectorStoreManager
+            execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) // Pass vectorStoreManager
         });
     }
 
