@@ -9,7 +9,7 @@
 Build powerful AI agents in minutes, not hours. TahuJS provides a simple, fast, and flexible way to create intelligent applications using OpenRouter, Gemini, OpenAI, Ollama, and other leading AI providers.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 // Create an AI agent in a few lines
 const tahu = createTahu({
@@ -56,7 +56,7 @@ npm install
 ### Basic Usage
 
 ```javascript
-import { createTahu, tools, plugins } from 'tahujs';
+import { createTahu, tools, plugins } from 'tahu.js';
 
 // Initialize with your API keys
 const tahu = createTahu({
@@ -311,7 +311,7 @@ tahu.analytics.resetStats();
 Extend TahuJS by creating and loading custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
 
 ```javascript
-import { createTahu, plugins } from 'tahujs';
+import { createTahu, plugins } from 'tahu.js';
 
 const tahu = createTahu({ /* your config */ });
 

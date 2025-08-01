@@ -149,6 +149,7 @@ class TahuJS {
 
     loadPlugins(directory) {
         this.pluginManager.loadPlugins(directory);
+    
     }
 
     // =============== UTILITY METHODS (Remaining in TahuJS or delegated if appropriate) ===============

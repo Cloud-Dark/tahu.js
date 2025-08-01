@@ -1,6 +1,6 @@
 // example/demo.js - Comprehensive Demo of All TahuJS Features
 
-import TahuJS, { createTahu, tools, plugins } from 'tahujs'; // Using library-style imports
+import TahuJS, { createTahu, quickChat, createQuickAgent } from 'tahu.js'; // Using library-style imports
 
 async function comprehensiveDemo() {
   console.log('🥘 TahuJS Comprehensive Demo Starting...\n');
@@ -261,9 +261,9 @@ async function comprehensiveDemo() {
     console.log(`   Total Requests: ${stats.totalRequests}`);
     console.log(`   Successful Requests: ${stats.successfulRequests}`);
     console.log(`   Failed Requests: ${stats.failedRequests}`);
-    console.log(`   Success Rate: ${stats.successRate}%`);
+    console.log(`   Success Rate: ${stats.successRate.toFixed(2)}%`);
     console.log(`   Total Tokens Used: ${stats.totalTokensUsed}`);
-    console.log(`   Estimated Total Cost: $${stats.estimatedCost}`);
+    console.log(`   Estimated Total Cost: $${stats.estimatedCost.toFixed(6)}`);
     console.log(`   Total Response Time: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
     console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
     
@@ -279,13 +279,13 @@ async function comprehensiveDemo() {
     console.log('\n📚 Training knowledge to SQLite...');
     const trainResultSqlite = await tahu.useTool(
         'trainKnowledge', 
-        'my_company_docs|sqlite|TahuJS is a comprehensive AI framework for Node.js. It supports various LLMs and built-in tools.'
+        'my_company_docs|sqlite|text|TahuJS is a comprehensive AI framework for Node.js. It supports various LLMs and built-in tools.'
     );
     console.log(trainResultSqlite);
 
     const trainResultSqlite2 = await tahu.useTool(
         'trainKnowledge', 
-        'my_company_docs|sqlite|TahuJS key features include agent management, multi-agent workflows, and real-time analytics.'
+        'my_company_docs|sqlite|text|TahuJS key features include agent management, multi-agent workflows, and real-time analytics.'
     );
     console.log(trainResultSqlite2);
 
@@ -301,13 +301,13 @@ async function comprehensiveDemo() {
     console.log('\n📚 Training knowledge to ChromaDB (ensure ChromaDB server is running at http://localhost:8000)...');
     const trainResultChroma = await tahu.useTool(
         'trainKnowledge', 
-        'product_info|chroma|Our flagship product is TahuAI, a platform that simplifies AI development.'
+        'product_info|chroma|text|Our flagship product is TahuAI, a platform that simplifies AI development.'
     );
     console.log(trainResultChroma);
 
     const trainResultChroma2 = await tahu.useTool(
         'trainKnowledge', 
-        'product_info|chroma|TahuAI offers easy LLM integration and powerful customization tools.'
+        'product_info|chroma|text|TahuAI offers easy LLM integration and powerful customization tools.'
     );
     console.log(trainResultChroma2);
 
@@ -323,7 +323,7 @@ async function comprehensiveDemo() {
     console.log('\n📚 Attempting to train knowledge to Supabase (will prompt for integration if not already set up)...');
     const trainResultSupabase = await tahu.useTool(
         'trainKnowledge', 
-        'customer_feedback|supabase|Customers love TahuJS speed and ease of use.'
+        'customer_feedback|supabase|text|Customers love TahuJS speed and ease of use.'
     );
     console.log(trainResultSupabase);
     console.log('💡 To use Supabase, you need to add Supabase integration to your project.');

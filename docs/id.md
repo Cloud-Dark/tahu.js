@@ -122,9 +122,10 @@ const config = {
   // Untuk Supabase (membutuhkan integrasi Supabase)
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+
 };
 
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 const tahu = createTahu(config);
 ```
 
@@ -133,7 +134,7 @@ const tahu = createTahu(config);
 ### Membuat Instansi TahuJS
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({
     provider: 'openrouter',
@@ -147,7 +148,7 @@ const tahu = createTahu({
 ### Melakukan Chat AI
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function runChat() {
     const tahu = createTahu({ /* konfigurasi Anda */ });
@@ -160,7 +161,7 @@ runChat();
 ### Menggunakan Alat (Tools)
 
 ```javascript
-import { createTahu, tools } from 'tahujs';
+import { createTahu, tools } from 'tahu.js';
 
 async function useTools() {
     const tahu = createTahu({ /* konfigurasi Anda */ });
@@ -203,7 +204,7 @@ useTools();
 ### Membuat dan Menjalankan Agen AI
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function runAgentDemo() {
     const tahu = createTahu({ /* konfigurasi Anda */ });
@@ -230,7 +231,7 @@ runAgentDemo();
 TahuJS memanfaatkan LangChain.js di balik layar, dan Anda dapat langsung membuat dan menggunakan agen LangChain untuk skenario yang lebih canggih.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function langchainIntegrationDemo() {
     const tahu = createTahu({
@@ -256,7 +257,7 @@ langchainIntegrationDemo();
 `AgentBuilder` menyediakan API yang lancar untuk membangun dan mengkonfigurasi agen dengan berbagai kemampuan, kepribadian, dan pengaturan memori.
 
 ```javascript
-import { createTahu, tools } from 'tahujs';
+import { createTahu, tools } from 'tahu.js';
 
 const tahu = createTahu({ /* konfigurasi Anda */ });
 
@@ -285,7 +286,7 @@ console.log('Respons OmniAgent:', omniResult.response);
 Definisikan dan jalankan alur kerja kompleks di mana agen yang berbeda berkolaborasi dalam tugas, dengan dependensi di antara mereka.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({ /* konfigurasi Anda */ });
 
@@ -306,7 +307,7 @@ console.log('Hasil Akhir Alur Kerja:', workflowResults);
 Menangani beberapa permintaan LLM atau tugas agen secara bersamaan untuk efisiensi yang lebih baik.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({ /* konfigurasi Anda */ });
 
@@ -334,7 +335,7 @@ console.log('Hasil Batch:', batchResults.map(r => r.response));
 TahuJS menyertakan manajer analitik bawaan untuk melacak penggunaan LLM Anda dan kinerja.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({ /* konfigurasi Anda */ });
 
@@ -359,7 +360,7 @@ console.log(`   Rata-rata Waktu Respons: ${stats.averageResponseTimeMs.toFixed(2
 Perluas TahuJS dengan membuat dan memuat plugin kustom. Plugin dapat mendaftarkan alat baru, menambahkan logika kustom, atau berintegrasi dengan layanan eksternal.
 
 ```javascript
-import { createTahu, plugins } from 'tahujs';
+import { createTahu, plugins } from 'tahu.js';
 
 const tahu = createTahu({ /* konfigurasi Anda */ });
 

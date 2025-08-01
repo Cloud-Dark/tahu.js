@@ -1,6 +1,6 @@
 // example/quick-start.js - Simple TahuJS Usage Example with AgentBuilder
 
-import { createTahu, tools, plugins } from 'tahujs'; // Using library-style imports
+import { createTahu, tools, plugins } from 'tahu.js'; // Using library-style imports
 import fs from 'fs'; // Import fs for file operations
 
 async function quickStart() {
