@@ -1,5 +1,5 @@
 {
-  "name": "tahujs",
+  "name": "tahu.js",
   "version": "2.0.0",
   "description": "A comprehensive Node.js library for AI Agents & LLM Integration, simplifying the creation of intelligent applications.",
   "main": "index.js",
@@ -33,12 +33,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Cloud-Dark/tahujs.git"
+    "url": "https://github.com/Cloud-Dark/tahu.js.git"
   },
   "bugs": {
-    "url": "https://github.com/Cloud-Dark/tahujs/issues"
+    "url": "https://github.com/Cloud-Dark/tahu.js/issues"
   },
-  "homepage": "https://github.com/Cloud-Dark/tahujs#readme",
+  "homepage": "https://github.com/Cloud-Dark/tahu.js#readme",
   "engines": {
     "node": ">=18.0.0"
   },
