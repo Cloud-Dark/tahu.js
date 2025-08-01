@@ -24,7 +24,7 @@ async function quickStart() {
     provider: 'openrouter', // You can change this to 'openai', 'gemini', or 'ollama'
     apiKey: OPENROUTER_API_KEY,
     model: 'google/gemini-2.0-flash-exp:free', // The model you want to use
-    embeddingModel: 'text-embedding-ada-002', // Required for RAG features
+    embeddingModel: 'text-embedding-ada-002', // Required for RAG features (can be changed based on provider)
     // Supabase configuration for RAG
     supabaseUrl: SUPABASE_URL,
     supabaseAnonKey: SUPABASE_ANON_KEY,

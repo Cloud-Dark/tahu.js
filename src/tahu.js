@@ -32,7 +32,7 @@ class TahuJS {
             ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434',
             httpReferer: config.httpReferer,
             xTitle: config.xTitle,
-            embeddingModel: config.embeddingModel, // New: for specific embedding model
+            embeddingModel: config.embeddingModel || this._getDefaultEmbeddingModel(config.provider), // Set default embedding model based on provider
             chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
             supabaseUrl: config.supabaseUrl, // New: for Supabase URL
             supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
@@ -79,6 +79,19 @@ class TahuJS {
         this.vectorStore = this.vectorStoreManager; // New: Expose vectorStoreManager
 
         console.log('🥘 TahuJS initialized successfully!');
+    }
+
+    _getDefaultEmbeddingModel(provider) {
+        switch (provider) {
+            case 'gemini':
+                return 'embedding-001';
+            case 'ollama':
+                return 'nomic-embed-text'; // Common Ollama embedding model
+            case 'openrouter':
+            case 'openai':
+            default:
+                return 'text-embedding-ada-002'; // Default for OpenAI and OpenRouter
+        }
     }
 
     // =============== CORE AI METHODS (Delegated to Managers) ===============

@@ -105,7 +105,7 @@ const config = {
   
   // Optional AI settings
   model: 'anthropic/claude-3-sonnet', // Model name varies by provider
-  embeddingModel: 'text-embedding-ada-002', // Recommended for knowledge base features
+  embeddingModel: 'text-embedding-ada-002', // Recommended for knowledge base features (can be changed based on provider)
   temperature: 0.7, // Controls randomness (0.0 - 2.0)
   maxTokens: 2000, // Maximum tokens in the response
 
@@ -144,8 +144,10 @@ const tahu = createTahu({
   provider: 'openrouter',
   apiKey: 'YOUR_API_KEY_HERE',
   model: 'google/gemini-2.0-flash-exp:free',
+  embeddingModel: 'text-embedding-ada-002', // Example: Using OpenAI's embedding model
+  // embeddingModel: 'embedding-001', // Example: Using Gemini's embedding model
+  // embeddingModel: 'nomic-embed-text', // Example: Using Ollama's embedding model
   serpApiKey: 'YOUR_SERPAPI_KEY', // If available
-  embeddingModel: 'text-embedding-ada-002', // Required for knowledge base
 });
 ```
 

@@ -18,10 +18,10 @@ async function ragDemo() {
 
     // --- Initialize TahuJS ---
     const tahu = createTahu({
-        provider: 'openrouter',
+        provider: 'openrouter', // Bisa juga 'openai', 'gemini', 'ollama'
         apiKey: OPENROUTER_API_KEY,
         model: 'google/gemini-2.0-flash-exp:free',
-        embeddingModel: 'text-embedding-ada-002', // Model embedding yang diperlukan untuk RAG
+        embeddingModel: 'text-embedding-ada-002', // Model embedding yang diperlukan untuk RAG (sesuaikan jika menggunakan provider lain)
         chromaDbUrl: CHROMA_DB_URL, // Menggunakan ChromaDB untuk contoh ini
     });
 
@@ -63,11 +63,14 @@ async function ragDemo() {
 
         for (const query of queries) {
             console.log(`\nQuery: "${query}"`);
+            // Retrieve documents with similarity score (k=3)
             const retrieveResult = await tahu.useTool(tools.retrieveKnowledgeTool.name, `${knowledgeBaseName}|${storeType}|${query}|3`);
             console.log('Retrieval Result:\n', retrieveResult);
             
             // --- 3. Validation Phase (using the retrieved context) ---
             console.log('--- Validating with LLM ---');
+            // Assuming 'SimpleAssistant' agent is available or create one if needed
+            // const simpleAgent = tahu.createAgent('SimpleAssistant', { systemPrompt: 'You are a helpful assistant.' });
             const agentResponse = await tahu.runAgent('SimpleAssistant', `Berdasarkan informasi berikut: "${retrieveResult}", jawab pertanyaan: "${query}"`);
             console.log(`LLM Response for "${query}":\n${agentResponse.response}`);
         }

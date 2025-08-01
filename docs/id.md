@@ -104,7 +104,7 @@ const config = {
   
   // Pengaturan AI opsional
   model: 'anthropic/claude-3-sonnet', // Nama model bervariasi berdasarkan penyedia
-  embeddingModel: 'text-embedding-ada-002', // Direkomendasikan untuk fitur basis pengetahuan
+  embeddingModel: 'text-embedding-ada-002', // Direkomendasikan untuk fitur basis pengetahuan (dapat diubah berdasarkan penyedia)
   temperature: 0.7, // Mengontrol keacakan (0.0 - 2.0)
   maxTokens: 2000, // Token maksimum dalam respons
 
@@ -140,11 +140,13 @@ const tahu = createTahu(config);
 import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({
-    provider: 'openrouter',
-    apiKey: 'KUNCI_API_ANDA_DI_SINI',
-    model: 'google/gemini-2.0-flash-exp:free',
-    serpApiKey: 'KUNCI_SERPAPI_ANDA', // Jika tersedia
-    embeddingModel: 'text-embedding-ada-002', // Diperlukan untuk basis pengetahuan
+  provider: 'openrouter',
+  apiKey: 'KUNCI_API_ANDA_DI_SINI',
+  model: 'google/gemini-2.0-flash-exp:free',
+  embeddingModel: 'text-embedding-ada-002', // Contoh: Menggunakan model embedding OpenAI
+  // embeddingModel: 'embedding-001', // Contoh: Menggunakan model embedding Gemini
+  // embeddingModel: 'nomic-embed-text', // Contoh: Menggunakan model embedding Ollama
+  serpApiKey: 'KUNCI_SERPAPI_ANDA', // Jika tersedia
 });
 ```
 
@@ -389,33 +391,33 @@ TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda se
 *   **`trainKnowledge`**:
     *   **Deskripsi**: Menambahkan data teks ke basis pengetahuan yang ditentukan untuk pengambilan nanti.
     *   **Format Input**: `"knowledgeBaseName|storeType|source_type|source_data"`
-    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
-    *   **Supported Source Types**: `text`, `file`, `url`
-    *   **Examples**:
+    *   **Tipe Penyimpanan yang Didukung**: `sqlite`, `chroma`, `supabase`
+    *   **Tipe Sumber yang Didukung**: `text`, `file`, `url`
+    *   **Contoh**:
         *   `"my_docs|sqlite|text|This is a document about TahuJS features."`
         *   `"my_docs|sqlite|file|/path/to/your/knowledge.txt"`
         *   `"my_docs|sqlite|url|https://example.com/knowledge.txt"`
 *   **`retrieveKnowledge`**:
-    *   **Description**: Retrieves relevant information from a specified knowledge base.
-    *   **Input Format**: `"knowledgeBaseName|storeType|query_text|k"` (k is optional, default 3)
+    *   **Deskripsi**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
+    *   **Format Input**: `"knowledgeBaseName|storeType|query_text|k"` (k opsional, default 3)
     *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
     *   **Example**: `"my_docs|sqlite|What are TahuJS features?|2"`
 
-### Storage Options:
+### Opsi Penyimpanan:
 *   **SQLite**:
-    *   **Type**: `sqlite`
-    *   **Description**: A simple, file-based local database. Ideal for small to medium-sized knowledge bases or local development. No external server required.
-    *   **Configuration**: Automatically uses a `.sqlite` file in the `memory` directory.
+    *   **Tipe**: `sqlite`
+    *   **Deskripsi**: Basis data lokal berbasis file yang sederhana. Ideal untuk basis pengetahuan berukuran kecil hingga menengah atau pengembangan lokal. Tidak memerlukan server eksternal.
+    *   **Konfigurasi**: Secara otomatis menggunakan file `.sqlite` di direktori `memory`.
 *   **ChromaDB**:
-    *   **Type**: `chroma`
-    *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
-    *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
-    *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
+    *   **Tipe**: `chroma`
+    *   **Deskripsi**: Basis data vektor open-source khusus. Cocok untuk basis pengetahuan yang lebih besar dan pencarian kemiripan yang lebih efisien. Membutuhkan server ChromaDB terpisah untuk berjalan.
+    *   **Konfigurasi**: Atur `chromaDbUrl` di konfigurasi TahuJS (default `http://localhost:8000`).
+    *   **Pengaturan**: Anda perlu menjalankan instansi ChromaDB. Lihat [dokumentasi ChromaDB](https://www.trychroma.com/) untuk instalasi.
 *   **Supabase (PostgreSQL dengan pgvector)**:
-    *   **Type**: `supabase`
-    *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
-    *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
-    *   **Setup**: You need to set up a Supabase project, enable the `pgvector` extension, and configure your tables. See example SQL in the "Basic Usage" section above.
+    *   **Tipe**: `supabase`
+    *   **Deskripsi**: Basis data PostgreSQL berbasis cloud yang kuat dan skalabel dengan ekstensi `pgvector` untuk penyimpanan vektor. Ideal untuk aplikasi produksi yang membutuhkan manajemen data yang kuat dan skalabilitas.
+    *   **Konfigurasi**: Membutuhkan `supabaseUrl` dan `supabaseAnonKey` di konfigurasi TahuJS.
+    *   **Pengaturan**: Anda perlu menyiapkan proyek Supabase, mengaktifkan ekstensi `pgvector`, dan mengkonfigurasi tabel Anda. Lihat contoh SQL di bagian "Penggunaan Dasar" di atas.
 
 ## Built-in Tools List
 

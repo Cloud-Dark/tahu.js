@@ -23,35 +23,37 @@ async function comprehensiveDemo() {
   }
 
   // --- Initialize TahuJS for various providers ---
+  // OpenRouter with OpenAI embedding model
   const tahuOpenRouter = createTahu({
     provider: 'openrouter',
     apiKey: OPENROUTER_API_KEY,
     model: 'google/gemini-2.0-flash-exp:free', // Or 'anthropic/claude-3-sonnet', 'openai/gpt-4'
-    // httpReferer: 'your-website.com', // Required for OpenRouter if configured
-    // xTitle: 'Your App Name', // Required for OpenRouter if configured
-    embeddingModel: 'text-embedding-ada-002', // Embedding model for OpenRouter/OpenAI
+    embeddingModel: 'text-embedding-ada-002', // OpenAI embedding model
     chromaDbUrl: 'http://localhost:8000', // ChromaDB server URL if used
   });
 
+  // OpenAI with OpenAI embedding model
   const tahuOpenAI = createTahu({
     provider: 'openai',
     apiKey: OPENAI_API_KEY,
     model: 'gpt-3.5-turbo', // Or 'gpt-4'
-    embeddingModel: 'text-embedding-ada-002',
+    embeddingModel: 'text-embedding-ada-002', // OpenAI embedding model
   });
 
+  // Gemini with Gemini embedding model
   const tahuGemini = createTahu({
     provider: 'gemini',
     apiKey: GEMINI_API_KEY,
     model: 'gemini-pro',
-    embeddingModel: 'embedding-001',
+    embeddingModel: 'embedding-001', // Gemini embedding model
   });
 
+  // Ollama with Ollama embedding model
   const tahuOllama = createTahu({
     provider: 'ollama',
     model: 'llama2', // Ensure this model is downloaded on your Ollama instance
     ollamaBaseUrl: OLLAMA_BASE_URL,
-    embeddingModel: 'nomic-embed-text', // Ensure this embedding model is downloaded on Ollama
+    embeddingModel: 'nomic-embed-text', // Ollama embedding model (ensure it's downloaded)
   });
 
   // --- Load plugins into OpenRouter instance (can also be other instances) ---
