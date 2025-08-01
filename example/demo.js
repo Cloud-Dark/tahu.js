@@ -67,24 +67,35 @@ async function enhancedDemo() {
     // Create specialized agents
     console.log('🤖 Testing Specialized Agents:');
     
-    // Travel Agent
+    // Travel Agent (using existing createAgent for custom example)
     const travelAgent = tahu.createAgent('TravelExpert', {
       systemPrompt: 'You are a professional travel agent. You help plan trips, find locations, and provide travel advice.',
-      capabilities: ['search', 'location', 'directions', 'recommendations']
+      capabilities: ['search', 'location', 'directions', 'recommendations'],
+      personality: { // Enhanced personality
+        traits: ['organized', 'friendly'],
+        mood: 'optimistic',
+        expertise: ['travel planning', 'destination knowledge']
+      }
     });
 
     const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Jakarta. Find interesting places to visit and provide directions.');
     console.log('Travel Agent:', travelResult.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // Research Agent
-    const researchAgent = tahu.createAgent('Researcher', {
-      systemPrompt: 'You are a research assistant. You search for information, analyze data, and provide comprehensive reports.',
-      capabilities: ['search', 'analyze', 'scrape', 'calculate']
-    });
-
-    const researchResult = await tahu.runAgent('Researcher', 'Research the current state of AI development in Indonesia');
+    // Research Agent (using new createPrebuiltAgent)
+    console.log('🔬 Testing Pre-built Research Agent:');
+    const researchAgent = tahu.createPrebuiltAgent('researcher', { name: 'MySmartResearcher' });
+    const researchResult = await tahu.runAgent('MySmartResearcher', 'Research the current state of AI development in Indonesia');
     console.log('Research Agent:', researchResult.response);
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // Coder Agent (using new createPrebuiltAgent)
+    console.log('👨‍💻 Testing Pre-built Coder Agent:');
+    const coderAgent = tahu.createPrebuiltAgent('coder'); // Uses default name 'CoderAgent'
+    const coderResult = await tahu.runAgent('CoderAgent', 'Write a simple Python function to calculate factorial.');
+    console.log('Coder Agent:', coderResult.response);
+    console.log('\n' + '='.repeat(50) + '\n');
+
 
     console.log('\n🎉 Enhanced Demo completed successfully!');
 console.log('📊 Available tools:', tahu.listTools());

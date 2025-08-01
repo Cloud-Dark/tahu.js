@@ -5,7 +5,7 @@ TahuJS adalah framework JavaScript yang kuat dan fleksibel untuk membangun aplik
 ## Daftar Isi
 
 1.  [Ikhtisar Teknologi](#1-ikhtisar-teknologi)
-2.  [Instalasi](#2-instalasi)
+2.  [Instalasi](#2-instalasI)
 3.  [Konfigurasi](#3-konfigurasi)
 4.  [Penggunaan Dasar](#4-penggunaan-dasar)
     *   [Membuat Instansi TahuJS](#membuat-instansi-tahujs)
@@ -152,7 +152,7 @@ const config = {
 ## 🎉 Siap Digunakan!
 
 TahuJS yang ditingkatkan sekarang mencakup:
-- ✅ Sistem fallback pencarian web 3-tingkat
+- ✅ 3-tier web search fallback system
 - ✅ Beberapa penyedia layanan peta
 - ✅ Pembuatan kode QR untuk lokasi
 - ✅ Integrasi data ketinggian
