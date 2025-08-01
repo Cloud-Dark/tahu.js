@@ -1,6 +1,6 @@
 {
   "name": "tahujs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A comprehensive Node.js library for AI Agents & LLM Integration, simplifying the creation of intelligent applications.",
   "main": "index.js",
   "type": "module",
@@ -26,9 +26,9 @@
     "vector-store"
   ],
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com",
-    "url": "https://github.com/yourusername"
+    "name": "Cloud Dark",
+    "email": "clouddark1798@gmail.com",
+    "url": "https://github.com/Cloud-Dark"
   },
   "license": "MIT",
   "repository": {

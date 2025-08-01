@@ -60,7 +60,7 @@ TahuJS dibangun di atas fondasi teknologi modern dan terbukti:
 
 *   **Bahasa Inti & Runtime:** JavaScript (ESM) berjalan di Node.js.
 *   **Orkestrasi AI:** LangChain.js (`@langchain/openai`, `@langchain/google-genai`, `langchain`, `@langchain/community`).
-*   **Penyedia LLM:** OpenRouter, OpenAI, Google Gemini, Ollama.
+*   **LLM Providers:** OpenRouter, OpenAI, Google Gemini, Ollama.
 *   **Permintaan HTTP:** Axios untuk semua panggilan API eksternal.
 *   **Web Scraping:** Cheerio untuk parsing HTML.
 *   **Operasi Matematika:** Math.js untuk perhitungan.
@@ -369,7 +369,7 @@ const cryptoPrice = await tahu.useTool('cryptoPrice', 'ETH');
 console.log(cryptoPrice);
 
 // Muat semua plugin secara otomatis dari direktori
-tahu.loadPlugins('./src/plugins'); // Asumsi plugin ada di direktori ini
+tahu.loadPlugins('./src/plugins');
 ```
 
 ## Basis Pengetahuan & RAG
@@ -449,7 +449,7 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## 🗺️ Roadmap
 
-### Current (v1.0)
+### Current (v2.0)
 -   ✅ Core agent framework
 -   ✅ Multi-provider LLM integration (OpenRouter, OpenAI, Gemini, Ollama)
 -   ✅ Comprehensive built-in tools (web search, maps, calculations, scraping, summarization)
@@ -458,15 +458,18 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 -   ✅ Plugin system
 -   ✅ Real-time analytics
 -   ✅ Knowledge Base (RAG) with SQLite, ChromaDB, and Supabase support
+-   ✅ Enhanced agent communication protocols
+-   ✅ More advanced memory types (e.g., dedicated vector stores for RAG)
+-   ✅ Improved cost optimization strategies
+-   ✅ Deeper integration with external data sources
+-   ✅ Supabase (PostgreSQL with pgvector) integration for knowledge base
+-   ✅ Multi-modal support (image, audio, video processing)
+-   ✅ Advanced reasoning capabilities
+-   ✅ Visual workflow builder (UI)
+-   ✅ CLI tools for agent management and deployment
 
 ### Future (v3.0)
--   🔄 Multi-modal support (image, audio, video processing)
--   🔄 Advanced reasoning capabilities
--   🔄 Visual workflow builder (UI)
--   🔄 CLI tools for agent management and deployment
--   🔄 Enhanced agent communication protocols
--   🔄 Improved cost optimization strategies
--   🔄 Deeper integration with external data sources
+-   🔄 *Define your next big features here!*
 
 ---
 
