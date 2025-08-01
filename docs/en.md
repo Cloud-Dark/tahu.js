@@ -160,5 +160,6 @@ The enhanced TahuJS now includes:
 - ✅ Visual feedback and logging
 - ✅ Configuration validation
 - ✅ Complete workflow examples
+- ✅ **Persistent Agent Memory**: Save agent conversations to JSON files or SQLite database.
 
 Perfect for production use! 🚀

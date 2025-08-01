@@ -89,25 +89,38 @@ async function enhancedDemo() {
         traits: ['organized', 'friendly'],
         mood: 'optimistic',
         expertise: ['travel planning', 'destination knowledge']
-      }
+      },
+      memoryType: 'volatile' // Default in-memory
     });
 
     const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Jakarta. Find interesting places to visit and provide directions.');
     console.log('Travel Agent:', travelResult.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // Research Agent (using new createPrebuiltAgent)
-    console.log('🔬 Testing Pre-built Research Agent:');
-    const researchAgent = tahu.createPrebuiltAgent('researcher', { name: 'MySmartResearcher' });
-    const researchResult = await tahu.runAgent('MySmartResearcher', 'Research the current state of AI development in Indonesia');
-    console.log('Research Agent:', researchResult.response);
+    // Research Agent (using new createPrebuiltAgent) with JSON memory
+    console.log('🔬 Testing Pre-built Research Agent with JSON memory:');
+    const researchAgent = tahu.createPrebuiltAgent('researcher', { 
+        name: 'MySmartResearcherJSON',
+        memoryType: 'json' // Save memory to JSON file
+    });
+    const researchResult = await tahu.runAgent('MySmartResearcherJSON', 'Research the current state of AI development in Indonesia');
+    console.log('Research Agent (JSON):', researchResult.response);
+    // Run again to show memory persistence
+    const researchResult2 = await tahu.runAgent('MySmartResearcherJSON', 'What was the last thing I asked you about?');
+    console.log('Research Agent (JSON, continued):', researchResult2.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // Coder Agent (using new createPrebuiltAgent)
-    console.log('👨‍💻 Testing Pre-built Coder Agent:');
-    const coderAgent = tahu.createPrebuiltAgent('coder'); // Uses default name 'CoderAgent'
-    const coderResult = await tahu.runAgent('CoderAgent', 'Write a simple Python function to calculate factorial.');
-    console.log('Coder Agent:', coderResult.response);
+    // Coder Agent (using new createPrebuiltAgent) with SQLite memory
+    console.log('👨‍💻 Testing Pre-built Coder Agent with SQLite memory:');
+    const coderAgent = tahu.createPrebuiltAgent('coder', { 
+        name: 'MyCoderAgentSQLite',
+        memoryType: 'sqlite' // Save memory to SQLite database
+    }); 
+    const coderResult = await tahu.runAgent('MyCoderAgentSQLite', 'Write a simple Python function to calculate factorial.');
+    console.log('Coder Agent (SQLite):', coderResult.response);
+    // Run again to show memory persistence
+    const coderResult2 = await tahu.runAgent('MyCoderAgentSQLite', 'Can you remind me of the Python function you just wrote?');
+    console.log('Coder Agent (SQLite, continued):', coderResult2.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- NEW: Test Plugin Tools ---

@@ -4,6 +4,8 @@ import { evaluate } from 'mathjs';
 import * as cheerio from 'cheerio';
 import qrcode from 'qrcode-terminal';
 import chalk from 'chalk';
+import fs from 'fs'; // Import Node.js File System module
+import Database from 'better-sqlite3'; // Import better-sqlite3
 
 // --- LANGCHAIN INTEGRATION: Imports ---
 import { ChatOpenAI } from "@langchain/openai";
@@ -57,6 +59,19 @@ class TahuJS {
 
         // --- LANGCHAIN INTEGRATION: Initialize LangChain components ---
         this.initializeLangChain();
+
+        // Initialize memory directory for JSON/SQLite
+        this.memoryDir = './memory';
+        if (!fs.existsSync(this.memoryDir)) {
+            fs.mkdirSync(this.memoryDir);
+        }
+        this.sqliteDb = new Database(`${this.memoryDir}/tahu_memory.db`);
+        this.sqliteDb.exec(`
+            CREATE TABLE IF NOT EXISTS agent_memory (
+                agent_name TEXT PRIMARY KEY,
+                memory_data TEXT
+            );
+        `);
 
         console.log('🥘 TahuJS initialized successfully!');
     }
@@ -302,27 +317,29 @@ class TahuJS {
             name,
             systemPrompt: config.systemPrompt || `You are ${name}, a helpful AI assistant.`,
             tools: config.tools || [],
-            // --- ENHANCEMENT: Allow structured personality object ---
-            personality: config.personality || 'helpful', // Can be string or object
-            memory: [], // Already exists for in-session history
+            personality: config.personality || 'helpful',
+            memory: [], // Default to volatile in-memory
+            memoryType: config.memoryType || 'volatile', // 'volatile', 'json', 'sqlite'
+            memoryPath: config.memoryPath, // Path for JSON file or SQLite table name
             capabilities: config.capabilities || ['chat', 'search', 'calculate'],
             created: new Date().toISOString()
         };
 
-        // If personality is an object, store it as such
         if (typeof config.personality === 'object' && config.personality !== null) {
             agent.personality = {
                 traits: config.personality.traits || [],
                 mood: config.personality.mood || '',
                 expertise: config.personality.expertise || [],
-                // Add any other specific personality attributes here
             };
         } else {
             agent.personality = config.personality || 'helpful';
         }
 
+        // Load existing memory if available
+        agent.memory = this._loadAgentMemory(agent.name, agent.memoryType, agent.memoryPath);
+
         this.agents.set(name, agent);
-        console.log(`🤖 Agent "${name}" created successfully!`);
+        console.log(`🤖 Agent "${name}" created successfully! Memory type: ${agent.memoryType}`);
         return agent;
     }
 
@@ -393,20 +410,83 @@ class TahuJS {
         const agent = this.agents.get(agentName);
         if (!agent) throw new Error(`Agent "${agentName}" not found`);
 
+        // Load memory before running the agent (if not volatile)
+        if (agent.memoryType !== 'volatile') {
+            agent.memory = this._loadAgentMemory(agent.name, agent.memoryType, agent.memoryPath);
+        }
+
         const enhancedPrompt = `${agent.systemPrompt}\n\nUser Task: ${task}\n\nYour capabilities: ${agent.capabilities.join(', ')}`;
 
         const result = await this.chat(enhancedPrompt, {
             ...options,
-            conversationId: `agent_${agentName}_${Date.now()}`
+            conversationId: `agent_${agentName}_${Date.now()}` // Use a unique conversation ID for each run
         });
 
+        // Add current task and result to agent's memory
         agent.memory.push({
             task,
             result: result.response,
             timestamp: new Date().toISOString()
         });
 
+        // Save memory after running the agent (if not volatile)
+        if (agent.memoryType !== 'volatile') {
+            this._saveAgentMemory(agent.name, agent.memory, agent.memoryType, agent.memoryPath);
+        }
+
         return result;
+    }
+
+    // --- NEW FEATURE: Memory Management Helpers ---
+    _getJsonMemoryPath(agentName) {
+        return `${this.memoryDir}/agent_${agentName}.json`;
+    }
+
+    _loadAgentMemory(agentName, memoryType, memoryPath) {
+        if (memoryType === 'json') {
+            const filePath = memoryPath || this._getJsonMemoryPath(agentName);
+            if (fs.existsSync(filePath)) {
+                try {
+                    const data = fs.readFileSync(filePath, 'utf8');
+                    return JSON.parse(data);
+                } catch (error) {
+                    console.error(chalk.red(`❌ Error loading JSON memory for agent "${agentName}": ${error.message}`));
+                    return [];
+                }
+            }
+        } else if (memoryType === 'sqlite') {
+            const stmt = this.sqliteDb.prepare('SELECT memory_data FROM agent_memory WHERE agent_name = ?');
+            const row = stmt.get(agentName);
+            if (row) {
+                try {
+                    return JSON.parse(row.memory_data);
+                } catch (error) {
+                    console.error(chalk.red(`❌ Error parsing SQLite memory for agent "${agentName}": ${error.message}`));
+                    return [];
+                }
+            }
+        }
+        return []; // Default to empty array for volatile or if no saved memory
+    }
+
+    _saveAgentMemory(agentName, memoryData, memoryType, memoryPath) {
+        if (memoryType === 'json') {
+            const filePath = memoryPath || this._getJsonMemoryPath(agentName);
+            try {
+                fs.writeFileSync(filePath, JSON.stringify(memoryData, null, 2), 'utf8');
+                console.log(chalk.green(`💾 JSON memory saved for agent "${agentName}" to ${filePath}`));
+            } catch (error) {
+                console.error(chalk.red(`❌ Error saving JSON memory for agent "${agentName}": ${error.message}`));
+            }
+        } else if (memoryType === 'sqlite') {
+            const stmt = this.sqliteDb.prepare('INSERT OR REPLACE INTO agent_memory (agent_name, memory_data) VALUES (?, ?)');
+            try {
+                stmt.run(agentName, JSON.stringify(memoryData));
+                console.log(chalk.green(`💾 SQLite memory saved for agent "${agentName}"`));
+            } catch (error) {
+                console.error(chalk.red(`❌ Error saving SQLite memory for agent "${agentName}": ${error.message}`));
+            }
+        }
     }
 
     registerTool(name, tool) {
