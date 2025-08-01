@@ -161,5 +161,10 @@ The enhanced TahuJS now includes:
 - ✅ Configuration validation
 - ✅ Complete workflow examples
 - ✅ **Persistent Agent Memory**: Save agent conversations to JSON files or SQLite database.
+- ✅ **Multi-Agent Workflows**: Orchestrate sequences of agent tasks with dependencies.
+- ✅ **Parallel Processing**: Run multiple agent tasks or chat prompts concurrently.
+- ✅ **Simple Batch Processing**: Process multiple chat prompts in parallel.
+- ✅ **Configurable Short-Term Memory**: Limit the in-memory conversation history for agents.
+- ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
 
 Perfect for production use! 🚀

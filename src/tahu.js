@@ -311,6 +311,33 @@ class TahuJS {
         }
     }
 
+    // --- NEW FEATURE: Auto-discovery plugins ---
+    loadPlugins(directory) {
+        if (!fs.existsSync(directory)) {
+            console.warn(chalk.yellow(`⚠️  Warning: Plugin directory "${directory}" not found.`));
+            return;
+        }
+        const files = fs.readdirSync(directory);
+        for (const file of files) {
+            if (file.endsWith('.js')) {
+                try {
+                    // Use dynamic import for ESM modules
+                    import(`${directory}/${file}`).then(module => {
+                        if (typeof module.default === 'function') {
+                            this.use(module.default);
+                        } else {
+                            console.warn(chalk.yellow(`⚠️  Warning: Plugin file "${file}" does not export a default function.`));
+                        }
+                    }).catch(error => {
+                        console.error(chalk.red(`❌ Error loading plugin "${file}": ${error.message}`));
+                    });
+                } catch (error) {
+                    console.error(chalk.red(`❌ Error loading plugin "${file}": ${error.message}`));
+                }
+            }
+        }
+    }
+
     // =============== ENHANCED AGENT MANAGEMENT ===============
     createAgent(name, config = {}) {
         const agent = {
@@ -321,6 +348,7 @@ class TahuJS {
             memory: [], // Default to volatile in-memory
             memoryType: config.memoryType || 'volatile', // 'volatile', 'json', 'sqlite'
             memoryPath: config.memoryPath, // Path for JSON file or SQLite table name
+            maxMemorySize: config.maxMemorySize || 10, // NEW: Limit for in-memory conversation history
             capabilities: config.capabilities || ['chat', 'search', 'calculate'],
             created: new Date().toISOString()
         };
@@ -429,6 +457,11 @@ class TahuJS {
             timestamp: new Date().toISOString()
         });
 
+        // Trim memory if it exceeds maxMemorySize (for volatile and loaded memory)
+        if (agent.memory.length > agent.maxMemorySize) {
+            agent.memory = agent.memory.slice(-agent.maxMemorySize);
+        }
+
         // Save memory after running the agent (if not volatile)
         if (agent.memoryType !== 'volatile') {
             this._saveAgentMemory(agent.name, agent.memory, agent.memoryType, agent.memoryPath);
@@ -437,7 +470,108 @@ class TahuJS {
         return result;
     }
 
-    // --- NEW FEATURE: Memory Management Helpers ---
+    // --- NEW FEATURE: Multi-agent workflows ---
+    async createWorkflow(workflowDefinition) {
+        const tahuInstance = this; // Capture 'this' for use in inner functions
+        return {
+            definition: workflowDefinition,
+            async execute(initialInput) {
+                console.log(chalk.magenta(`🚀 Starting workflow with initial input: "${initialInput}"`));
+                const results = {};
+                const taskQueue = [...workflowDefinition]; // Copy to allow modification
+
+                while (taskQueue.length > 0) {
+                    const currentTask = taskQueue.shift();
+                    const { agent: agentName, task: taskName, depends } = currentTask;
+
+                    // Check dependencies
+                    let allDependenciesMet = true;
+                    let dependencyResults = {};
+                    if (depends && depends.length > 0) {
+                        for (const dep of depends) {
+                            if (!results[dep]) {
+                                allDependenciesMet = false;
+                                break;
+                            }
+                            dependencyResults[dep] = results[dep];
+                        }
+                    }
+
+                    if (!allDependenciesMet) {
+                        // If dependencies not met, push back to queue and try later
+                        taskQueue.push(currentTask);
+                        continue;
+                    }
+
+                    console.log(chalk.cyan(`  Executing task "${taskName}" by agent "${agentName}"...`));
+                    let inputForAgent = initialInput;
+                    if (depends && depends.length > 0) {
+                        // Combine initial input with dependency results
+                        inputForAgent = `${initialInput}\n\nPrevious results: ${JSON.stringify(dependencyResults)}`;
+                    }
+
+                    try {
+                        const agentResult = await tahuInstance.runAgent(agentName, inputForAgent);
+                        results[taskName] = agentResult.response;
+                        console.log(chalk.green(`  ✅ Task "${taskName}" completed. Result stored.`));
+                    } catch (error) {
+                        console.error(chalk.red(`  ❌ Task "${taskName}" failed for agent "${agentName}": ${error.message}`));
+                        results[taskName] = `Error: ${error.message}`;
+                        // Decide whether to stop workflow or continue
+                        throw new Error(`Workflow failed at task "${taskName}": ${error.message}`);
+                    }
+                }
+                console(chalk.magenta('🎉 Workflow completed!'));
+                return results;
+            }
+        };
+    }
+
+    // --- NEW FEATURE: Parallel agent execution ---
+    async parallel(tasks) {
+        console.log(chalk.blue(`⚡ Executing ${tasks.length} tasks in parallel...`));
+        const promises = tasks.map(task => {
+            if (task instanceof Promise) {
+                return task; // If it's already a promise (e.g., agent.process call)
+            } else if (task.agent && task.input) {
+                return this.runAgent(task.agent, task.input, task.options);
+            } else if (task.prompt) {
+                return this.chat(task.prompt, task.options);
+            }
+            return Promise.reject(new Error('Invalid task format for parallel execution.'));
+        });
+
+        try {
+            const results = await Promise.all(promises);
+            console.log(chalk.green('✅ All parallel tasks completed.'));
+            return results;
+        } catch (error) {
+            console.error(chalk.red(`❌ One or more parallel tasks failed: ${error.message}`));
+            throw error;
+        }
+    }
+
+    // --- NEW FEATURE: Batch processing (simple parallel chat) ---
+    async batch(promptsAndOptions) {
+        console.log(chalk.blue(`📦 Processing ${promptsAndOptions.length} prompts in batch...`));
+        const promises = promptsAndOptions.map(item => {
+            if (!item.prompt) {
+                return Promise.reject(new Error('Each batch item must have a "prompt" property.'));
+            }
+            return this.chat(item.prompt, item.options);
+        });
+
+        try {
+            const results = await Promise.all(promises);
+            console.log(chalk.green('✅ All batch prompts processed.'));
+            return results;
+        } catch (error) {
+            console.error(chalk.red(`❌ One or more batch prompts failed: ${error.message}`));
+            throw error;
+        }
+    }
+
+    // --- Memory Management Helpers (existing) ---
     _getJsonMemoryPath(agentName) {
         return `${this.memoryDir}/agent_${agentName}.json`;
     }

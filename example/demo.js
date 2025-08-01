@@ -34,6 +34,10 @@ async function enhancedDemo() {
   tahu.use(tahuFinancePlugin);
   tahu.use(tahuCurrencyPlugin);
 
+  // --- NEW: Auto-discover plugins from a directory ---
+  console.log('🔌 Attempting to auto-discover plugins from ./src/plugins...');
+  tahu.loadPlugins('./src/plugins');
+
 
   try {
     // Test Enhanced Web Search with fallbacks
@@ -101,11 +105,12 @@ async function enhancedDemo() {
     console.log('🔬 Testing Pre-built Research Agent with JSON memory:');
     const researchAgent = tahu.createPrebuiltAgent('researcher', { 
         name: 'MySmartResearcherJSON',
-        memoryType: 'json' // Save memory to JSON file
+        memoryType: 'json', // Save memory to JSON file
+        maxMemorySize: 3 // Limit memory to 3 entries
     });
     const researchResult = await tahu.runAgent('MySmartResearcherJSON', 'Research the current state of AI development in Indonesia');
     console.log('Research Agent (JSON):', researchResult.response);
-    // Run again to show memory persistence
+    // Run again to show memory persistence and trimming
     const researchResult2 = await tahu.runAgent('MySmartResearcherJSON', 'What was the last thing I asked you about?');
     console.log('Research Agent (JSON, continued):', researchResult2.response);
     console.log('\n' + '='.repeat(50) + '\n');
@@ -114,7 +119,8 @@ async function enhancedDemo() {
     console.log('👨‍💻 Testing Pre-built Coder Agent with SQLite memory:');
     const coderAgent = tahu.createPrebuiltAgent('coder', { 
         name: 'MyCoderAgentSQLite',
-        memoryType: 'sqlite' // Save memory to SQLite database
+        memoryType: 'sqlite', // Save memory to SQLite database
+        maxMemorySize: 5 // Limit memory to 5 entries
     }); 
     const coderResult = await tahu.runAgent('MyCoderAgentSQLite', 'Write a simple Python function to calculate factorial.');
     console.log('Coder Agent (SQLite):', coderResult.response);
@@ -136,6 +142,44 @@ async function enhancedDemo() {
 
     const currencyConversion = await tahu.useTool('convertCurrency', '100 USD to IDR');
     console.log('Currency Conversion:', currencyConversion);
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // --- NEW: Test Multi-agent Workflow ---
+    console.log('🔥 Testing Multi-agent Workflow:');
+    tahu.createAgent('WorkflowResearcher', { systemPrompt: 'You are a researcher who gathers information.' });
+    tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'You are an analyst who processes research data.' });
+    tahu.createAgent('WorkflowWriter', { systemPrompt: 'You are a writer who summarizes analysis results.' });
+
+    const workflow = tahu.createWorkflow([
+        { agent: 'WorkflowResearcher', task: 'research_ai_trends' },
+        { agent: 'WorkflowAnalyst', task: 'analyze_research', depends: ['research_ai_trends'] },
+        { agent: 'WorkflowWriter', task: 'summarize_analysis', depends: ['analyze_research'] }
+    ]);
+
+    const workflowResults = await workflow.execute('Latest AI trends in healthcare.');
+    console.log('Workflow Final Results:', workflowResults);
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // --- NEW: Test Parallel Processing ---
+    console.log('⚡ Testing Parallel Processing:');
+    const parallelTasks = [
+        { prompt: 'Explain quantum computing briefly.' },
+        { prompt: 'What is the capital of France?' },
+        { agent: 'MySmartResearcherJSON', input: 'Summarize the last research topic.' }
+    ];
+    const parallelResults = await tahu.parallel(parallelTasks);
+    console.log('Parallel Processing Results:', parallelResults.map(r => r.response || r));
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // --- NEW: Test Batch Processing ---
+    console.log('📦 Testing Batch Processing:');
+    const batchPrompts = [
+        { prompt: 'Tell me a short story about a robot.' },
+        { prompt: 'List 3 benefits of cloud computing.' },
+        { prompt: 'What is the main purpose of a blockchain?' }
+    ];
+    const batchResults = await tahu.batch(batchPrompts);
+    console.log('Batch Processing Results:', batchResults.map(r => r.response));
     console.log('\n' + '='.repeat(50) + '\n');
 
 

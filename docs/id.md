@@ -161,5 +161,10 @@ TahuJS yang ditingkatkan sekarang mencakup:
 - ✅ Validasi konfigurasi
 - ✅ Contoh alur kerja lengkap
 - ✅ **Memori Agen Persisten**: Simpan percakapan agen ke file JSON atau database SQLite.
+- ✅ **Alur Kerja Multi-Agen**: Mengatur urutan tugas agen dengan dependensi.
+- ✅ **Pemrosesan Paralel**: Menjalankan beberapa tugas agen atau prompt chat secara bersamaan.
+- ✅ **Pemrosesan Batch Sederhana**: Memproses beberapa prompt chat secara paralel.
+- ✅ **Memori Jangka Pendek yang Dapat Dikonfigurasi**: Batasi riwayat percakapan dalam memori untuk agen.
+- ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
 
 Sempurna untuk penggunaan produksi! 🚀
