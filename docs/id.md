@@ -20,187 +20,145 @@ TahuJS adalah framework JavaScript yang kuat dan fleksibel untuk membangun aplik
 
 ---
 
-## 1. Ikhtisar Teknologi
+# 🥘 TahuJS - Versi yang Ditingkatkan
 
-TahuJS dibangun di atas tumpukan teknologi berikut:
+Selamat datang di versi TahuJS yang ditingkatkan! Pembaruan ini membawa peningkatan signifikan di seluruh fungsionalitas inti, membuat pengembangan aplikasi AI Anda semakin kuat dan andal.
 
-*   **Bahasa & Runtime:** JavaScript (ESM) di Node.js.
-*   **Orkestrasi AI:** [LangChain.js](https://js.langchain.com/) untuk membangun agen AI, merantai panggilan LLM, dan mengintegrasikan alat.
-*   **Penyedia LLM:** Integrasi dengan OpenRouter (mendukung berbagai model seperti Claude, GPT, Gemini) dan Google Gemini.
-*   **Permintaan HTTP:** [Axios](https://axios-http.com/) untuk semua panggilan API eksternal.
-*   **Web Scraping:** [Cheerio](https://cheerio.js.org/) untuk parsing dan ekstraksi data dari konten HTML.
-*   **Operasi Matematika:** [Math.js](https://mathjs.org/) untuk perhitungan matematis.
-*   **Utilitas Terminal:** `chalk` untuk output konsol berwarna dan `qrcode-terminal` untuk menghasilkan kode QR.
-*   **Layanan Pencarian:** Kelas `SearchService` kustom yang memanfaatkan SerpApi (utama), DuckDuckGo, dan scraping Google langsung (fallback).
-*   **Layanan Pemetaan & Lokasi:** Kelas `MapService` kustom yang menggunakan OpenStreetMap (Nominatim untuk geocoding, StaticMap untuk gambar statis), Open-Elevation API, dan berpotensi Mapbox.
-*   **Manajemen Konfigurasi:** Kelas `ConfigValidator` kustom untuk memvalidasi pengaturan aplikasi.
+## 🆕 Fitur Baru
 
-## 2. Instalasi
+### 🔍 Pencarian Web yang Ditingkatkan
+- **3 Metode Fallback**: SerpApi → DuckDuckGo → Google Scraping 🌐✨
+- **Logika Coba Ulang Cerdas**: Secara otomatis mencoba metode berikutnya jika salah satu gagal 🔄
+- **Hasil Lebih Baik**: Hasil pencarian yang lebih akurat dan komprehensif ✅
 
-Pastikan Anda memiliki Node.js (versi 18 atau lebih tinggi) terinstal.
+### 🗺️ Layanan Peta Tingkat Lanjut
+- **Beberapa Penyedia Peta**: OpenStreetMap, Google Maps, Bing Maps, WikiMapia, Apple Maps 📍🌍
+- **Pembuatan Kode QR**: Kode QR instan untuk berbagi lokasi 📱
+- **Data Ketinggian**: Dapatkan informasi ketinggian untuk lokasi mana pun ⛰️
+- **Peta Statis**: Hasilkan gambar peta 🖼️
+- **Petunjuk Arah**: Tautan petunjuk arah multi-penyedia 🛣️
 
-1.  **Kloning repositori:**
-    ```bash
-    git clone https://github.com/yourusername/tahujs.git
-    cd tahujs
-    ```
-2.  **Instal dependensi:**
-    ```bash
-    npm install
-    ```
+### 🛠️ Alat yang Ditingkatkan
+- **Penanganan Kesalahan yang Ditingkatkan**: Pesan kesalahan dan fallback yang lebih baik 🛡️
+- **Umpan Balik Visual**: Output konsol berwarna dengan emoji 🎨
+- **Performa Dioptimalkan**: Waktu respons lebih cepat 🚀
+- **Lebih Andal**: Beberapa fallback untuk setiap layanan 💪
 
-## 3. Konfigurasi
+## 🚀 Mulai Cepat
 
-TahuJS dikonfigurasi melalui objek `config` saat membuat instansi `TahuJS`.
+Mulai dan jalankan dalam waktu singkat!
 
-**Contoh Konfigurasi:**
+```bash
+npm install tahujs
+```
+
+```javascript
+import { createTahu } from 'tahujs';
+
+const tahu = createTahu({
+  provider: 'openrouter',
+  apiKey: 'kunci-api-anda',
+  serpApiKey: 'kunci-serpapi-anda', // Opsional untuk pencarian yang lebih baik
+  googleMapsApiKey: 'kunci-google-maps-anda' // Opsional untuk peta yang ditingkatkan
+});
+
+// Pencarian yang ditingkatkan dengan fallback
+const searchResult = await tahu.useTool('webSearch', 'berita AI terbaru');
+console.log(searchResult);
+
+// Pencarian lokasi tingkat lanjut dengan kode QR
+const locationResult = await tahu.useTool('findLocation', 'Jakarta');
+console.log(locationResult);
+
+// Dapatkan petunjuk arah antar lokasi
+const directions = await tahu.useTool('getDirections', 'from Jakarta to Bandung');
+console.log(directions);
+```
+
+## 🎯 Kasus Penggunaan
+
+TahuJS serbaguna dan dapat mendukung berbagai aplikasi cerdas:
+
+### 1. Perencanaan Perjalanan ✈️
+```javascript
+const travelAgent = tahu.createAgent('TravelExpert', {
+  systemPrompt: 'Perencana perjalanan ahli untuk Indonesia',
+  capabilities: ['search', 'location', 'directions']
+});
+
+const plan = await tahu.runAgent('TravelExpert', 
+  'Rencanakan itinerary 3 hari di Jakarta dengan lokasi dan petunjuk arah yang tepat'
+);
+console.log(plan.response);
+```
+
+### 2. Asisten Penelitian 🔬
+```javascript
+const researcher = tahu.createAgent('Researcher', {
+  systemPrompt: 'Asisten penelitian yang teliti',
+  capabilities: ['search', 'analyze', 'calculate']
+});
+
+const report = await tahu.runAgent('Researcher', 
+  'Teliti pasar kendaraan listrik di Indonesia dengan statistik'
+);
+console.log(report.response);
+```
+
+### 3. Konsultan Teknis 💻
+```javascript
+const techExpert = tahu.createAgent('TechExpert', {
+  systemPrompt: 'Insinyur perangkat lunak senior dan arsitek',
+  capabilities: ['search', 'calculate', 'analyze']
+});
+
+const advice = await tahu.runAgent('TechExpert', 
+  'Bantu saya menskalakan aplikasi Node.js untuk 10.000 pengguna bersamaan'
+);
+console.log(advice.response);
+```
+
+## 🔧 Opsi Konfigurasi
+
+Sesuaikan TahuJS agar sesuai dengan kebutuhan Anda:
 
 ```javascript
 const config = {
-    provider: 'openrouter', // atau 'gemini'
-    apiKey: 'YOUR_API_KEY_HERE', // Kunci API dari OpenRouter atau Google Gemini
-    model: 'google/gemini-2.0-flash-exp:free', // Model LLM yang akan digunakan
-    temperature: 0.7, // Kreativitas model (0.0 - 2.0)
-    maxTokens: 2000, // Batas token output
-    serpApiKey: 'YOUR_SERPAPI_KEY', // Opsional, untuk pencarian web yang lebih baik
-    googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Opsional, untuk fitur peta tertentu
-    mapboxKey: 'YOUR_MAPBOX_KEY', // Opsional, jika menggunakan Mapbox
-    httpReferer: 'YOUR_HTTP_REFERER', // Opsional, untuk OpenRouter
-    xTitle: 'YOUR_X_TITLE' // Opsional, untuk OpenRouter
+  // Wajib
+  provider: 'openrouter', // atau 'gemini'
+  apiKey: 'kunci-api-anda',
+  
+  // Pengaturan AI opsional
+  model: 'anthropic/claude-3-sonnet',
+  temperature: 0.7,
+  maxTokens: 2000,
+  
+  // Kunci layanan opsional untuk fitur yang ditingkatkan
+  serpApiKey: 'kunci-serpapi-anda', // Pencarian web yang lebih baik
+  googleMapsApiKey: 'kunci-google-maps-anda', // Peta yang ditingkatkan
+  mapboxKey: 'kunci-mapbox-anda' // Peta premium
 };
 ```
 
-**Catatan Penting untuk OpenRouter:** Jika Anda menggunakan OpenRouter, pastikan `httpReferer` dan `xTitle` di konfigurasi TahuJS Anda cocok dengan pengaturan yang Anda buat di akun OpenRouter Anda untuk API Key tersebut. Jika tidak cocok, Anda mungkin mendapatkan kesalahan 403 (Forbidden).
+## 🌟 Mengapa Memilih TahuJS yang Ditingkatkan?
 
-## 4. Penggunaan Dasar
+- **🔄 Sistem Fallback**: Tidak pernah gagal karena satu layanan mati
+- **🎯 Multi-Penyedia**: Yang terbaik dari semua dunia dengan beberapa penyedia layanan
+- **📱 UX Modern**: Kode QR, output berwarna, umpan balik visual
+- **🚀 Performa**: Dioptimalkan untuk kecepatan dan keandalan
+- **🛡️ Tangguh**: Penanganan kesalahan dan validasi yang ekstensif
+- **📊 Komprehensif**: Toolkit lengkap untuk agen AI
 
-### Membuat Instansi TahuJS
+## 🎉 Siap Digunakan!
 
-```javascript
-import { createTahu } from './src/tahu.js';
+TahuJS yang ditingkatkan sekarang mencakup:
+- ✅ Sistem fallback pencarian web 3-tingkat
+- ✅ Beberapa penyedia layanan peta
+- ✅ Pembuatan kode QR untuk lokasi
+- ✅ Integrasi data ketinggian
+- ✅ Penanganan kesalahan yang ditingkatkan
+- ✅ Umpan balik visual dan logging
+- ✅ Validasi konfigurasi
+- ✅ Contoh alur kerja lengkap
 
-const tahu = createTahu({
-    provider: 'openrouter',
-    apiKey: 'YOUR_API_KEY_HERE',
-    model: 'google/gemini-2.0-flash-exp:free',
-    serpApiKey: 'YOUR_SERPAPI_KEY' // Jika ada
-});
-```
-
-### Melakukan Chat AI
-
-```javascript
-async function runChat() {
-    const chatResult = await tahu.chat('Jelaskan konsep AI dengan singkat.');
-    console.log(chatResult.response);
-}
-runChat();
-```
-
-### Menggunakan Alat (Tools)
-
-TahuJS menyediakan berbagai alat bawaan yang dapat Anda gunakan secara langsung.
-
-```javascript
-async function useTools() {
-    // Pencarian Web
-    const searchResult = await tahu.useTool('webSearch', 'berita teknologi terbaru');
-    console.log('Hasil Pencarian Web:', searchResult);
-
-    // Perhitungan Matematika
-    const calcResult = await tahu.useTool('calculate', '15 * 3 + (10 / 2)');
-    console.log('Hasil Perhitungan:', calcResult);
-
-    // Pencarian Lokasi
-    const locationResult = await tahu.useTool('findLocation', 'Menara Eiffel Paris');
-    console.log('Informasi Lokasi:', locationResult);
-
-    // Petunjuk Arah
-    const directionsResult = await tahu.useTool('getDirections', 'from Monas to Ragunan Zoo');
-    console.log('Petunjuk Arah:', directionsResult);
-
-    // Ketinggian (Elevation)
-    const elevationResult = await tahu.useTool('getElevation', '-6.2088,106.8456'); // Koordinat Jakarta
-    console.log('Ketinggian:', elevationResult);
-
-    // Web Scraping
-    const scrapeResult = await tahu.useTool('webScrape', 'https://www.wikipedia.org');
-    console.log('Hasil Web Scraping:', scrapeResult);
-
-    // Tanggal & Waktu
-    const dateTimeResult = await tahu.useTool('dateTime', 'Asia/Jakarta');
-    console.log('Tanggal & Waktu:', dateTimeResult);
-}
-useTools();
-```
-
-### Membuat dan Menjalankan Agen AI
-
-Anda dapat membuat agen AI khusus dengan peran dan kemampuan tertentu.
-
-```javascript
-async function runAgentDemo() {
-    const travelAgent = tahu.createAgent('TravelExpert', {
-        systemPrompt: 'Anda adalah agen perjalanan profesional. Anda membantu merencanakan perjalanan, menemukan lokasi, dan memberikan saran perjalanan.',
-        capabilities: ['chat', 'search', 'location', 'directions']
-    });
-
-    const travelResult = await tahu.runAgent('TravelExpert', 'Rencanakan perjalanan sehari ke Bali. Temukan tempat menarik untuk dikunjungi dan berikan petunjuk arah.');
-    console.log('Hasil Agen Perjalanan:', travelResult.response);
-}
-runAgentDemo();
-```
-
-### Integrasi LangChain
-
-TahuJS memungkinkan Anda membuat agen LangChain yang dapat memanfaatkan semua alat TahuJS secara otomatis.
-
-```javascript
-import { createTahu } from './src/tahu.js';
-
-async function langchainIntegrationDemo() {
-    const tahu = createTahu({
-        provider: 'openrouter',
-        apiKey: 'YOUR_API_KEY_HERE',
-        model: 'google/gemini-2.0-flash-exp:free',
-        serpApiKey: 'YOUR_SERPAPI_KEY'
-    });
-
-    const researchAgent = await tahu.createLangChainAgent(
-        'Anda adalah asisten peneliti yang kuat. Anda dapat mencari web, menemukan lokasi, dan melakukan perhitungan.'
-    );
-
-    const task = "Cari berita terbaru tentang pengembangan AI di Indonesia, lalu cari lokasi kantor pusat Google Indonesia dan berikan link Google Maps-nya.";
-    const result = await researchAgent.invoke({ input: task });
-    console.log('Hasil Agen LangChain:', result.output);
-}
-langchainIntegrationDemo();
-```
-
-## 5. Daftar Alat Bawaan
-
-*   `webSearch`: Mencari web menggunakan berbagai mesin pencari (SerpApi, DuckDuckGo, Google Scraping).
-*   `calculate`: Melakukan perhitungan matematis dan ekspresi.
-*   `findLocation`: Menemukan lokasi menggunakan berbagai layanan peta dengan tautan dan kode QR.
-*   `getDirections`: Mendapatkan petunjuk arah antara dua lokasi. Input harus dalam format "from [origin] to [destination]".
-*   `getElevation`: Mendapatkan data ketinggian untuk koordinat geografis tertentu. Input harus dalam format "latitude,longitude".
-*   `webScrape`: Mengekstrak konten dari halaman web.
-*   `dateTime`: Mendapatkan informasi tanggal dan waktu saat ini.
-
-## 6. Penanganan Kesalahan
-
-TahuJS menyediakan penanganan kesalahan dasar untuk masalah API umum seperti:
-
-*   `401 Unauthorized`: Kunci API tidak valid.
-*   `429 Too Many Requests`: Batas laju terlampaui.
-*   `402 Payment Required`: Kredit tidak mencukupi.
-*   `403 Forbidden`: Terutama untuk OpenRouter, periksa `httpReferer` dan `xTitle` Anda.
-*   Kesalahan umum lainnya akan dilaporkan dengan pesan yang relevan.
-
-## 7. Kontribusi
-
-Kami menyambut kontribusi! Jika Anda ingin berkontribusi pada TahuJS, silakan fork repositori, buat cabang fitur, dan kirimkan pull request.
-
-## 8. Lisensi
-
-Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file `LICENSE` untuk detail lebih lanjut.
+Sempurna untuk penggunaan produksi! 🚀
