@@ -287,6 +287,15 @@ class TahuJS {
         });
     }
 
+    // --- NEW FEATURE: Plugin System ---
+    use(plugin) {
+        if (typeof plugin === 'function') {
+            plugin(this); // Pass the TahuJS instance to the plugin function
+        } else {
+            console.warn('⚠️  Warning: Plugin must be a function.');
+        }
+    }
+
     // =============== ENHANCED AGENT MANAGEMENT ===============
     createAgent(name, config = {}) {
         const agent = {

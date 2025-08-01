@@ -1,6 +1,13 @@
 // examples/enhanced-demo.js - Test all the new features
 import TahuJS, { createTahu } from '../src/tahu.js';
 
+// Import plugins
+import tahuCryptoPlugin from '../src/plugins/tahu-crypto.js';
+import tahuSocialPlugin from '../src/plugins/tahu-social.js';
+import tahuFinancePlugin from '../src/plugins/tahu-finance.js';
+import tahuCurrencyPlugin from '../src/plugins/tahu-currency.js';
+
+
 async function enhancedDemo() {
   console.log('🥘 Enhanced TahuJS Demo Starting...\n');
 
@@ -20,6 +27,13 @@ async function enhancedDemo() {
     // googleMapsApiKey: 'your-google-maps-key',
     // mapboxKey: 'your-mapbox-key'
   });
+
+  // --- NEW: Load plugins ---
+  tahu.use(tahuCryptoPlugin);
+  tahu.use(tahuSocialPlugin);
+  tahu.use(tahuFinancePlugin);
+  tahu.use(tahuCurrencyPlugin);
+
 
   try {
     // Test Enhanced Web Search with fallbacks
@@ -94,6 +108,21 @@ async function enhancedDemo() {
     const coderAgent = tahu.createPrebuiltAgent('coder'); // Uses default name 'CoderAgent'
     const coderResult = await tahu.runAgent('CoderAgent', 'Write a simple Python function to calculate factorial.');
     console.log('Coder Agent:', coderResult.response);
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // --- NEW: Test Plugin Tools ---
+    console.log('🔌 Testing Plugin Tools:');
+    const cryptoPrice = await tahu.useTool('cryptoPrice', 'BTC');
+    console.log('Crypto Price:', cryptoPrice);
+
+    const socialTrends = await tahu.useTool('socialTrends', 'Twitter');
+    console.log('Social Trends:', socialTrends);
+
+    const stockPrice = await tahu.useTool('stockPrice', 'MSFT');
+    console.log('Stock Price:', stockPrice);
+
+    const currencyConversion = await tahu.useTool('convertCurrency', '100 USD to IDR');
+    console.log('Currency Conversion:', currencyConversion);
     console.log('\n' + '='.repeat(50) + '\n');
 
 
