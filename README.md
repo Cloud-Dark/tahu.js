@@ -40,6 +40,8 @@ TahuJS requires API keys to interact with LLM providers and other external servi
 Basic configuration example:
 
 ```javascript
+import { createTahu } from 'tahujs'; // Import as a library
+
 const config = {
   provider: 'openrouter', // Choose 'openrouter', 'openai', 'gemini', or 'ollama'
   apiKey: 'YOUR_API_KEY_HERE', // Replace with your actual API key

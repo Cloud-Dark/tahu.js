@@ -1,6 +1,6 @@
 // example/quick-start.js - Contoh Penggunaan TahuJS Sederhana
 
-import { createTahu } from '../src/tahu.js';
+import { createTahu } from 'tahujs'; // Menggunakan impor gaya library
 
 async function quickStart() {
   console.log('🚀 TahuJS Quick Start Demo\n');

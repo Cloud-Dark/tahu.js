@@ -236,7 +236,7 @@ cd tahujs</pre></div>
             <section id="basic-usage-examples">
                 <h2>Basic Usage Examples</h2>
                 <h3>Creating a TahuJS Instance</h3>
-                <div class="code-block"><pre><code>import { createTahu } from './src/tahu.js';
+                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
 
 const tahu = createTahu({
     provider: 'openrouter',
@@ -246,14 +246,20 @@ const tahu = createTahu({
 });</code></pre></div>
 
                 <h3>Performing AI Chat</h3>
-                <div class="code-block"><pre><code>async function runChat() {
+                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+
+async function runChat() {
+    const tahu = createTahu({ /* your config */ });
     const chatResult = await tahu.chat('Explain the concept of AI briefly.');
     console.log(chatResult.response);
 }
 runChat();</code></pre></div>
 
                 <h3>Using Built-in Tools</h3>
-                <div class="code-block"><pre><code>async function useTools() {
+                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+
+async function useTools() {
+    const tahu = createTahu({ /* your config */ });
     // Web Search
     const searchResult = await tahu.useTool('webSearch', 'latest technology news');
     console.log('Web Search Result:', searchResult);
@@ -285,7 +291,10 @@ runChat();</code></pre></div>
 useTools();</code></pre></div>
 
                 <h3>Creating and Running AI Agents</h3>
-                <div class="code-block"><pre><code>async function runAgentDemo() {
+                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+
+async function runAgentDemo() {
+    const tahu = createTahu({ /* your config */ });
     const travelAgent = tahu.createAgent('TravelExpert', {
         systemPrompt: 'You are a professional travel agent. You help plan trips, find locations, and provide travel advice.',
         capabilities: ['chat', 'search', 'location', 'directions']
@@ -297,7 +306,7 @@ useTools();</code></pre></div>
 runAgentDemo();</code></pre></div>
 
                 <h3>LangChain Integration</h3>
-                <div class="code-block"><pre><code>import { createTahu } from './src/tahu.js';
+                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
 
 async function langchainIntegrationDemo() {
     const tahu = createTahu({

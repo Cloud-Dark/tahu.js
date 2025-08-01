@@ -1,6 +1,6 @@
 // example/demo.js - Demonstrasi Komprehensif Semua Fitur TahuJS
 
-import TahuJS, { createTahu } from '../src/tahu.js';
+import TahuJS, { createTahu } from 'tahujs'; // Menggunakan impor gaya library
 
 // Import plugins (pastikan jalur ini benar jika Anda memindahkan file plugin)
 import tahuCryptoPlugin from '../src/plugins/tahu-crypto.js';
