@@ -7,7 +7,7 @@ TahuJS adalah framework JavaScript yang kuat dan fleksibel untuk membangun aplik
 1.  [Pendahuluan](#pendahuluan)
 2.  [Fitur Utama](#fitur-utama)
 3.  [Ikhtisar Teknologi](#ikhtisar-teknologi)
-4.  [Instalasi](#instalasi)
+4.  [Instalasi](#instalas)
 5.  [Konfigurasi](#konfigurasi)
 6.  [Penggunaan Dasar](#penggunaan-dasar)
     *   [Membuat Instansi TahuJS](#membuat-instansi-tahujs)
@@ -411,71 +411,71 @@ TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda se
     *   **Integrasi**: Untuk menggunakan Supabase, Anda perlu menambahkan integrasi Supabase ke proyek Anda.
         <dyad-add-integration provider="supabase"></dyad-add-integration>
 
-## Daftar Alat Bawaan
+## Built-in Tools List
 
-TahuJS dilengkapi dengan alat-alat yang sudah terdaftar berikut:
+TahuJS comes with the following pre-registered tools:
 
-*   **`webSearch`**: Mencari di web menggunakan beberapa mesin pencari (SerpApi, DuckDuckGo, Google Scraping).
-*   **`calculate`**: Melakukan perhitungan dan ekspresi matematika.
-*   **`findLocation`**: Menemukan lokasi menggunakan beberapa layanan peta dengan tautan dan kode QR.
-*   **`getDirections`**: Mendapatkan petunjuk arah antara dua lokasi. Format input: "dari [asal] ke [tujuan]".
-*   **`getElevation`**: Mendapatkan data ketinggian untuk koordinat geografis tertentu. Format input: "lintang,bujur".
-*   **`webScrape`**: Mengekstrak konten dari halaman web.
-*   **`dateTime`**: Mendapatkan informasi tanggal dan waktu saat ini untuk zona waktu yang ditentukan.
-*   **`summarizeText`**: Meringkas teks yang diberikan menggunakan model AI.
-*   **`trainKnowledge`**: Menambahkan data teks ke basis pengetahuan yang ditentukan.
-*   **`retrieveKnowledge`**: Mengambil informasi yang relevan dari basis pengetahuan yang ditentukan.
+*   **`webSearch`**: Search the web using multiple search engines (SerpApi, DuckDuckGo, Google Scraping).
+*   **`calculate`**: Perform mathematical calculations and expressions.
+*   **`findLocation`**: Find location using multiple map services with links and QR codes.
+*   **`getDirections`**: Get directions between two locations. Input format: "from [origin] to [destination]".
+*   **`getElevation`**: Gets the elevation data for a specific geographic coordinate. Input format: "latitude,longitude".
+*   **`webScrape`**: Extract content from web pages.
+*   **`dateTime`**: Get current date and time information for a specified timezone.
+*   **`summarizeText`**: Summarize a given text using the AI model.
+*   **`trainKnowledge`**: Add text data to a specified knowledge base.
+*   **`retrieveKnowledge`**: Retrieve relevant information from a specified knowledge base.
 
-## Penanganan Kesalahan
+## Error Handling
 
-TahuJS menyediakan penanganan kesalahan yang kuat untuk panggilan LLM dan eksekusi alat, memberikan pesan informatif untuk membantu mendiagnosis masalah.
+TahuJS provides robust error handling for LLM calls and tool executions, giving informative messages to help diagnose issues.
 
-## Kontribusi
+## Contributing
 
-Kami menyambut kontribusi! Lihat [Panduan Kontribusi](./CONTRIBUTING.md) kami untuk detailnya.
+We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for details.
 
-### Pengaturan Pengembangan
+### Development Setup
 
 ```bash
 git clone https://github.com/Cloud-Dark/tahujs.git
 cd tahujs
 npm install
-# Jalankan contoh
+# Run examples
 node example/quick-start.js
 node example/demo.js
 ```
 
-## Lisensi
+## License
 
-Lisensi MIT - lihat file [LICENSE](./LICENSE) untuk detailnya.
+MIT License - see [LICENSE](./LICENSE) file for details.
 
-## Peta Jalan (Roadmap)
+## Roadmap
 
-### Saat Ini (v1.0)
--   ✅ Kerangka agen inti
--   ✅ Integrasi LLM multi-penyedia (OpenRouter, OpenAI, Gemini, Ollama)
--   ✅ Alat bawaan komprehensif (pencarian web, peta, perhitungan, scraping, ringkasan)
--   ✅ Memori persisten (JSON, SQLite)
--   ✅ Alur kerja multi-agen, pemrosesan paralel, dan batch
--   ✅ Sistem plugin
--   ✅ Analitik real-time
--   ✅ Basis Pengetahuan (RAG) dengan dukungan SQLite dan ChromaDB
+### Current (v1.0)
+-   ✅ Core agent framework
+-   ✅ Multi-provider LLM integration (OpenRouter, OpenAI, Gemini, Ollama)
+-   ✅ Comprehensive built-in tools (web search, maps, calculations, scraping, summarization)
+-   ✅ Persistent memory (JSON, SQLite)
+-   ✅ Multi-agent workflows, parallel, and batch processing
+-   ✅ Plugin system
+-   ✅ Real-time analytics
+-   ✅ Knowledge Base (RAG) with SQLite and ChromaDB support
 
-### Berikutnya (v1.1)
--   🔄 Protokol komunikasi agen yang ditingkatkan
--   🔄 Jenis memori yang lebih canggih (misalnya, penyimpanan vektor khusus untuk RAG)
--   🔄 Strategi optimasi biaya yang ditingkatkan
--   🔄 Integrasi yang lebih dalam dengan sumber data eksternal
--   🔄 Integrasi Supabase (PostgreSQL dengan pgvector) untuk basis pengetahuan
+### Next (v1.1)
+-   🔄 Enhanced agent communication protocols
+-   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
+-   🔄 Improved cost optimization strategies
+-   🔄 Deeper integration with external data sources
+-   🔄 Supabase (PostgreSQL with pgvector) integration for knowledge base
 
-### Masa Depan (v2.0)
--   🔄 Dukungan multi-modal (pemrosesan gambar, audio, video)
--   🔄 Kemampuan penalaran tingkat lanjut
--   🔄 Pembuat alur kerja visual (UI)
--   🔄 Alat CLI untuk manajemen dan penyebaran agen
+### Future (v2.0)
+-   🔄 Multi-modal support (image, audio, video processing)
+-   🔄 Advanced reasoning capabilities
+-   🔄 Visual workflow builder (UI)
+-   🔄 CLI tools for agent management and deployment
 
 ---
 
-**Dibangun dengan ❤️ untuk komunitas pengembang AI**
+**Built with ❤️ for the AI developer community**
 
-*TahuJS - Membuat pengembangan AI semudah memasak mie instan* 🍜
+*TahuJS - Making AI development as easy as cooking instant noodles* 🍜

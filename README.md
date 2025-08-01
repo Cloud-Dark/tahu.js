@@ -363,6 +363,7 @@ For more in-depth guides on installation, configuration, API usage, and code exa
 -   ✅ Function calling and extensive tool integration
 -   ✅ Cost tracking and basic analytics
 -   ✅ Robust error handling and configuration validation
+-   ✅ Embedding generation (for RAG)
 
 ### Agent Framework
 -   ✅ Multi-agent orchestration and workflows
