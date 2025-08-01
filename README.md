@@ -397,6 +397,7 @@ npm install
 # Run examples
 node example/quick-start.js
 node example/demo.js
+node example/test_rag.js
 ```
 
 ## License

@@ -26,6 +26,10 @@ TahuJS is a powerful and flexible JavaScript framework for building AI-powered a
 15. [Contributing](#contributing)
 16. [License](#license)
 17. [Roadmap](#roadmap)
+18. [Examples](#examples)
+    *   [Quick Start](#quick-start)
+    *   [Comprehensive Demo](#comprehensive-demo)
+    *   [RAG Demonstration](#rag-demonstration)
 
 ---
 
@@ -68,6 +72,7 @@ TahuJS is built on a foundation of modern and proven technologies:
 *   **Search Services:** Custom `SearchService` (SerpApi, DuckDuckGo, Google scraping).
 *   **Mapping & Location Services:** Custom `MapService` (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).
 *   **Configuration Management:** Custom `ConfigValidator`.
+
 *   **Database:** `better-sqlite3` for SQLite memory persistence and knowledge base.
 *   **Vector Database:** `chromadb` for ChromaDB integration, `@supabase/supabase-js` and `@langchain/supabase` for Supabase integration.
 
@@ -78,8 +83,8 @@ To get started with TahuJS, follow these simple steps:
 1.  **Ensure Node.js is Installed:** TahuJS requires Node.js version 18 or higher.
 2.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/Cloud-Dark/tahujs.git
-    cd tahujs
+    git clone https://github.com/Cloud-Dark/tahu.js.git
+    cd tahu.js
     ```
 3.  **Install Dependencies:**
     ```bash
@@ -124,7 +129,7 @@ const config = {
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 const tahu = createTahu(config);
 ```
 
@@ -133,26 +138,26 @@ const tahu = createTahu(config);
 ### Creating a TahuJS Instance
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 const tahu = createTahu({
-    provider: 'openrouter',
-    apiKey: 'YOUR_API_KEY_HERE',
-    model: 'google/gemini-2.0-flash-exp:free',
-    serpApiKey: 'YOUR_SERPAPI_KEY', // If available
-    embeddingModel: 'text-embedding-ada-002', // Required for knowledge base
+  provider: 'openrouter',
+  apiKey: 'YOUR_API_KEY_HERE',
+  model: 'google/gemini-2.0-flash-exp:free',
+  serpApiKey: 'YOUR_SERPAPI_KEY', // If available
+  embeddingModel: 'text-embedding-ada-002', // Required for knowledge base
 });
 ```
 
 ### Performing AI Chat
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function runChat() {
-    const tahu = createTahu({ /* your config */ });
-    const chatResult = await tahu.chat('Explain the concept of AI briefly.');
-    console.log(chatResult.response);
+  const tahu = createTahu({ /* your config */ });
+  const chatResult = await tahu.chat('Explain the concept of AI briefly.');
+  console.log(chatResult.response);
 }
 runChat();
 ```
@@ -160,42 +165,42 @@ runChat();
 ### Using Tools
 
 ```javascript
-import { createTahu, tools } from 'tahujs';
+import { createTahu, tools } from 'tahu.js';
 
 async function useTools() {
-    const tahu = createTahu({ /* your config */ });
-    // Web Search
-    const searchResult = await tahu.useTool(tools.webSearchTool.name, 'latest technology news');
-    console.log('Web Search Result:', searchResult);
+  const tahu = createTahu({ /* your config */ });
+  // Web Search
+  const searchResult = await tahu.useTool(tools.webSearchTool.name, 'latest technology news');
+  console.log('Web Search Result:', searchResult);
 
-    // Mathematical Calculation
-    const calcResult = await tahu.useTool(tools.calculateTool.name, '15 * 3 + (10 / 2)');
-    console.log('Calculation Result:', calcResult);
+  // Mathematical Calculation
+  const calcResult = await tahu.useTool(tools.calculateTool.name, '15 * 3 + (10 / 2)');
+  console.log('Calculation Result:', calcResult);
 
-    // Location Search
-    const locationResult = await tahu.useTool(tools.findLocationTool.name, 'Eiffel Tower Paris');
-    console.log('Location Info:', locationResult);
+  // Location Search
+  const locationResult = await tahu.useTool(tools.findLocationTool.name, 'Eiffel Tower Paris');
+  console.log('Location Info:', locationResult);
 
-    // Directions
-    const directionsResult = await tahu.useTool(tools.getDirectionsTool.name, 'from Monas to Ragunan Zoo');
-    console.log('Directions:', directionsResult);
+  // Directions
+  const directionsResult = await tahu.useTool(tools.getDirectionsTool.name, 'from Monas to Ragunan Zoo');
+  console.log('Directions:', directionsResult);
 
-    // Elevation
-    const elevationResult = await tahu.useTool(tools.getElevationTool.name, '-6.2088,106.8456'); // Jakarta coordinates
-    console.log('Elevation:', elevationResult);
+  // Elevation
+  const elevationResult = await tahu.useTool(tools.getElevationTool.name, '-6.2088,106.8456'); // Jakarta coordinates
+  console.log('Elevation:', elevationResult);
 
-    // Web Scraping
-    const scrapeResult = await tahu.useTool(tools.webScrapeTool.name, 'https://www.wikipedia.org');
-    console.log('Web Scrape Result:', scrapeResult);
+  // Web Scraping
+  const scrapeResult = await tahu.useTool(tools.webScrapeTool.name, 'https://www.wikipedia.org');
+  console.log('Web Scrape Result:', scrapeResult);
 
-    // Date & Time
-    const dateTimeResult = await tahu.useTool(tools.dateTimeTool.name, 'America/New_York');
-    console.log('Date & Time:', dateTimeResult);
+  // Date & Time
+  const dateTimeResult = await tahu.useTool(tools.dateTimeTool.name, 'America/New_York');
+  console.log('Date & Time:', dateTimeResult);
 
-    // Summarize Text
-    const longText = "This is a very long text that needs to be summarized. It contains a lot of information about various topics, and the purpose is to demonstrate how the summarization tool can work effectively. The longer the text, the more useful this tool becomes for extracting key points and presenting them in a more concise and digestible format. This is particularly helpful in scenarios where you are dealing with large documents, articles, or transcripts and just need a quick overview.";
-    const summaryResult = await tahu.useTool(tools.summarizeTool.name, longText);
-    console.log('Summary Result:', summaryResult);
+  // Summarize Text
+  const longText = "This is a very long text that needs to be summarized. It contains a lot of information about various topics, and the purpose is to demonstrate how the summarization tool can work effectively. The longer the text, the more useful this tool becomes for extracting key points and presenting them in a more concise and digestible format. This is particularly helpful in scenarios where you are dealing with large documents, articles, or transcripts and just need a quick overview.";
+  const summaryResult = await tahu.useTool(tools.summarizeTool.name, longText);
+  console.log('Summary Result:', summaryResult);
 }
 useTools();
 ```
@@ -203,24 +208,24 @@ useTools();
 ### Creating and Running AI Agents
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function runAgentDemo() {
-    const tahu = createTahu({ /* your config */ });
-    const travelAgent = tahu.createAgent('TravelExpert', {
-        systemPrompt: 'You are a professional travel agent. You help plan trips, find locations, and provide travel advice.',
-        capabilities: ['chat', 'search', 'location', 'directions'],
-        memoryType: 'json', // Persist memory to a JSON file
-        maxMemorySize: 5 // Keep last 5 interactions
-    });
+  const tahu = createTahu({ /* your config */ });
+  const travelAgent = tahu.createAgent('TravelExpert', {
+    systemPrompt: 'You are a professional travel agent. You help plan trips, find locations, and provide travel advice.',
+    capabilities: ['chat', 'search', 'location', 'directions'],
+    memoryType: 'json', // Persist memory to a JSON file
+    maxMemorySize: 5 // Keep last 5 interactions
+  });
 
-    const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Bali. Find interesting places to visit and provide directions.');
-    console.log('Travel Agent Result:', travelResult.response);
+  const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Bali. Find interesting places to visit and provide directions.');
+  console.log('Travel Agent Result:', travelResult.response);
 
-    // Use a pre-built agent
-    const coderAgent = tahu.createPrebuiltAgent('coder', { name: 'MyCoderAgent' });
-    const codeResult = await tahu.runAgent('MyCoderAgent', 'Write a simple JavaScript function to reverse a string.');
-    console.log('Coder Agent Result:', codeResult.response);
+  // Use a pre-built agent
+  const coderAgent = tahu.createPrebuiltAgent('coder', { name: 'MyCoderAgent' });
+  const codeResult = await tahu.runAgent('MyCoderAgent', 'Write a simple JavaScript function to reverse a string.');
+  console.log('Coder Agent Result:', codeResult.response);
 }
 runAgentDemo();
 ```
@@ -230,23 +235,23 @@ runAgentDemo();
 TahuJS leverages LangChain.js under the hood, and you can directly create and use LangChain agents for more advanced scenarios.
 
 ```javascript
-import { createTahu } from 'tahujs';
+import { createTahu } from 'tahu.js';
 
 async function langchainIntegrationDemo() {
-    const tahu = createTahu({
-        provider: 'openrouter',
-        apiKey: 'YOUR_API_KEY_HERE',
-        model: 'google/gemini-2.0-flash-exp:free',
-        serpApiKey: 'YOUR_SERPAPI_KEY'
-    });
+  const tahu = createTahu({
+    provider: 'openrouter',
+    apiKey: 'YOUR_API_KEY_HERE',
+    model: 'google/gemini-2.0-flash-exp:free',
+    serpApiKey: 'YOUR_SERPAPI_KEY'
+  });
 
-    const researchAgent = await tahu.createLangChainAgent(
-        'You are a powerful research assistant. You can search the web, find locations, and perform calculations.'
-    );
+  const researchAgent = await tahu.createLangChainAgent(
+    'You are a powerful research assistant. You can search the web, find locations, and perform calculations.'
+  );
 
-    const task = "Find the latest news about AI development in Indonesia, then find the location of Google Indonesia's headquarters and provide its Google Maps link.";
-    const result = await researchAgent.invoke({ input: task });
-    console.log('LangChain Agent Result:', result.output);
+  const task = "Find the latest news about AI development in Indonesia, then find the location of Google Indonesia's headquarters and provide its Google Maps link.";
+  const result = await researchAgent.invoke({ input: task });
+  console.log('LangChain Agent Result:', result.output);
 }
 langchainIntegrationDemo();
 ```
@@ -256,22 +261,22 @@ langchainIntegrationDemo();
 The `AgentBuilder` provides a fluent API to construct and configure agents with various capabilities, personalities, and memory settings.
 
 ```javascript
-import { createTahu, tools } from 'tahujs';
+import { createTahu, tools } from 'tahu.js';
 
 const tahu = createTahu({ /* your config */ });
 
 const omniAgent = tahu.builder()
-    .name('OmniAgent')
-    .systemPrompt('You are an all-knowing AI assistant capable of performing any task using all available tools and remembering past interactions.')
-    .addPersonality(['curious', 'analytical', 'helpful', 'creative'], 'optimistic', ['everything'])
-    .addCapabilities(
-        tools.webSearchTool.name, tools.calculateTool.name, tools.findLocationTool.name, 
-        tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
-        tools.dateTimeTool.name, tools.summarizeTool.name,
-        tools.trainKnowledgeTool.name, tools.retrieveKnowledgeTool.name // New knowledge tools
-    )
-    .addMemory('sqlite', { maxMemorySize: 10 }) // Persist memory to SQLite
-    .build();
+  .name('OmniAgent')
+  .systemPrompt('You are an all-knowing AI assistant capable of performing any task using all available tools and remembering past interactions.')
+  .addPersonality(['curious', 'analytical', 'helpful', 'creative'], 'optimistic', ['everything'])
+  .addCapabilities(
+    tools.webSearchTool.name, tools.calculateTool.name, tools.findLocationTool.name, 
+    tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
+    tools.dateTimeTool.name, tools.summarizeTool.name,
+    tools.trainKnowledgeTool.name, tools.retrieveKnowledgeTool.name // New knowledge tools
+  )
+  .addMemory('sqlite', { maxMemorySize: 10 }) // Persist memory to SQLite
+  .build();
 
 console.log(`Agent '${omniAgent.name}' created. Memory Type: ${omniAgent.memoryType}`);
 console.log('Capabilities:', omniAgent.capabilities.join(', '));
@@ -285,21 +290,15 @@ console.log('OmniAgent Response:', omniResult.response);
 Define and execute complex workflows where different agents collaborate on tasks, with dependencies between them.
 
 ```javascript
-import { createTahu } from 'tahujs';
-
-const tahu = createTahu({ /* your config */ });
-
-tahu.createAgent('WorkflowResearcher', { systemPrompt: 'You are a researcher who gathers information.' });
-tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'You are an analyst who processes research data.' });
-tahu.createAgent('WorkflowWriter', { systemPrompt: 'You are a writer who summarizes analysis results.' });
+tahu.createAgent('DataGatherer', { systemPrompt: 'Gathers raw data.' });
+tahu.createAgent('ReportGenerator', { systemPrompt: 'Generates reports from data.' });
 
 const workflow = tahu.createWorkflow([
-    { agent: 'WorkflowResearcher', task: 'research_ai_trends' },
-    { agent: 'WorkflowAnalyst', task: 'analyze_research', depends: ['research_ai_trends'] },
-    { agent: 'WorkflowWriter', task: 'summarize_analysis', depends: ['analyze_research'] }
+  { agent: 'DataGatherer', task: 'collect_market_data' },
+  { agent: 'ReportGenerator', task: 'create_summary_report', depends: ['collect_market_data'] }
 ]);
 
-const workflowResults = await workflow.execute('Latest AI trends in healthcare.');
+const workflowResults = await workflow.execute('Market trends for renewable energy.');
 console.log('Final Workflow Results:', workflowResults);
 ```
 
@@ -308,26 +307,19 @@ console.log('Final Workflow Results:', workflowResults);
 Efficiently handle multiple LLM calls or agent tasks simultaneously.
 
 ```javascript
-import { createTahu } from 'tahujs';
-
-const tahu = createTahu({ /* your config */ });
-
-// Parallel execution of agent tasks or chat prompts
-const parallelTasks = [
-    { prompt: 'Explain quantum computing briefly.' },
-    { prompt: 'What is the capital of France?' },
-    { agent: 'MySmartResearcherJSON', input: 'Summarize the last research topic.' } // Assuming MySmartResearcherJSON agent exists
-];
-const parallelResults = await tahu.parallel(parallelTasks);
-console.log('Parallel Results:', parallelResults.map(r => r.response || r));
+// Parallel execution of agent tasks
+const parallelResults = await tahu.parallel([
+  { agent: 'MyCoder', input: 'Explain recursion.' },
+  { agent: 'MyResearcher', input: 'What is quantum computing?' }
+]);
+console.log('Parallel Results:', parallelResults.map(r => r.response));
 
 // Simple batch processing of chat prompts
-const batchPrompts = [
-    { prompt: 'Tell a short story about a robot.' },
-    { prompt: 'List 3 benefits of cloud computing.' },
-    { prompt: 'What is the main purpose of blockchain?' }
-];
-const batchResults = await tahu.batch(batchPrompts);
+const batchResults = await tahu.batch([
+  { prompt: 'Tell me a short story about a space cat.' },
+  { prompt: 'List 5 benefits of cloud computing.' },
+  { prompt: 'What is the main purpose of blockchain?' }
+]);
 console.log('Batch Results:', batchResults.map(r => r.response));
 ```
 
@@ -336,24 +328,15 @@ console.log('Batch Results:', batchResults.map(r => r.response));
 TahuJS provides real-time analytics to monitor your LLM usage and performance.
 
 ```javascript
-import { createTahu } from 'tahujs';
-
-const tahu = createTahu({ /* your config */ });
-
-// After some LLM calls or agent runs
+// Get real-time statistics
 const stats = tahu.analytics.getStats();
-console.log('📊 LLM Usage Statistics:');
-console.log(`   Total Requests: ${stats.totalRequests}`);
-console.log(`   Successful Requests: ${stats.successfulRequests}`);
-console.log(`   Failed Requests: ${stats.failedRequests}`);
-console.log(`   Success Rate: ${stats.successRate.toFixed(2)}%`);
-console.log(`   Total Tokens Used: ${stats.totalTokensUsed}`);
-console.log(`   Estimated Total Cost: $${stats.estimatedCost.toFixed(6)}`);
-console.log(`   Total Response Time: ${stats.totalResponseTimeMs.toFixed(2)} ms`);
-console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
+console.log(`Total Tokens Used: ${stats.totalTokensUsed}`);
+console.log(`Estimated Cost: $${stats.estimatedCost.toFixed(6)}`);
+console.log(`Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)} ms`);
+console.log(`Success Rate: ${stats.successRate.toFixed(2)}%`);
 
-// You can also reset the statistics
-// tahu.analytics.resetStats();
+// Reset stats
+tahu.analytics.resetStats();
 ```
 
 ## Plugin System
@@ -361,7 +344,7 @@ console.log(`   Average Response Time: ${stats.averageResponseTimeMs.toFixed(2)}
 Extend TahuJS by creating and loading custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
 
 ```javascript
-import { createTahu, plugins } from 'tahujs';
+import { createTahu, plugins } from 'tahu.js';
 
 const tahu = createTahu({ /* your config */ });
 
@@ -409,7 +392,7 @@ TahuJS allows you to "train" (ingest) your own custom knowledge and retrieve it 
     *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
     *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
     *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
-*   **Supabase (PostgreSQL with pgvector)**:
+*   **Supabase (PostgreSQL dengan pgvector)**:
     *   **Type**: `supabase`
     *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
     *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
@@ -441,12 +424,13 @@ We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for de
 ### Development Setup
 
 ```bash
-git clone https://github.com/Cloud-Dark/tahujs.git
-cd tahujs
+git clone https://github.com/Cloud-Dark/tahu.js.git
+cd tahu.js
 npm install
 # Run examples
 node example/quick-start.js
 node example/demo.js
+node example/test_rag.js
 ```
 
 ## License
