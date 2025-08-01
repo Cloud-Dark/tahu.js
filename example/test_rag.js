@@ -21,7 +21,8 @@ async function ragDemo() {
         provider: 'openrouter', // Bisa juga 'openai', 'gemini', 'ollama'
         apiKey: OPENROUTER_API_KEY,
         model: 'google/gemini-2.0-flash-exp:free',
-        embeddingModel: 'text-embedding-ada-002', // Model embedding yang diperlukan untuk RAG (sesuaikan jika menggunakan provider lain)
+        embeddingProvider: 'openai', // Explicitly set embedding provider
+        embeddingModel: 'text-embedding-ada-002', // Model embedding yang diperlukan untuk RAG
         chromaDbUrl: CHROMA_DB_URL, // Menggunakan ChromaDB untuk contoh ini
     });
 

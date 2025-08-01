@@ -73,48 +73,54 @@ export class LLMManager {
         }
     }
 
-    // New: Initialize embedding model based on provider
+    // New: Initialize embedding model based on embeddingProvider
     initializeEmbeddingModel() {
         try {
-            switch (this.config.provider) {
-                case 'openrouter':
+            const embeddingProvider = this.config.embeddingProvider;
+            const embeddingModelName = this.config.embeddingModel;
+
+            if (!embeddingProvider || !embeddingModelName) {
+                console.warn(chalk.yellow(`⚠️  Embedding model not fully configured (provider: ${embeddingProvider}, model: ${embeddingModelName}). Skipping embedding model initialization.`));
+                this.embeddingModel = null;
+                return;
+            }
+
+            switch (embeddingProvider) {
                 case 'openai':
-                    // OpenRouter and OpenAI can use OpenAIEmbeddings
+                case 'openrouter': // OpenRouter uses OpenAI's embedding API
                     this.embeddingModel = new OpenAIEmbeddings({
-                        openAIApiKey: this.config.apiKey,
-                        configuration: this.config.provider === 'openrouter' ? {
+                        openAIApiKey: this.config.apiKey, // Assuming API key is same for OpenAI embeddings
+                        configuration: embeddingProvider === 'openrouter' ? {
                             baseURL: 'https://openrouter.ai/api/v1',
                             defaultHeaders: {
                                 'HTTP-Referer': this.config.httpReferer,
                                 'X-Title': this.config.xTitle,
                             },
                         } : {},
-                        modelName: this.config.embeddingModel || 'text-embedding-ada-002', // Default embedding model
+                        modelName: embeddingModelName,
                     });
                     break;
                 case 'gemini':
                     this.embeddingModel = new GoogleGenerativeAIEmbeddings({
-                        apiKey: this.config.apiKey,
-                        model: this.config.embeddingModel || 'embedding-001', // Default embedding model
+                        apiKey: this.config.apiKey, // Assuming API key is same for Gemini embeddings
+                        model: embeddingModelName,
                     });
                     break;
                 case 'ollama':
-                    // Ollama embeddings (requires Ollama server to be running with an embedding model like 'nomic-embed-text')
-                    this.embeddingModel = new OpenAIEmbeddings({ // Using OpenAIEmbeddings as a wrapper for Ollama embeddings
+                    this.embeddingModel = new OpenAIEmbeddings({ // LangChain's Ollama embeddings often use OpenAIEmbeddings as a wrapper
                         openAIApiKey: "ollama", // Dummy API key for Ollama
                         configuration: {
                             baseURL: `${this.config.ollamaBaseUrl}/api`,
                         },
-                        modelName: this.config.embeddingModel || 'nomic-embed-text', // Default Ollama embedding model
+                        modelName: embeddingModelName,
                     });
                     break;
                 default:
-                    console.warn(chalk.yellow(`⚠️  No embedding model configured for provider: ${this.config.provider}`));
+                    console.warn(chalk.yellow(`⚠️  Unsupported embedding provider: ${embeddingProvider}. Skipping embedding model initialization.`));
                     this.embeddingModel = null;
+                    return;
             }
-            if (this.embeddingModel) {
-                console.log(`🔗 LangChain embedding model initialized for provider: ${this.config.provider}`);
-            }
+            console.log(`🔗 LangChain embedding model initialized for provider: ${embeddingProvider} with model: ${embeddingModelName}`);
         } catch (error) {
             console.error(chalk.red('❌ Failed to initialize LangChain embedding model:', error.message));
             this.embeddingModel = null;

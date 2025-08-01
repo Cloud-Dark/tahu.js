@@ -32,7 +32,9 @@ class TahuJS {
             ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434',
             httpReferer: config.httpReferer,
             xTitle: config.xTitle,
-            embeddingModel: config.embeddingModel || this._getDefaultEmbeddingModel(config.provider), // Set default embedding model based on provider
+            // New: embeddingProvider allows specifying the provider for embeddings
+            embeddingProvider: config.embeddingProvider || config.provider, 
+            embeddingModel: config.embeddingModel || this._getDefaultEmbeddingModel(config.embeddingProvider || config.provider), // Use embeddingProvider for default model
             chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
             supabaseUrl: config.supabaseUrl, // New: for Supabase URL
             supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
@@ -87,7 +89,7 @@ class TahuJS {
                 return 'embedding-001';
             case 'ollama':
                 return 'nomic-embed-text'; // Common Ollama embedding model
-            case 'openrouter':
+            case 'openrouter': // OpenRouter uses OpenAI's embedding models
             case 'openai':
             default:
                 return 'text-embedding-ada-002'; // Default for OpenAI and OpenRouter

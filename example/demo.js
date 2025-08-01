@@ -28,6 +28,9 @@ async function comprehensiveDemo() {
     provider: 'openrouter',
     apiKey: OPENROUTER_API_KEY,
     model: 'google/gemini-2.0-flash-exp:free', // Or 'anthropic/claude-3-sonnet', 'openai/gpt-4'
+    // httpReferer: 'your-website.com', // Required for OpenRouter if configured
+    // xTitle: 'Your App Name', // Required for OpenRouter if configured
+    embeddingProvider: 'openai', // Explicitly use OpenAI for embeddings
     embeddingModel: 'text-embedding-ada-002', // OpenAI embedding model
     chromaDbUrl: 'http://localhost:8000', // ChromaDB server URL if used
   });
@@ -37,7 +40,8 @@ async function comprehensiveDemo() {
     provider: 'openai',
     apiKey: OPENAI_API_KEY,
     model: 'gpt-3.5-turbo', // Or 'gpt-4'
-    embeddingModel: 'text-embedding-ada-002', // OpenAI embedding model
+    embeddingProvider: 'openai', // Explicitly use OpenAI for embeddings
+    embeddingModel: 'text-embedding-ada-002',
   });
 
   // Gemini with Gemini embedding model
@@ -45,7 +49,8 @@ async function comprehensiveDemo() {
     provider: 'gemini',
     apiKey: GEMINI_API_KEY,
     model: 'gemini-pro',
-    embeddingModel: 'embedding-001', // Gemini embedding model
+    embeddingProvider: 'gemini', // Explicitly use Gemini for embeddings
+    embeddingModel: 'embedding-001',
   });
 
   // Ollama with Ollama embedding model
@@ -53,6 +58,7 @@ async function comprehensiveDemo() {
     provider: 'ollama',
     model: 'llama2', // Ensure this model is downloaded on your Ollama instance
     ollamaBaseUrl: OLLAMA_BASE_URL,
+    embeddingProvider: 'ollama', // Explicitly use Ollama for embeddings
     embeddingModel: 'nomic-embed-text', // Ollama embedding model (ensure it's downloaded)
   });
 
