@@ -1,6 +1,6 @@
 // example/quick-start.js - Contoh Penggunaan TahuJS Sederhana dengan AgentBuilder
 
-import { createTahu } from 'tahujs'; // Menggunakan impor gaya library
+import { createTahu, tools } from 'tahujs'; // Menggunakan impor gaya library
 
 async function quickStart() {
   console.log('🚀 TahuJS Quick Start Demo with AgentBuilder\n');
@@ -26,7 +26,7 @@ async function quickStart() {
     const simpleAgent = tahu.builder()
       .name('SimpleAssistant')
       .systemPrompt('Anda adalah asisten AI yang ramah dan membantu.')
-      .addCapabilities('chat', 'calculate') // Beri agen kemampuan untuk chat dan kalkulasi
+      .addCapabilities(tools.calculateTool.name) // Beri agen kemampuan untuk kalkulasi
       .build();
 
     console.log(`✅ Agen '${simpleAgent.name}' berhasil dibuat.`);

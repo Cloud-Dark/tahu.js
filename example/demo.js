@@ -1,13 +1,6 @@
 // example/demo.js - Demonstrasi Komprehensif Semua Fitur TahuJS
 
-import TahuJS, { createTahu } from 'tahujs'; // Menggunakan impor gaya library
-
-// Import plugins (pastikan jalur ini benar jika Anda memindahkan file plugin)
-import tahuCryptoPlugin from '../src/plugins/tahu-crypto.js';
-import tahuSocialPlugin from '../src/plugins/tahu-social.js';
-import tahuFinancePlugin from '../src/plugins/tahu-finance.js';
-import tahuCurrencyPlugin from '../src/plugins/tahu-currency.js';
-
+import TahuJS, { createTahu, tools, plugins } from 'tahujs'; // Menggunakan impor gaya library
 
 async function comprehensiveDemo() {
   console.log('🥘 TahuJS Comprehensive Demo Starting...\n');
@@ -57,10 +50,10 @@ async function comprehensiveDemo() {
   });
 
   // --- Muat plugin ke instansi OpenRouter (bisa juga ke instansi lain) ---
-  tahuOpenRouter.use(tahuCryptoPlugin);
-  tahuOpenRouter.use(tahuSocialPlugin);
-  tahuOpenRouter.use(tahuFinancePlugin);
-  tahuOpenRouter.use(tahuCurrencyPlugin);
+  tahuOpenRouter.use(plugins.tahuCryptoPlugin);
+  tahuOpenRouter.use(plugins.tahuSocialPlugin);
+  tahuOpenRouter.use(plugins.tahuFinancePlugin);
+  tahuOpenRouter.use(plugins.tahuCurrencyPlugin);
   console.log('🔌 Plugin dimuat secara manual.');
 
   // --- Otomatis temukan plugin dari direktori ---
@@ -195,9 +188,11 @@ async function comprehensiveDemo() {
         .systemPrompt('You are an all-knowing AI assistant capable of performing any task using all available tools and remembering past interactions.')
         .addPersonality(['curious', 'analytical', 'helpful', 'creative'], 'optimistic', ['everything'])
         .addCapabilities(
-            'webSearch', 'calculate', 'findLocation', 'getDirections', 'getElevation', 
-            'webScrape', 'dateTime', 'summarizeText', // Built-in tools
-            'cryptoPrice', 'socialTrends', 'stockPrice', 'convertCurrency' // Plugin tools
+            tools.webSearchTool.name, tools.calculateTool.name, tools.findLocationTool.name, 
+            tools.getDirectionsTool.name, tools.getElevationTool.name, tools.webScrapeTool.name, 
+            tools.dateTimeTool.name, tools.summarizeTool.name, // Built-in tools
+            plugins.tahuCryptoPlugin.name, plugins.tahuSocialPlugin.name, 
+            plugins.tahuFinancePlugin.name, plugins.tahuCurrencyPlugin.name // Plugin tools
         )
         .addMemory('json', { maxMemorySize: 10, memoryPath: './omni_agent_memory.json' })
         .build();
