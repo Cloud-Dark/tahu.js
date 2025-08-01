@@ -26,23 +26,30 @@ Welcome to the enhanced version of TahuJS! This update brings significant improv
 
 ## 🆕 New Features
 
+### 🌐 Multi-AI Provider Support
+TahuJS now seamlessly integrates with multiple Large Language Model (LLM) providers, allowing you to choose the best fit for your application:
+-   **OpenRouter**: Access a wide range of models (Claude, GPT, Gemini, etc.) via a single API.
+-   **OpenAI**: Direct integration with OpenAI's powerful models (GPT-3.5, GPT-4).
+-   **Google Gemini**: Leverage Google's Gemini models directly.
+-   **Ollama**: Connect to local or remote Ollama instances for running open-source models.
+
 ### 🔍 Enhanced Web Search
-- **3 Fallback Methods**: SerpApi → DuckDuckGo → Google Scraping 🌐✨
-- **Smart Retry Logic**: Automatically tries next method if one fails 🔄
-- **Better Results**: More accurate and comprehensive search results ✅
+-   **3 Fallback Methods**: SerpApi → DuckDuckGo → Google Scraping 🌐✨
+-   **Smart Retry Logic**: Automatically tries next method if one fails 🔄
+-   **Better Results**: More accurate and comprehensive search results ✅
 
 ### 🗺️ Advanced Map Services
-- **Multiple Map Providers**: OpenStreetMap, Google Maps, Bing Maps, WikiMapia, Apple Maps 📍🌍
-- **QR Code Generation**: Instant QR codes for sharing locations 📱
-- **Elevation Data**: Get altitude information for any location ⛰️
-- **Static Maps**: Generate map images 🖼️
-- **Directions**: Multi-provider direction links 🛣️
+-   **Multiple Map Providers**: OpenStreetMap, Google Maps, Bing Maps, WikiMapia, Apple Maps 📍🌍
+-   **QR Code Generation**: Instant QR codes for sharing locations 📱
+-   **Elevation Data**: Get altitude information for any location ⛰️
+-   **Static Maps**: Generate map images 🖼️
+-   **Directions**: Multi-provider direction links 🛣️
 
 ### 🛠️ Improved Tools
-- **Enhanced Error Handling**: Better error messages and fallbacks 🛡️
-- **Visual Feedback**: Colored console output with emojis 🎨
-- **Performance Optimized**: Faster response times 🚀
-- **More Reliable**: Multiple fallbacks for each service 💪
+-   **Enhanced Error Handling**: Better error messages and fallbacks 🛡️
+-   **Visual Feedback**: Colored console output with emojis 🎨
+-   **Performance Optimized**: Faster response times 🚀
+-   **More Reliable**: Multiple fallbacks for each service 💪
 
 ## 🚀 Quick Start
 
@@ -55,24 +62,23 @@ npm install tahujs
 ```javascript
 import { createTahu } from 'tahujs';
 
-const tahu = createTahu({
-  provider: 'openrouter',
-  apiKey: 'your-api-key',
-  serpApiKey: 'your-serpapi-key', // Optional for better search
-  googleMapsApiKey: 'your-google-maps-key' // Optional for enhanced maps
+// Example with OpenAI
+const tahuOpenAI = createTahu({
+  provider: 'openai',
+  apiKey: 'your-openai-api-key',
+  model: 'gpt-3.5-turbo'
 });
+const chatResult = await tahuOpenAI.chat('Explain the concept of AI briefly.');
+console.log(chatResult.response);
 
-// Enhanced search with fallbacks
-const searchResult = await tahu.useTool('webSearch', 'latest AI news');
-console.log(searchResult);
-
-// Advanced location search with QR codes
-const locationResult = await tahu.useTool('findLocation', 'Jakarta');
-console.log(locationResult);
-
-// Get directions between locations
-const directions = await tahu.useTool('getDirections', 'from Jakarta to Bandung');
-console.log(directions);
+// Example with Ollama (ensure Ollama server is running locally)
+const tahuOllama = createTahu({
+  provider: 'ollama',
+  model: 'llama2', // Ensure this model is downloaded in your Ollama instance
+  ollamaBaseUrl: 'http://localhost:11434' // Default Ollama URL
+});
+const ollamaResult = await tahuOllama.chat('What is the capital of France?');
+console.log(ollamaResult.response);
 ```
 
 ## 🎯 Use Cases
@@ -124,14 +130,21 @@ Customize TahuJS to fit your needs:
 
 ```javascript
 const config = {
-  // Required
-  provider: 'openrouter', // or 'gemini'
-  apiKey: 'your-api-key',
+  // Required for most providers
+  provider: 'openrouter', // 'openrouter', 'gemini', 'openai', 'ollama'
+  apiKey: 'your-api-key', // Not needed for Ollama if running locally without auth
   
   // Optional AI settings
-  model: 'anthropic/claude-3-sonnet',
+  model: 'anthropic/claude-3-sonnet', // Model name varies by provider
   temperature: 0.7,
   maxTokens: 2000,
+
+  // Specific to OpenRouter
+  httpReferer: 'your-website.com', // If configured in OpenRouter
+  xTitle: 'Your App Name', // If configured in OpenRouter
+
+  // Specific to Ollama
+  ollamaBaseUrl: 'http://localhost:11434', // Default Ollama API URL
   
   // Optional service keys for enhanced features
   serpApiKey: 'your-serpapi-key', // Better web search
@@ -142,29 +155,30 @@ const config = {
 
 ## 🌟 Why Choose Enhanced TahuJS?
 
-- **🔄 Fallback Systems**: Never fails due to single service outage
-- **🎯 Multi-Provider**: Best of all worlds with multiple service providers
-- **📱 Modern UX**: QR codes, colored output, visual feedback
-- **🚀 Performance**: Optimized for speed and reliability
-- **🛡️ Robust**: Extensive error handling and validation
-- **📊 Comprehensive**: Complete toolkit for AI agents
+-   **🔄 Fallback Systems**: Never fails due to single service outage
+-   **🎯 Multi-Provider**: Best of all worlds with multiple service providers
+-   **📱 Modern UX**: QR codes, colored output, visual feedback
+-   **🚀 Performance**: Optimized for speed and reliability
+-   **🛡️ Robust**: Extensive error handling and validation
+-   **📊 Comprehensive**: Complete toolkit for AI agents
 
 ## 🎉 Ready to Use!
 
 The enhanced TahuJS now includes:
-- ✅ 3-tier web search fallback system
-- ✅ Multiple map service providers
-- ✅ QR code generation for locations
-- ✅ Elevation data integration
-- ✅ Enhanced error handling
-- ✅ Visual feedback and logging
-- ✅ Configuration validation
-- ✅ Complete workflow examples
-- ✅ **Persistent Agent Memory**: Save agent conversations to JSON files or SQLite database.
-- ✅ **Multi-Agent Workflows**: Orchestrate sequences of agent tasks with dependencies.
-- ✅ **Parallel Processing**: Run multiple agent tasks or chat prompts concurrently.
-- ✅ **Simple Batch Processing**: Process multiple chat prompts in parallel.
-- ✅ **Configurable Short-Term Memory**: Limit the in-memory conversation history for agents.
-- ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
+-   ✅ 3-tier web search fallback system
+-   ✅ Multiple map service providers
+-   ✅ QR code generation for locations
+-   ✅ Elevation data integration
+-   ✅ Enhanced error handling
+-   ✅ Visual feedback and logging
+-   ✅ Configuration validation
+-   ✅ Complete workflow examples
+-   ✅ **Persistent Agent Memory**: Save agent conversations to JSON files or SQLite database.
+-   ✅ **Multi-Agent Workflows**: Orchestrate sequences of agent tasks with dependencies.
+-   **NEW**: ✅ **Parallel Processing**: Run multiple agent tasks or chat prompts concurrently.
+-   **NEW**: ✅ **Simple Batch Processing**: Process multiple chat prompts in parallel.
+-   ✅ **Configurable Short-Term Memory**: Limit the in-memory conversation history for agents.
+-   **NEW**: ✅ **Automatic Plugin Discovery**: Load all plugins from a directory with `tahu.loadPlugins()`.
+-   **NEW**: ✅ **Support for OpenAI, Gemini, OpenRouter, and Ollama LLM providers.**
 
 Perfect for production use! 🚀

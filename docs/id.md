@@ -26,23 +26,30 @@ Selamat datang di versi TahuJS yang ditingkatkan! Pembaruan ini membawa peningka
 
 ## 🆕 Fitur Baru
 
+### 🌐 Dukungan Multi-Penyedia AI
+TahuJS sekarang terintegrasi dengan mulus dengan beberapa penyedia Large Language Model (LLM), memungkinkan Anda memilih yang paling sesuai untuk aplikasi Anda:
+-   **OpenRouter**: Akses berbagai model (Claude, GPT, Gemini, dll.) melalui satu API.
+-   **OpenAI**: Integrasi langsung dengan model-model canggih OpenAI (GPT-3.5, GPT-4).
+-   **Google Gemini**: Manfaatkan model Gemini Google secara langsung.
+-   **Ollama**: Sambungkan ke instansi Ollama lokal atau jarak jauh untuk menjalankan model open-source.
+
 ### 🔍 Pencarian Web yang Ditingkatkan
-- **3 Metode Fallback**: SerpApi → DuckDuckGo → Google Scraping 🌐✨
-- **Logika Coba Ulang Cerdas**: Secara otomatis mencoba metode berikutnya jika salah satu gagal 🔄
-- **Hasil Lebih Baik**: Hasil pencarian yang lebih akurat dan komprehensif ✅
+-   **3 Metode Fallback**: SerpApi → DuckDuckGo → Google Scraping 🌐✨
+-   **Logika Coba Ulang Cerdas**: Secara otomatis mencoba metode berikutnya jika salah satu gagal 🔄
+-   **Hasil Lebih Baik**: Hasil pencarian yang lebih akurat dan komprehensif ✅
 
 ### 🗺️ Layanan Peta Tingkat Lanjut
-- **Beberapa Penyedia Peta**: OpenStreetMap, Google Maps, Bing Maps, WikiMapia, Apple Maps 📍🌍
-- **Pembuatan Kode QR**: Kode QR instan untuk berbagi lokasi 📱
-- **Data Ketinggian**: Dapatkan informasi ketinggian untuk lokasi mana pun ⛰️
-- **Peta Statis**: Hasilkan gambar peta 🖼️
-- **Petunjuk Arah**: Tautan petunjuk arah multi-penyedia 🛣️
+-   **Beberapa Penyedia Peta**: OpenStreetMap, Google Maps, Bing Maps, WikiMapia, Apple Maps 📍🌍
+-   **Pembuatan Kode QR**: Kode QR instan untuk berbagi lokasi 📱
+-   **Data Ketinggian**: Dapatkan informasi ketinggian untuk lokasi mana pun ⛰️
+-   **Peta Statis**: Hasilkan gambar peta 🖼️
+-   **Petunjuk Arah**: Tautan petunjuk arah multi-penyedia 🛣️
 
 ### 🛠️ Alat yang Ditingkatkan
-- **Penanganan Kesalahan yang Ditingkatkan**: Pesan kesalahan dan fallback yang lebih baik 🛡️
-- **Umpan Balik Visual**: Output konsol berwarna dengan emoji 🎨
-- **Performa Dioptimalkan**: Waktu respons lebih cepat 🚀
-- **Lebih Andal**: Beberapa fallback untuk setiap layanan 💪
+-   **Penanganan Kesalahan yang Ditingkatkan**: Pesan kesalahan dan fallback yang lebih baik 🛡️
+-   **Umpan Balik Visual**: Output konsol berwarna dengan emoji 🎨
+-   **Performa Dioptimalkan**: Waktu respons lebih cepat 🚀
+-   **Lebih Andal**: Beberapa fallback untuk setiap layanan 💪
 
 ## 🚀 Mulai Cepat
 
@@ -55,24 +62,23 @@ npm install tahujs
 ```javascript
 import { createTahu } from 'tahujs';
 
-const tahu = createTahu({
-  provider: 'openrouter',
-  apiKey: 'kunci-api-anda',
-  serpApiKey: 'kunci-serpapi-anda', // Opsional untuk pencarian yang lebih baik
-  googleMapsApiKey: 'kunci-google-maps-anda' // Opsional untuk peta yang ditingkatkan
+// Contoh dengan OpenAI
+const tahuOpenAI = createTahu({
+  provider: 'openai',
+  apiKey: 'kunci-api-openai-anda',
+  model: 'gpt-3.5-turbo'
 });
+const chatResult = await tahuOpenAI.chat('Jelaskan konsep keterikatan kuantum secara sederhana.');
+console.log(chatResult.response);
 
-// Pencarian yang ditingkatkan dengan fallback
-const searchResult = await tahu.useTool('webSearch', 'berita AI terbaru');
-console.log(searchResult);
-
-// Pencarian lokasi tingkat lanjut dengan kode QR
-const locationResult = await tahu.useTool('findLocation', 'Jakarta');
-console.log(locationResult);
-
-// Dapatkan petunjuk arah antar lokasi
-const directions = await tahu.useTool('getDirections', 'from Jakarta to Bandung');
-console.log(directions);
+// Contoh dengan Ollama (pastikan server Ollama berjalan secara lokal)
+const tahuOllama = createTahu({
+  provider: 'ollama',
+  model: 'llama2', // Pastikan model ini diunduh di instansi Ollama Anda
+  ollamaBaseUrl: 'http://localhost:11434' // URL Ollama default
+});
+const ollamaResult = await tahuOllama.chat('Apa ibu kota Prancis?');
+console.log(ollamaResult.response);
 ```
 
 ## 🎯 Kasus Penggunaan
@@ -124,14 +130,21 @@ Sesuaikan TahuJS agar sesuai dengan kebutuhan Anda:
 
 ```javascript
 const config = {
-  // Wajib
-  provider: 'openrouter', // atau 'gemini'
-  apiKey: 'kunci-api-anda',
+  // Wajib untuk sebagian besar penyedia
+  provider: 'openrouter', // 'openrouter', 'gemini', 'openai', 'ollama'
+  apiKey: 'kunci-api-anda', // Tidak diperlukan untuk Ollama jika berjalan secara lokal tanpa otentikasi
   
   // Pengaturan AI opsional
-  model: 'anthropic/claude-3-sonnet',
+  model: 'anthropic/claude-3-sonnet', // Nama model bervariasi berdasarkan penyedia
   temperature: 0.7,
   maxTokens: 2000,
+
+  // Khusus untuk OpenRouter
+  httpReferer: 'situs-web-anda.com', // Jika dikonfigurasi di OpenRouter
+  xTitle: 'Nama Aplikasi Anda', // Jika dikonfigurasi di OpenRouter
+
+  // Khusus untuk Ollama
+  ollamaBaseUrl: 'http://localhost:11434', // URL API Ollama default
   
   // Kunci layanan opsional untuk fitur yang ditingkatkan
   serpApiKey: 'kunci-serpapi-anda', // Pencarian web yang lebih baik
@@ -142,29 +155,30 @@ const config = {
 
 ## 🌟 Mengapa Memilih TahuJS yang Ditingkatkan?
 
-- **🔄 Sistem Fallback**: Tidak pernah gagal karena satu layanan mati
-- **🎯 Multi-Penyedia**: Yang terbaik dari semua dunia dengan beberapa penyedia layanan
-- **📱 UX Modern**: Kode QR, output berwarna, umpan balik visual
-- **🚀 Performa**: Dioptimalkan untuk kecepatan dan keandalan
-- **🛡️ Tangguh**: Penanganan kesalahan dan validasi yang ekstensif
-- **📊 Komprehensif**: Toolkit lengkap untuk agen AI
+-   **🔄 Sistem Fallback**: Tidak pernah gagal karena satu layanan mati
+-   **🎯 Multi-Penyedia**: Yang terbaik dari semua dunia dengan beberapa penyedia layanan
+-   **📱 UX Modern**: Kode QR, output berwarna, umpan balik visual
+-   **🚀 Performa**: Dioptimalkan untuk kecepatan dan keandalan
+-   **🛡️ Tangguh**: Penanganan kesalahan dan validasi yang ekstensif
+-   **📊 Komprehensif**: Toolkit lengkap untuk agen AI
 
 ## 🎉 Siap Digunakan!
 
 TahuJS yang ditingkatkan sekarang mencakup:
-- ✅ Sistem fallback pencarian web 3-tingkat
-- ✅ Beberapa penyedia layanan peta
-- ✅ Pembuatan kode QR untuk lokasi
-- ✅ Integrasi data ketinggian
-- ✅ Penanganan kesalahan yang ditingkatkan
-- ✅ Umpan balik visual dan logging
-- ✅ Validasi konfigurasi
-- ✅ Contoh alur kerja lengkap
-- ✅ **Memori Agen Persisten**: Simpan percakapan agen ke file JSON atau database SQLite.
-- ✅ **Alur Kerja Multi-Agen**: Mengatur urutan tugas agen dengan dependensi.
-- ✅ **Pemrosesan Paralel**: Menjalankan beberapa tugas agen atau prompt chat secara bersamaan.
-- ✅ **Pemrosesan Batch Sederhana**: Memproses beberapa prompt chat secara paralel.
-- ✅ **Memori Jangka Pendek yang Dapat Dikonfigurasi**: Batasi riwayat percakapan dalam memori untuk agen.
-- ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
+-   ✅ Sistem fallback pencarian web 3-tingkat
+-   ✅ Beberapa penyedia layanan peta
+-   ✅ Pembuatan kode QR untuk lokasi
+-   ✅ Integrasi data ketinggian
+-   ✅ Penanganan kesalahan yang ditingkatkan
+-   ✅ Umpan balik visual dan logging
+-   ✅ Validasi konfigurasi
+-   ✅ Contoh alur kerja lengkap
+-   ✅ **Memori Agen Persisten**: Simpan percakapan agen ke file JSON atau database SQLite.
+-   ✅ **Alur Kerja Multi-Agen**: Mengatur urutan tugas agen dengan dependensi.
+-   **BARU**: ✅ **Pemrosesan Paralel**: Menjalankan beberapa tugas agen atau prompt chat secara bersamaan.
+-   **BARU**: ✅ **Pemrosesan Batch Sederhana**: Memproses beberapa prompt chat secara paralel.
+-   ✅ **Memori Jangka Pendek yang Dapat Dikonfigurasi**: Batasi riwayat percakapan dalam memori untuk agen.
+-   **BARU**: ✅ **Penemuan Plugin Otomatis**: Muat semua plugin dari direktori dengan `tahu.loadPlugins()`.
+-   **BARU**: ✅ **Dukungan untuk penyedia LLM OpenAI, Gemini, OpenRouter, dan Ollama.**
 
 Sempurna untuk penggunaan produksi! 🚀

@@ -11,33 +11,84 @@ import tahuCurrencyPlugin from '../src/plugins/tahu-currency.js';
 async function enhancedDemo() {
   console.log('🥘 Enhanced TahuJS Demo Starting...\n');
 
-  const API_KEY = 'sk-or-v1-XXXXXXXXXXXXX'; // Replace with your real API key
-  
-  if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
-    console.error('❌ Please set your API key!');
-    return;
-  }
+  // --- IMPORTANT: Replace with your actual API keys or ensure Ollama is running ---
+  const OPENROUTER_API_KEY = 'sk-or-v1-XXXXXXXXXXXXX'; 
+  const OPENAI_API_KEY = 'sk-XXXXXXXXXXXXX'; 
+  const GEMINI_API_KEY = 'AIzaSyXXXXXXXXXXXXX'; 
+  const OLLAMA_BASE_URL = 'http://localhost:11434'; // Default Ollama URL
 
-  const tahu = createTahu({
+  // --- Example 1: Using OpenRouter ---
+  console.log('--- Testing with OpenRouter ---');
+  const tahuOpenRouter = createTahu({
     provider: 'openrouter',
-    apiKey: API_KEY,
-      model: 'google/gemini-2.0-flash-exp:free',
-    // Optional: Add these for enhanced features
-    // serpApiKey: 'your-serpapi-key',
-    // googleMapsApiKey: 'your-google-maps-key',
-    // mapboxKey: 'your-mapbox-key'
+    apiKey: OPENROUTER_API_KEY,
+    model: 'google/gemini-2.0-flash-exp:free', // Or 'anthropic/claude-3-sonnet', 'openai/gpt-4'
+    // httpReferer: 'your-website.com', // Required for OpenRouter if set
+    // xTitle: 'Your App Name', // Required for OpenRouter if set
   });
+  tahuOpenRouter.use(tahuCryptoPlugin); // Plugins can be used with any instance
+  tahuOpenRouter.loadPlugins('./src/plugins'); // Auto-discover plugins
 
-  // --- NEW: Load plugins ---
-  tahu.use(tahuCryptoPlugin);
-  tahu.use(tahuSocialPlugin);
-  tahu.use(tahuFinancePlugin);
-  tahu.use(tahuCurrencyPlugin);
+  try {
+    const chatResultOpenRouter = await tahuOpenRouter.chat('Explain the concept of quantum entanglement in simple terms.');
+    console.log('OpenRouter Chat:', chatResultOpenRouter.response);
+    const cryptoPriceOpenRouter = await tahuOpenRouter.useTool('cryptoPrice', 'ETH');
+    console.log('OpenRouter Crypto Price:', cryptoPriceOpenRouter);
+  } catch (error) {
+    console.error('❌ OpenRouter Demo Error:', error.message);
+  }
+  console.log('\n' + '='.repeat(50) + '\n');
 
-  // --- NEW: Auto-discover plugins from a directory ---
-  console.log('🔌 Attempting to auto-discover plugins from ./src/plugins...');
-  tahu.loadPlugins('./src/plugins');
+  // --- Example 2: Using OpenAI ---
+  console.log('--- Testing with OpenAI ---');
+  const tahuOpenAI = createTahu({
+    provider: 'openai',
+    apiKey: OPENAI_API_KEY,
+    model: 'gpt-3.5-turbo', // Or 'gpt-4'
+  });
+  try {
+    const chatResultOpenAI = await tahuOpenAI.chat('What are the main benefits of using cloud computing?');
+    console.log('OpenAI Chat:', chatResultOpenAI.response);
+  } catch (error) {
+    console.error('❌ OpenAI Demo Error:', error.message);
+  }
+  console.log('\n' + '='.repeat(50) + '\n');
 
+  // --- Example 3: Using Gemini (Google Generative AI) ---
+  console.log('--- Testing with Gemini ---');
+  const tahuGemini = createTahu({
+    provider: 'gemini',
+    apiKey: GEMINI_API_KEY,
+    model: 'gemini-pro',
+  });
+  try {
+    const chatResultGemini = await tahuGemini.chat('Tell me a short, inspiring story about innovation.');
+    console.log('Gemini Chat:', chatResultGemini.response);
+  } catch (error) {
+    console.error('❌ Gemini Demo Error:', error.message);
+  }
+  console.log('\n' + '='.repeat(50) + '\n');
+
+  // --- Example 4: Using Ollama (ensure Ollama server is running locally) ---
+  console.log('--- Testing with Ollama ---');
+  const tahuOllama = createTahu({
+    provider: 'ollama',
+    model: 'llama2', // Ensure this model is downloaded in your Ollama instance
+    ollamaBaseUrl: OLLAMA_BASE_URL,
+  });
+  try {
+    const chatResultOllama = await tahuOllama.chat('What is the capital of France?');
+    console.log('Ollama Chat:', chatResultOllama.response);
+  } catch (error) {
+    console.error('❌ Ollama Demo Error:', error.message);
+    console.log('💡 Make sure Ollama server is running and the model (e.g., "llama2") is downloaded.');
+  }
+  console.log('\n' + '='.repeat(50) + '\n');
+
+
+  // --- Existing Demo Features (can be run with any configured tahu instance, e.g., tahuOpenRouter) ---
+  console.log('--- Testing Existing Features with OpenRouter instance ---');
+  const tahu = tahuOpenRouter; // Use one of the initialized instances for the rest of the demo
 
   try {
     // Test Enhanced Web Search with fallbacks
@@ -76,11 +127,11 @@ async function enhancedDemo() {
     console.log(scrapeResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // Test AI Chat
-      console.log('💬 Testing AI Chat:');
-    const chatResult = await tahu.chat('Tell me about the weather in Jakarta and search for current weather information');
-    console.log(chatResult.response);
-    console.log('\n' + '='.repeat(50) + '\n');
+    // Test AI Chat (already tested above, but keeping for completeness)
+    // console.log('💬 Testing AI Chat:');
+    // const chatResult = await tahu.chat('Tell me about the weather in Jakarta and search for current weather information');
+    // console.log(chatResult.response);
+    // console.log('\n' + '='.repeat(50) + '\n');
 
     // Create specialized agents
     console.log('🤖 Testing Specialized Agents:');

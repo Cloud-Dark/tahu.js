@@ -13,6 +13,8 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { DynamicTool } from "@langchain/community/tools/dynamic";
 import { AgentExecutor, createReactAgent } from "langchain/agents";
 import { pull } from "langchain/hub";
+import { HumanMessage, AIMessage } from "langchain/schema"; // NEW: Import message types
+import { ChatOllama } from "@langchain/community/chat_models/ollama"; // NEW: Import Ollama chat model
 
 // Import services
 import { SearchService } from './services/search-service.js';
@@ -31,7 +33,7 @@ import { dateTimeTool } from './tools/date-time-tool.js';
 class TahuJS {
     constructor(config = {}) {
         this.config = {
-            provider: config.provider || 'openrouter',
+            provider: config.provider || 'openrouter', // 'openrouter', 'gemini', 'openai', 'ollama'
             apiKey: config.apiKey,
             model: config.model || 'google/gemini-2.0-flash-exp:free',
             temperature: config.temperature || 0.7,
@@ -39,10 +41,13 @@ class TahuJS {
             googleMapsApiKey: config.googleMapsApiKey,
             serpApiKey: config.serpApiKey,
             mapboxKey: config.mapboxKey,
+            ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434', // Default for Ollama
+            httpReferer: config.httpReferer, // For OpenRouter
+            xTitle: config.xTitle, // For OpenRouter
             ...config
         };
 
-        if (!this.config.apiKey) {
+        if (!this.config.apiKey && this.config.provider !== 'ollama') {
             console.warn('⚠️  Warning: API key not provided. Some features may not work.');
         }
 
@@ -83,33 +88,54 @@ class TahuJS {
 
         // Initialize Chat Model based on provider
         try {
-            if (this.config.provider === 'openrouter') {
-                this.langchain.chatModel = new ChatOpenAI({
-                    modelName: this.config.model,
-                    temperature: this.config.temperature,
-                    maxTokens: this.config.maxTokens,
-                    openAIApiKey: this.config.apiKey,
-                    configuration: {
-                        baseURL: 'https://openrouter.ai/api/v1',
-                        defaultHeaders: {
-                            'HTTP-Referer': this.config.httpReferer,
-                            'X-Title': this.config.xTitle,
+            switch (this.config.provider) {
+                case 'openrouter':
+                    this.langchain.chatModel = new ChatOpenAI({
+                        modelName: this.config.model,
+                        temperature: this.config.temperature,
+                        maxTokens: this.config.maxTokens,
+                        openAIApiKey: this.config.apiKey,
+                        configuration: {
+                            baseURL: 'https://openrouter.ai/api/v1',
+                            defaultHeaders: {
+                                'HTTP-Referer': this.config.httpReferer,
+                                'X-Title': this.config.xTitle,
+                            },
                         },
-                    },
-                });
-            } else if (this.config.provider === 'gemini') {
-                // Note: Gemini model names might differ in LangChain
-                const modelName = this.config.model.includes('gemini') ? "gemini-pro" : this.config.model;
-                this.langchain.chatModel = new ChatGoogleGenerativeAI({
-                    modelName: modelName,
-                    apiKey: this.config.apiKey,
-                    temperature: this.config.temperature,
-                    maxOutputTokens: this.config.maxTokens,
-                });
+                    });
+                    break;
+                case 'gemini':
+                    const geminiModelName = this.config.model.includes('gemini') ? "gemini-pro" : this.config.model;
+                    this.langchain.chatModel = new ChatGoogleGenerativeAI({
+                        modelName: geminiModelName,
+                        apiKey: this.config.apiKey,
+                        temperature: this.config.temperature,
+                        maxOutputTokens: this.config.maxTokens,
+                    });
+                    break;
+                case 'openai':
+                    this.langchain.chatModel = new ChatOpenAI({
+                        modelName: this.config.model,
+                        temperature: this.config.temperature,
+                        maxTokens: this.config.maxTokens,
+                        openAIApiKey: this.config.apiKey,
+                    });
+                    break;
+                case 'ollama':
+                    this.langchain.chatModel = new ChatOllama({
+                        baseUrl: this.config.ollamaBaseUrl,
+                        model: this.config.model,
+                        temperature: this.config.temperature,
+                        maxTokens: this.config.maxTokens,
+                    });
+                    break;
+                default:
+                    throw new Error(`Unsupported provider: ${this.config.provider}`);
             }
-            console.log('🔗 LangChain components initialized.');
+            console.log(`🔗 LangChain chat model initialized for provider: ${this.config.provider}`);
         } catch (error) {
-            console.error('❌ Failed to initialize LangChain components:', error.message);
+            console.error('❌ Failed to initialize LangChain chat model:', error.message);
+            this.langchain.chatModel = null; // Ensure it's null if initialization fails
         }
     }
 
@@ -167,8 +193,8 @@ class TahuJS {
     }
 
     async chat(message, options = {}) {
-        if (!this.config.apiKey) {
-            throw new Error('API key is required. Please set apiKey in config.');
+        if (!this.langchain.chatModel) {
+            throw new Error('TahuJS chat model is not initialized. Check your configuration and API key/Ollama setup.');
         }
 
         const conversation = options.conversationId || 'default';
@@ -180,88 +206,61 @@ class TahuJS {
         const history = this.conversations.get(conversation);
         history.push({ role: 'user', content: message });
 
-        try {
-            let response;
-
-            if (this.config.provider === 'openrouter') {
-                response = await this.callOpenRouter(history, options);
-            } else if (this.config.provider === 'gemini') {
-                response = await this.callGemini(history, options);
-            } else {
-                throw new Error(`Unsupported provider: ${this.config.provider}`);
+        // Convert history to LangChain message format
+        const lcMessages = history.map(msg => {
+            if (msg.role === 'user') {
+                return new HumanMessage({ content: msg.content });
+            } else if (msg.role === 'assistant') {
+                return new AIMessage({ content: msg.content });
             }
+            return null; // Should not happen with 'user' and 'assistant' roles
+        }).filter(Boolean);
 
-            history.push({ role: 'assistant', content: response });
+        try {
+            console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
+            const response = await this.langchain.chatModel.invoke(lcMessages, {
+                temperature: options.temperature || this.config.temperature,
+                maxTokens: options.maxTokens || this.config.maxTokens,
+            });
 
-            // This part is a placeholder for actual tool call processing
-            const processedResponse = response;
+            const responseContent = response.content;
+            history.push({ role: 'assistant', content: responseContent });
 
             return {
-                response: processedResponse,
+                response: responseContent,
                 conversationId: conversation,
-                tokenUsage: options.includeUsage ? this.estimateTokens(message + processedResponse) : undefined
+                // LangChain models might provide token usage in different ways,
+                // this is a simplified estimate for now.
+                tokenUsage: options.includeUsage ? this.estimateTokens(message + responseContent) : undefined
             };
 
         } catch (error) {
-            if (error.response?.status === 401) {
-                throw new Error(`Authentication failed. Please check your API key for ${this.config.provider}.`);
-            } else if (error.response?.status === 429) {
-                throw new Error('Rate limit exceeded. Please try again later.');
-            } else if (error.response?.status === 402) {
-                throw new Error('Insufficient credits. Please check your account balance.');
+            // Generic error handling for LangChain model calls
+            console.error(chalk.red(`❌ LLM Chat Error (${this.config.provider}):`), error);
+            let errorMessage = `TahuJS Chat Error with ${this.config.provider}: ${error.message}`;
+
+            // Attempt to parse common API errors from LangChain's underlying errors
+            if (error.response) {
+                if (error.response.status === 401) {
+                    errorMessage = `Authentication failed. Please check your API key for ${this.config.provider}.`;
+                } else if (error.response.status === 429) {
+                    errorMessage = 'Rate limit exceeded. Please try again later.';
+                } else if (error.response.status === 402) {
+                    errorMessage = 'Insufficient credits. Please check your account balance.';
+                } else if (error.response.status === 403 && this.config.provider === 'openrouter') {
+                    errorMessage = `Request Forbidden (403). Check your 'httpReferer' and 'xTitle' settings in the TahuJS config for OpenRouter.`;
+                } else if (error.response.data && error.response.data.error) {
+                    errorMessage = `API Error from ${this.config.provider}: ${error.response.data.error.message || JSON.stringify(error.response.data.error)}`;
+                }
+            } else if (error.code === 'ECONNREFUSED' && this.config.provider === 'ollama') {
+                errorMessage = `Could not connect to Ollama. Is Ollama server running at ${this.config.ollamaBaseUrl}?`;
             }
-            // --- FIX: Provide more detail on 403 errors ---
-            else if (error.response?.status === 403) {
-                throw new Error(`Request Forbidden (403). Check your 'httpReferer' and 'xTitle' settings in the TahuJS config. They must match what you've set in your OpenRouter account.`);
-            }
-            throw new Error(`TahuJS Chat Error: ${error.message}`);
+
+            throw new Error(errorMessage);
         }
     }
 
-    async callOpenRouter(messages, options = {}) {
-        const payload = {
-            model: options.model || this.config.model,
-            messages: messages,
-            temperature: options.temperature || this.config.temperature,
-            max_tokens: options.maxTokens || this.config.maxTokens,
-        };
-
-        console.log('🔄 Calling OpenRouter API...');
-
-        const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', payload, {
-            headers: {
-                'Authorization': `Bearer ${this.config.apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            timeout: 30000
-        });
-
-        return response.data.choices[0].message.content;
-    }
-
-    async callGemini(messages, options = {}) {
-        const prompt = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
-
-        console.log('🔄 Calling Gemini API...');
-
-        const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.config.apiKey}`,
-            {
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                generationConfig: {
-                    temperature: options.temperature || this.config.temperature,
-                    maxOutputTokens: options.maxTokens || this.config.maxTokens,
-                }
-            },
-            {
-                timeout: 30000
-            }
-        );
-
-        return response.data.candidates[0].content.parts[0].text;
-    }
+    // Removed callOpenRouter and callGemini as chat method now uses LangChain directly.
 
     // =============== ENHANCED TOOLS WITH MULTIPLE SERVICES ===============
 
@@ -521,7 +520,7 @@ class TahuJS {
                         throw new Error(`Workflow failed at task "${taskName}": ${error.message}`);
                     }
                 }
-                console(chalk.magenta('🎉 Workflow completed!'));
+                console.log(chalk.magenta('🎉 Workflow completed!')); // FIX: Changed console to console.log
                 return results;
             }
         };
