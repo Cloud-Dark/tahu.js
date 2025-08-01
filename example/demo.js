@@ -122,6 +122,11 @@ async function comprehensiveDemo() {
     console.log('\n🕐 Pengujian Tanggal & Waktu:');
     const dateTimeResult = await tahu.useTool('dateTime', 'America/New_York');
     console.log('Tanggal & Waktu:', dateTimeResult);
+
+    console.log('\n📝 Pengujian Rangkuman Teks:');
+    const longText = "Ini adalah teks yang sangat panjang yang perlu diringkas. Teks ini berisi banyak informasi tentang berbagai topik, dan tujuannya adalah untuk menunjukkan bagaimana alat ringkasan dapat bekerja secara efektif. Semakin panjang teksnya, semakin berguna alat ini untuk mengekstrak poin-poin utama dan menyajikannya dalam format yang lebih ringkas dan mudah dicerna. Ini sangat membantu dalam skenario di mana Anda berurusan dengan dokumen, artikel, atau transkrip yang besar dan hanya membutuhkan gambaran umum yang cepat.";
+    const summaryResult = await tahu.useTool('summarizeText', longText);
+    console.log(summaryResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 3. Pengujian Alat Plugin ---
@@ -183,8 +188,35 @@ async function comprehensiveDemo() {
     console.log('Agen Coder (SQLite, lanjutan):', coderResult2.response);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 5. Pengujian Alur Kerja Multi-Agen ---
-    console.log('--- 5. Pengujian Alur Kerja Multi-Agen ---');
+    // --- 5. Pengujian AgentBuilder dengan Semua Fitur ---
+    console.log('--- 5. Pengujian AgentBuilder dengan Semua Fitur ---');
+    const allCapabilitiesAgent = tahu.builder()
+        .name('OmniAgent')
+        .systemPrompt('You are an all-knowing AI assistant capable of performing any task using all available tools and remembering past interactions.')
+        .addPersonality(['curious', 'analytical', 'helpful', 'creative'], 'optimistic', ['everything'])
+        .addCapabilities(
+            'webSearch', 'calculate', 'findLocation', 'getDirections', 'getElevation', 
+            'webScrape', 'dateTime', 'summarizeText', // Built-in tools
+            'cryptoPrice', 'socialTrends', 'stockPrice', 'convertCurrency' // Plugin tools
+        )
+        .addMemory('json', { maxMemorySize: 10, memoryPath: './omni_agent_memory.json' })
+        .build();
+
+    console.log(`\n🤖 Agen 'OmniAgent' dibuat dengan builder. Memori: ${allCapabilitiesAgent.memoryType}`);
+    console.log('Kemampuan:', allCapabilitiesAgent.capabilities.join(', '));
+
+    console.log('\nRunning OmniAgent task: "Cari harga Bitcoin saat ini, lalu cari lokasi Menara Eiffel, dan berikan ringkasan singkat tentang sejarahnya."');
+    const omniResult1 = await tahu.runAgent('OmniAgent', 'Cari harga Bitcoin saat ini, lalu cari lokasi Menara Eiffel, dan berikan ringkasan singkat tentang sejarahnya.');
+    console.log('OmniAgent Response 1:', omniResult1.response);
+
+    console.log('\nRunning OmniAgent task: "Berapa 123 dibagi 45, dan apa tren sosial teratas di TikTok?"');
+    const omniResult2 = await tahu.runAgent('OmniAgent', 'Berapa 123 dibagi 45, dan apa tren sosial teratas di TikTok?');
+    console.log('OmniAgent Response 2:', omniResult2.response);
+
+    console.log('\n' + '='.repeat(50) + '\n');
+
+    // --- 6. Pengujian Alur Kerja Multi-Agen ---
+    console.log('--- 6. Pengujian Alur Kerja Multi-Agen ---');
     tahu.createAgent('WorkflowResearcher', { systemPrompt: 'Anda adalah peneliti yang mengumpulkan informasi.' });
     tahu.createAgent('WorkflowAnalyst', { systemPrompt: 'Anda adalah analis yang memproses data penelitian.' });
     tahu.createAgent('WorkflowWriter', { systemPrompt: 'Anda adalah penulis yang meringkas hasil analisis.' });
@@ -199,8 +231,8 @@ async function comprehensiveDemo() {
     console.log('Hasil Akhir Alur Kerja:', workflowResults);
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 6. Pengujian Pemrosesan Paralel ---
-    console.log('--- 6. Pengujian Pemrosesan Paralel ---');
+    // --- 7. Pengujian Pemrosesan Paralel ---
+    console.log('--- 7. Pengujian Pemrosesan Paralel ---');
     const parallelTasks = [
         { prompt: 'Jelaskan komputasi kuantum secara singkat.' },
         { prompt: 'Apa ibu kota Prancis?' },
@@ -210,8 +242,8 @@ async function comprehensiveDemo() {
     console.log('Hasil Pemrosesan Paralel:', parallelResults.map(r => r.response || r));
     console.log('\n' + '='.repeat(50) + '\n');
 
-    // --- 7. Pengujian Pemrosesan Batch Sederhana ---
-    console.log('--- 7. Pengujian Pemrosesan Batch Sederhana ---');
+    // --- 8. Pengujian Pemrosesan Batch Sederhana ---
+    console.log('--- 8. Pengujian Pemrosesan Batch Sederhana ---');
     const batchPrompts = [
         { prompt: 'Ceritakan kisah singkat tentang robot.' },
         { prompt: 'Sebutkan 3 manfaat cloud computing.' },
