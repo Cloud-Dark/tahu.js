@@ -14,22 +14,22 @@ export {
     createQuickAgent, 
     /**
      * @namespace tools
-     * @description Kumpulan alat bawaan TahuJS yang dapat digunakan oleh agen atau secara langsung.
+     * @description Kumpulan alat bawaan TahuJS yang dapat digunakan oleh agen atau secara langsung. Termasuk: `webSearchTool`, `calculateTool`, `findLocationTool`, `trainKnowledgeTool`, dan lainnya.
      */
     tools, 
     /**
      * @namespace plugins
-     * @description Kumpulan plugin TahuJS yang dapat memperluas fungsionalitas.
+     * @description Kumpulan plugin TahuJS yang dapat memperluas fungsionalitas. Contoh: `tahuCryptoPlugin`, `tahuSocialPlugin`, `tahuFinancePlugin`, `tahuCurrencyPlugin`.
      */
     plugins, 
     /**
      * @namespace services
-     * @description Layanan inti TahuJS seperti SearchService dan MapService.
+     * @description Layanan inti TahuJS yang menyediakan fungsionalitas spesifik. Termasuk: `SearchService` dan `MapService`.
      */
     services, 
     /**
      * @namespace utils
-     * @description Utilitas umum TahuJS seperti ConfigValidator.
+     * @description Utilitas umum TahuJS yang membantu dalam konfigurasi dan validasi. Termasuk: `ConfigValidator`.
      */
     utils 
 };
