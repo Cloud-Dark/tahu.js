@@ -78,8 +78,8 @@ Untuk memulai dengan TahuJS, ikuti langkah-langkah sederhana ini:
 1.  **Pastikan Node.js Terinstal:** TahuJS memerlukan Node.js versi 18 atau lebih tinggi.
 2.  **Kloning Repositori:**
     ```bash
-    git clone https://github.com/Cloud-Dark/tahujs.git
-    cd tahujs
+    git clone https://github.com/Cloud-Dark/tahu.js.git
+    cd tahu.js
     ```
 3.  **Instal Dependensi:**
     ```bash
@@ -439,8 +439,8 @@ We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for de
 ### Development Setup
 
 ```bash
-git clone https://github.com/Cloud-Dark/tahujs.git
-cd tahujs
+git clone https://github.com/Cloud-Dark/tahu.js.git
+cd tahu.js
 npm install
 # Run examples
 node example/quick-start.js

@@ -2,7 +2,7 @@
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/Cloud-Dark/tahujs?style=social)](https://github.com/Cloud-Dark/tahujs/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/Cloud-Dark/tahu.js?style=social)](https://github.com/Cloud-Dark/tahu.js/stargazers)
 
 **The Ultimate Node.js Library for AI Agents & LLM Integration**
 
@@ -46,8 +46,8 @@ Ensure you have **Node.js version 18 or higher** installed on your system.
 
 ```bash
 # Clone the TahuJS repository
-git clone https://github.com/Cloud-Dark/tahujs.git
-cd tahujs
+git clone https://github.com/Cloud-Dark/tahu.js.git
+cd tahu.js
 
 # Install all necessary dependencies
 npm install
@@ -252,9 +252,9 @@ const analyst = tahu.createPrebuiltAgent('analyst', { name: 'MyAnalyst' });
 const analysis = await tahu.runAgent('MyAnalyst', 'Analyze the provided sales data and identify key trends.');
 ```
 
-## 🔄 Multi-Agent Workflows
+## Multi-Agent Workflows
 
-Orchestrate complex tasks by chaining multiple agents together, where the output of one agent becomes the input for another.
+Define and execute complex workflows where different agents collaborate on tasks, with dependencies between them.
 
 ```javascript
 tahu.createAgent('DataGatherer', { systemPrompt: 'Gathers raw data.' });
@@ -269,9 +269,9 @@ const workflowResults = await workflow.execute('Market trends for renewable ener
 console.log('Final Workflow Results:', workflowResults);
 ```
 
-## ⚡ Parallel & Batch Processing
+## Parallel & Batch Processing
 
-Execute multiple LLM calls or agent tasks concurrently for improved efficiency.
+Efficiently handle multiple LLM calls or agent tasks simultaneously.
 
 ```javascript
 // Parallel execution of agent tasks
@@ -284,14 +284,15 @@ console.log('Parallel Results:', parallelResults.map(r => r.response));
 // Simple batch processing of chat prompts
 const batchResults = await tahu.batch([
   { prompt: 'Tell me a short story about a space cat.' },
-  { prompt: 'List 5 benefits of meditation.' }
+  { prompt: 'List 5 benefits of cloud computing.' },
+  { prompt: 'What is the main purpose of blockchain?' }
 ]);
 console.log('Batch Results:', batchResults.map(r => r.response));
 ```
 
-## 📊 Monitoring & Analytics
+## Monitoring & Analytics
 
-TahuJS includes a built-in analytics manager to track LLM usage, estimated costs, response times, and success rates.
+TahuJS provides real-time analytics to monitor your LLM usage and performance.
 
 ```javascript
 // Get real-time statistics
@@ -305,128 +306,102 @@ console.log(`Success Rate: ${stats.successRate.toFixed(2)}%`);
 tahu.analytics.resetStats();
 ```
 
-## 🔌 Plugin System
+## Plugin System
 
-Extend TahuJS functionality by easily registering custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
+Extend TahuJS by creating and loading custom plugins. Plugins can add new tools, modify behavior, or integrate with external services.
 
 ```javascript
-// Load pre-defined plugins
-import { plugins } from 'tahujs';
+import { createTahu, plugins } from 'tahujs';
+
+const tahu = createTahu({ /* your config */ });
+
+// Manually load a specific plugin
 tahu.use(plugins.tahuCryptoPlugin);
-tahu.use(plugins.tahuSocialPlugin);
+const cryptoPrice = await tahu.useTool('cryptoPrice', 'ETH');
+console.log(cryptoPrice);
 
 // Automatically load all plugins from a directory
 tahu.loadPlugins('./src/plugins');
 ```
 
-## 🎨 Agent Personalities
+## Knowledge Base & RAG
 
-Define rich personalities for your agents, including traits, mood, expertise, and custom greetings.
+TahuJS allows you to "train" (ingest) your own custom knowledge and retrieve it for AI augmentation. This is crucial for providing your AI with up-to-date or domain-specific information beyond its initial training data.
 
-```javascript
-const creativeWriter = tahu.builder()
-  .name('CreativeWriter')
-  .systemPrompt('You are a highly imaginative and eloquent writer.')
-  .addPersonality(
-    ['imaginative', 'eloquent', 'expressive'],
-    'inspired',
-    ['storytelling', 'poetry', 'creative writing']
-  )
-  .build();
+### How it Works:
+1.  **Ingestion (`trainKnowledge`)**: You provide text data. TahuJS converts this text into numerical representations called "embeddings" using an embedding model. These embeddings, along with the original text, are stored in a chosen vector store.
+2.  **Retrieval (`retrieveKnowledge`)**: When you have a query, TahuJS converts the query into an embedding and searches the vector store for the most semantically similar pieces of stored knowledge.
+3.  **Augmentation**: The retrieved knowledge can then be passed to an LLM as context, allowing it to generate more informed and accurate responses.
 
-const story = await tahu.runAgent('CreativeWriter', 'Write a short story about a magical forest.');
-console.log(story.response);
+### Tools:
+*   **`trainKnowledge`**:
+    *   **Description**: Adds text data to a specified knowledge base for later retrieval.
+    *   **Input Format**: `"knowledgeBaseName|storeType|source_type|source_data"`
+    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
+    *   **Supported Source Types**: `text`, `file`, `url`
+    *   **Examples**:
+        *   `"my_docs|sqlite|text|This is a document about TahuJS features."`
+        *   `"my_docs|sqlite|file|/path/to/your/knowledge.txt"`
+        *   `"my_docs|sqlite|url|https://example.com/knowledge.txt"`
+*   **`retrieveKnowledge`**:
+    *   **Description**: Retrieves relevant information from a specified knowledge base.
+    *   **Input Format**: `"knowledgeBaseName|storeType|query_text|k"` (k is optional, default 3)
+    *   **Supported Store Types**: `sqlite`, `chroma`, `supabase`
+    *   **Example**: `"my_docs|sqlite|What are TahuJS features?|2"`
+
+### Storage Options:
+*   **SQLite**:
+    *   **Type**: `sqlite`
+    *   **Description**: A simple, file-based local database. Ideal for small to medium-sized knowledge bases or local development. No external server required.
+    *   **Configuration**: Automatically uses a `.sqlite` file in the `memory` directory.
+*   **ChromaDB**:
+    *   **Type**: `chroma`
+    *   **Description**: A dedicated open-source vector database. Suitable for larger knowledge bases and more efficient similarity searches. Requires running a separate ChromaDB server.
+    *   **Configuration**: Set `chromaDbUrl` in TahuJS config (default `http://localhost:8000`).
+    *   **Setup**: You need to run a ChromaDB instance. Refer to [ChromaDB documentation](https://www.trychroma.com/) for installation.
+*   **Supabase (PostgreSQL dengan pgvector)**:
+    *   **Type**: `supabase`
+    *   **Description**: A powerful, scalable cloud-based PostgreSQL database with `pgvector` extension for vector storage. Ideal for production applications requiring robust data management and scalability.
+    *   **Configuration**: Requires `supabaseUrl` and `supabaseAnonKey` in TahuJS config.
+    *   **Setup**: You need to set up a Supabase project, enable the `pgvector` extension, and configure your tables. See example SQL in the "Basic Usage" section above.
+
+## Built-in Tools List
+
+TahuJS comes with the following pre-registered tools:
+
+*   **`webSearch`**: Search the web using multiple search engines (SerpApi, DuckDuckGo, Google Scraping).
+*   **`calculate`**: Perform mathematical calculations and expressions.
+*   **`findLocation`**: Find location using multiple map services with links and QR codes.
+*   **`getDirections`**: Get directions between two locations. Input format: "from [origin] to [destination]".
+*   **`getElevation`**: Gets the elevation data for a specific geographic coordinate. Input format: "latitude,longitude".
+*   **`webScrape`**: Extract content from web pages.
+*   **`dateTime`**: Get current date and time information for a specified timezone.
+*   **`summarizeText`**: Summarize a given text using the AI model.
+*   **`trainKnowledge`**: Add text data to a specified knowledge base. Supports `text`, `file`, and `url` sources.
+*   **`retrieveKnowledge`**: Retrieve relevant information from a specified knowledge base.
+
+## Error Handling
+
+TahuJS provides robust error handling for LLM calls and tool executions, giving informative messages to help diagnose issues.
+
+## Contributing
+
+We welcome contributions! See our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+git clone https://github.com/Cloud-Dark/tahu.js.git
+cd tahu.js
+npm install
+# Run examples
+node example/quick-start.js
+node example/demo.js
 ```
 
-## 📋 Requirements
+## License
 
--   Node.js 18+
--   API key from your chosen LLM provider (OpenRouter, OpenAI, Google Gemini)
--   Ollama (optional, for local LLM models)
--   `better-sqlite3` (for SQLite memory persistence and knowledge base)
--   `chromadb` (optional, for ChromaDB vector store)
--   Supabase integration (optional, for Supabase vector store)
-
-## 🔧 Configuration
-
-Configure TahuJS programmatically:
-
-```javascript
-const config = {
-  provider: 'openrouter', // 'openrouter', 'gemini', 'openai', 'ollama'
-  apiKey: 'your-api-key', // Not needed for Ollama if running locally without auth
-  model: 'anthropic/claude-3-sonnet', // Model name varies by provider
-  embeddingModel: 'text-embedding-ada-002', // Recommended for knowledge base features
-  temperature: 0.7,
-  maxTokens: 2000,
-
-  // Specific to OpenRouter
-  httpReferer: 'your-website.com', // If configured in OpenRouter
-  xTitle: 'Your App Name', // If configured in OpenRouter
-
-  // Specific to Ollama
-  ollamaBaseUrl: 'http://localhost:11434', // Default Ollama API URL
-  
-  // Optional service keys for enhanced features
-  serpApiKey: 'your-serpapi-key', // Better web search
-  googleMapsApiKey: 'your-google-maps-key', // Enhanced maps
-  mapboxKey: 'your-mapbox-key', // Premium maps
-
-  // For ChromaDB
-  chromaDbUrl: 'http://localhost:8000', // Default ChromaDB server URL
-  
-  // For Supabase (requires Supabase integration)
-  supabaseUrl: process.env.SUPABASE_URL,
-  supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
-};
-
-const tahu = createTahu(config);
-```
-
-## 📖 Documentation
-
-For more in-depth guides on installation, configuration, API usage, and code examples, please visit our comprehensive documentation:
-
-*   **[Documentation in English](docs/en.md)**
-*   **[Dokumentasi dalam Bahasa Indonesia](docs/id.md)**
-
-## 🌟 Features Summary
-
-### Core Capabilities
--   ✅ Multiple AI provider support (OpenRouter, OpenAI, Gemini, Ollama)
--   ✅ Intelligent model routing and fallback (for web search)
--   ✅ Built-in conversation memory (volatile, JSON, SQLite)
--   ✅ Function calling and extensive tool integration
--   ✅ Cost tracking and basic analytics
--   ✅ Robust error handling and configuration validation
--   ✅ Embedding generation (for RAG)
-
-### Agent Framework
--   ✅ Multi-agent orchestration and workflows
--   ✅ Parallel and batch processing for LLM calls/agent tasks
--   ✅ Pre-built specialist agents
--   ✅ Agent builder for custom agent creation
--   ✅ Personality customization
-
-### Knowledge Base (RAG)
--   ✅ Ingest custom text data for AI reference
--   ✅ Retrieve relevant information from knowledge bases
--   ✅ Multiple storage options: SQLite, ChromaDB, Supabase (via integration)
-
-### Developer Experience
--   ✅ Modular and extensible design
--   ✅ Clear console logging with `chalk`
--   ✅ Automatic plugin discovery
--   ✅ ✅ Intuitive API
--   ✅ Enhanced agent communication protocols
--   ✅ More advanced memory types (e.g., dedicated vector stores for RAG)
--   ✅ Improved cost optimization strategies
--   ✅ Deeper integration with external data sources
--   ✅ Supabase (PostgreSQL with pgvector) integration for knowledge base
--   ✅ Multi-modal support (image, audio, video processing)
--   ✅ Advanced reasoning capabilities
--   ✅ Visual workflow builder (UI)
--   ✅ CLI tools for agent management and deployment
+MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## 🗺️ Roadmap
 
