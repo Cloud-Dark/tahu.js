@@ -69,7 +69,7 @@ TahuJS dibangun di atas fondasi teknologi modern dan terbukti:
 *   **Layanan Pemetaan & Lokasi:** `MapService` kustom (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).
 *   **Manajemen Konfigurasi:** `ConfigValidator` kustom.
 *   **Database:** `better-sqlite3` untuk persistensi memori SQLite dan basis pengetahuan.
-*   **Basis Data Vektor:** `chromadb` untuk integrasi ChromaDB.
+*   **Basis Data Vektor:** `chromadb` untuk integrasi ChromaDB, `@supabase/supabase-js` dan `@langchain/supabase` untuk integrasi Supabase.
 
 ## Instalasi
 
@@ -120,8 +120,8 @@ const config = {
   chromaDbUrl: 'http://localhost:8000', // URL server ChromaDB default
   
   // Untuk Supabase (membutuhkan integrasi Supabase)
-  // supabaseUrl: process.env.SUPABASE_URL,
-  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+  supabaseUrl: process.env.SUPABASE_URL,
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
 import { createTahu } from 'tahujs';
@@ -407,9 +407,7 @@ TahuJS memungkinkan Anda untuk "melatih" (memasukkan) pengetahuan kustom Anda se
     *   **Tipe**: `supabase`
     *   **Deskripsi**: Basis data PostgreSQL berbasis cloud yang kuat dan skalabel dengan ekstensi `pgvector` untuk penyimpanan vektor. Ideal untuk aplikasi produksi yang membutuhkan manajemen data yang kuat dan skalabilitas.
     *   **Konfigurasi**: Membutuhkan `supabaseUrl` dan `supabaseAnonKey` di konfigurasi TahuJS.
-    *   **Pengaturan**: Anda perlu menyiapkan proyek Supabase, mengaktifkan ekstensi `pgvector`, dan mengkonfigurasi tabel Anda.
-    *   **Integrasi**: Untuk menggunakan Supabase, Anda perlu menambahkan integrasi Supabase ke proyek Anda.
-        <dyad-add-integration provider="supabase"></dyad-add-integration>
+    *   **Pengaturan**: Anda perlu menyiapkan proyek Supabase, mengaktifkan ekstensi `pgvector`, dan mengkonfigurasi tabel Anda. Lihat contoh SQL di bagian "Penggunaan Dasar" di atas.
 
 ## Built-in Tools List
 
@@ -449,7 +447,7 @@ node example/demo.js
 
 MIT License - see [LICENSE](./LICENSE) file for details.
 
-## Roadmap
+## 🗺️ Roadmap
 
 ### Current (v1.0)
 -   ✅ Core agent framework
@@ -459,20 +457,16 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 -   ✅ Multi-agent workflows, parallel, and batch processing
 -   ✅ Plugin system
 -   ✅ Real-time analytics
--   ✅ Knowledge Base (RAG) with SQLite and ChromaDB support
+-   ✅ Knowledge Base (RAG) with SQLite, ChromaDB, and Supabase support
 
-### Next (v1.1)
--   🔄 Enhanced agent communication protocols
--   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
--   🔄 Improved cost optimization strategies
--   🔄 Deeper integration with external data sources
--   🔄 Supabase (PostgreSQL with pgvector) integration for knowledge base
-
-### Future (v2.0)
+### Future (v3.0)
 -   🔄 Multi-modal support (image, audio, video processing)
 -   🔄 Advanced reasoning capabilities
 -   🔄 Visual workflow builder (UI)
 -   🔄 CLI tools for agent management and deployment
+-   🔄 Enhanced agent communication protocols
+-   🔄 Improved cost optimization strategies
+-   🔄 Deeper integration with external data sources
 
 ---
 

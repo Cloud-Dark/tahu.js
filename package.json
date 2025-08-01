@@ -1,6 +1,6 @@
 {
   "name": "tahujs",
-  "version": "2.0.1",
+  "version": "1.0.0",
   "description": "A comprehensive Node.js library for AI Agents & LLM Integration, simplifying the creation of intelligent applications.",
   "main": "index.js",
   "type": "module",
@@ -46,6 +46,8 @@
     "@langchain/community": "^0.0.52",
     "@langchain/google-genai": "^0.0.12",
     "@langchain/openai": "^0.0.28",
+    "@langchain/supabase": "^0.0.4",
+    "@supabase/supabase-js": "^2.43.4",
     "axios": "^1.6.8",
     "better-sqlite3": "^12.2.0",
     "chalk": "^5.3.0",

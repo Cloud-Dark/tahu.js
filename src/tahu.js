@@ -16,6 +16,7 @@ import { WorkflowManager } from './core/workflow-manager.js';
 import { PluginManager } from './core/plugin-manager.js';
 import { AnalyticsManager } from './core/analytics-manager.js';
 import { VectorStoreManager } from './core/vector-store-manager.js'; // Import VectorStoreManager
+import { ConfigValidator } from './utils/config-validator.js'; // Import ConfigValidator
 
 class TahuJS {
     constructor(config = {}) {
@@ -33,11 +34,21 @@ class TahuJS {
             xTitle: config.xTitle,
             embeddingModel: config.embeddingModel, // New: for specific embedding model
             chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
+            supabaseUrl: config.supabaseUrl, // New: for Supabase URL
+            supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
             ...config
         };
 
-        if (!this.config.apiKey && this.config.provider !== 'ollama') {
-            console.warn('⚠️  Warning: API key not provided. Some features may not work.');
+        // Validate configuration on initialization
+        const { warnings, errors } = ConfigValidator.validateConfig(this.config);
+        if (errors.length > 0) {
+            console.error(chalk.red('❌ TahuJS Initialization Errors:'));
+            errors.forEach(error => console.error(`   • ${error}`));
+            throw new Error('TahuJS failed to initialize due to configuration errors.');
+        }
+        if (warnings.length > 0) {
+            console.warn(chalk.yellow('⚠️  TahuJS Initialization Warnings:'));
+            warnings.forEach(warning => console.warn(`   • ${warning}`));
         }
 
         this.tools = new Map();

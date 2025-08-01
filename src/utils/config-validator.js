@@ -5,12 +5,12 @@ export class ConfigValidator {
         const errors = [];
 
         // Required fields
-        if (!config.apiKey) {
-            errors.push('API key is required');
+        if (!config.apiKey && config.provider !== 'ollama') {
+            errors.push('API key is required for non-Ollama providers');
         }
 
-        if (!config.provider || !['openrouter', 'gemini'].includes(config.provider)) {
-            errors.push('Provider must be either "openrouter" or "gemini"');
+        if (!config.provider || !['openrouter', 'gemini', 'openai', 'ollama'].includes(config.provider)) {
+            errors.push('Provider must be one of "openrouter", "gemini", "openai", or "ollama"');
         }
 
         // Optional field warnings
@@ -21,6 +21,15 @@ export class ConfigValidator {
         if (!config.googleMapsApiKey) {
             warnings.push('Google Maps API key not provided - some location features will be limited');
         }
+
+        // Supabase validation
+        if (config.supabaseUrl && !config.supabaseAnonKey) {
+            warnings.push('Supabase URL provided but Supabase Anon Key is missing. Supabase features may not work.');
+        }
+        if (!config.supabaseUrl && config.supabaseAnonKey) {
+            warnings.push('Supabase Anon Key provided but Supabase URL is missing. Supabase features may not work.');
+        }
+
 
         // Model validation
         if (config.provider === 'openrouter' && config.model) {
@@ -33,7 +42,7 @@ export class ConfigValidator {
             ];
 
             if (!validModels.some(model => config.model.includes(model.split('/')[1]))) {
-                warnings.push(`Model "${config.model}" may not be supported`);
+                warnings.push(`Model "${config.model}" may not be supported by OpenRouter`);
             }
         }
 

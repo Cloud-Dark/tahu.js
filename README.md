@@ -67,6 +67,8 @@ const tahu = createTahu({
   // ollamaBaseUrl: 'http://localhost:11434', // Only if using local Ollama
   // serpApiKey: process.env.SERPAPI_KEY, // Optional, for better web search
   // chromaDbUrl: 'http://localhost:8000', // Optional, for ChromaDB
+  // supabaseUrl: process.env.SUPABASE_URL, // Optional, for Supabase
+  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY, // Optional, for Supabase
 });
 
 // Simple LLM chat
@@ -161,9 +163,43 @@ console.log('Product Features:', productFeatures);
 // console.log('Company Values:', companyValues);
 
 // For Supabase (requires Supabase integration and pgvector setup)
-// await tahu.useTool('trainKnowledge', 'user_data|supabase|User John Doe prefers dark mode and has subscribed to premium features.');
-// const userData = await tahu.useTool('retrieveKnowledge', 'user_data|supabase|What are John Doe's preferences?');
-// console.log('User Data:', userData);
+// You need to set `supabaseUrl` and `supabaseAnonKey` in your TahuJS config.
+// Also, ensure your Supabase database has the `pgvector` extension enabled
+// and a table like `documents` with `content` (text) and `embedding` (vector) columns.
+// Example table creation SQL:
+// CREATE EXTENSION IF NOT EXISTS vector;
+// CREATE TABLE documents (
+//   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+//   content text,
+//   embedding vector(1536) -- Adjust dimension based on your embedding model
+// );
+// CREATE OR REPLACE FUNCTION match_documents (
+//   query_embedding vector(1536),
+//   match_threshold float,
+//   match_count int
+// )
+// RETURNS TABLE (
+//   id uuid,
+//   content text,
+//   similarity float
+// )
+// LANGUAGE plpgsql
+// AS $$
+// BEGIN
+//   RETURN QUERY
+//   SELECT
+//     documents.id,
+//     documents.content,
+//     1 - (documents.embedding <=> query_embedding) AS similarity
+//   FROM documents
+//   WHERE 1 - (documents.embedding <=> query_embedding) > match_threshold
+//   ORDER BY similarity DESC
+//   LIMIT match_count;
+// END;
+// $$;
+await tahu.useTool('trainKnowledge', 'user_data|supabase|Customers love TahuJS speed and ease of use.');
+const userData = await tahu.useTool('retrieveKnowledge', 'user_data|supabase|What do customers like about TahuJS?');
+console.log('User Data:', userData);
 ```
 
 ### Tool Integration
@@ -340,8 +376,8 @@ const config = {
   chromaDbUrl: 'http://localhost:8000', // Default ChromaDB server URL
   
   // For Supabase (requires Supabase integration)
-  // supabaseUrl: process.env.SUPABASE_URL,
-  // supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+  supabaseUrl: process.env.SUPABASE_URL,
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
 };
 
 const tahu = createTahu(config);
@@ -385,18 +421,24 @@ For more in-depth guides on installation, configuration, API usage, and code exa
 
 ## 🗺️ Roadmap
 
-### Next (v1.1)
--   🔄 Enhanced agent communication protocols
--   🔄 More advanced memory types (e.g., dedicated vector stores for RAG)
--   🔄 Improved cost optimization strategies
--   🔄 Deeper integration with external data sources
--   🔄 Supabase (PostgreSQL with pgvector) integration for knowledge base
+### Current (v1.0)
+-   ✅ Core agent framework
+-   ✅ Multi-provider LLM integration (OpenRouter, OpenAI, Gemini, Ollama)
+-   ✅ Comprehensive built-in tools (web search, maps, calculations, scraping, summarization)
+-   ✅ Persistent memory (JSON, SQLite)
+-   ✅ Multi-agent workflows, parallel, and batch processing
+-   ✅ Plugin system
+-   ✅ Real-time analytics
+-   ✅ Knowledge Base (RAG) with SQLite, ChromaDB, and Supabase support
 
-### Future (v2.0)
+### Future (v3.0)
 -   🔄 Multi-modal support (image, audio, video processing)
 -   🔄 Advanced reasoning capabilities
 -   🔄 Visual workflow builder (UI)
 -   🔄 CLI tools for agent management and deployment
+-   🔄 Enhanced agent communication protocols
+-   🔄 Improved cost optimization strategies
+-   🔄 Deeper integration with external data sources
 
 ---
 
