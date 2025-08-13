@@ -1,262 +1,376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TahuJS: Comprehensive AI Application Development Framework</title>
-    <meta name="description" content="TahuJS is a powerful JavaScript framework for building AI applications with LLM integration, built-in tools, and custom services. Learn more about its features, installation, and usage.">
-    <meta name="keywords" content="TahuJS, AI, JavaScript, Framework, LangChain, OpenRouter, Gemini, Web Search, Map Service, Tools, Agent, Node.js">
-    <meta name="author" content="Your Name/Organization">
-    <link rel="canonical" href="https://www.yourwebsite.com/index.html">
+    <meta
+      name="description"
+      content="TahuJS is a powerful JavaScript framework for building AI applications with LLM integration, built-in tools, and custom services. Learn more about its features, installation, and usage."
+    />
+    <meta
+      name="keywords"
+      content="TahuJS, AI, JavaScript, Framework, LangChain, OpenRouter, Gemini, Web Search, Map Service, Tools, Agent, Node.js"
+    />
+    <meta name="author" content="Your Name/Organization" />
+    <link rel="canonical" href="https://www.yourwebsite.com/index.html" />
 
     <style>
-        /* Basic styles for a clean, ATS-friendly look */
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f8f8;
-            color: #333;
-            max-width: 960px; /* Wider content area for more details */
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.08);
-            background-color: #fff;
-            border-radius: 8px;
-        }
-        h1, h2, h3, h4 {
-            color: #2c3e50;
-            margin-top: 1.8em;
-            margin-bottom: 0.6em;
-        }
-        h1 {
-            font-size: 2.8em;
-            text-align: center;
-            margin-bottom: 1.2em;
-            color: #1a2a3a;
-        }
-        h2 {
-            font-size: 2.2em;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 8px;
-            margin-top: 2.5em;
-        }
-        h3 {
-            font-size: 1.6em;
-            margin-top: 1.5em;
-        }
-        h4 {
-            font-size: 1.2em;
-            margin-top: 1.2em;
-        }
-        p {
-            margin-bottom: 1em;
-        }
-        ul {
-            list-style-type: disc;
-            margin-left: 25px;
-            margin-bottom: 1em;
-        }
-        ol {
-            list-style-type: decimal;
-            margin-left: 25px;
-            margin-bottom: 1em;
-        }
-        li {
-            margin-bottom: 0.6em;
-        }
-        a {
-            color: #3498db;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        a:hover {
-            text-decoration: underline;
-            color: #2980b9;
-        }
-        .container {
-            padding: 30px;
-        }
-        .header-section {
-            background-color: #eef4f8;
-            padding: 30px 20px;
-            border-radius: 8px 8px 0 0;
-            margin: -20px -20px 20px -20px; /* Extend to edges of container */
-            text-align: center;
-        }
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .feature-item {
-            background-color: #fdfdfd;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .feature-item h3 {
-            margin-top: 0;
-            color: #34495e;
-        }
-        .code-block {
-            background-color: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
-            font-size: 0.9em;
-            margin-bottom: 1.5em;
-        }
-        .code-block pre {
-            margin: 0;
-            white-space: pre-wrap; /* Allow wrapping */
-            word-wrap: break-word; /* Break long words */
-        }
-        .documentation-links {
-            text-align: center;
-            margin-top: 3em;
-            padding-top: 2em;
-            border-top: 1px dashed #eee;
-        }
-        .documentation-links ul {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
-        .documentation-links li {
-            margin-bottom: 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 25px;
-            border-top: 1px solid #e0e0e0;
-            font-size: 0.9em;
-            color: #777;
-        }
+      /* Basic styles for a clean, ATS-friendly look */
+      body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+        color: #333;
+        max-width: 960px; /* Wider content area for more details */
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        background-color: #fff;
+        border-radius: 8px;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: #2c3e50;
+        margin-top: 1.8em;
+        margin-bottom: 0.6em;
+      }
+      h1 {
+        font-size: 2.8em;
+        text-align: center;
+        margin-bottom: 1.2em;
+        color: #1a2a3a;
+      }
+      h2 {
+        font-size: 2.2em;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+        margin-top: 2.5em;
+      }
+      h3 {
+        font-size: 1.6em;
+        margin-top: 1.5em;
+      }
+      h4 {
+        font-size: 1.2em;
+        margin-top: 1.2em;
+      }
+      p {
+        margin-bottom: 1em;
+      }
+      ul {
+        list-style-type: disc;
+        margin-left: 25px;
+        margin-bottom: 1em;
+      }
+      ol {
+        list-style-type: decimal;
+        margin-left: 25px;
+        margin-bottom: 1em;
+      }
+      li {
+        margin-bottom: 0.6em;
+      }
+      a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+      a:hover {
+        text-decoration: underline;
+        color: #2980b9;
+      }
+      .container {
+        padding: 30px;
+      }
+      .header-section {
+        background-color: #eef4f8;
+        padding: 30px 20px;
+        border-radius: 8px 8px 0 0;
+        margin: -20px -20px 20px -20px; /* Extend to edges of container */
+        text-align: center;
+      }
+      .feature-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .feature-item {
+        background-color: #fdfdfd;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .feature-item h3 {
+        margin-top: 0;
+        color: #34495e;
+      }
+      .code-block {
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family:
+          'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+        font-size: 0.9em;
+        margin-bottom: 1.5em;
+      }
+      .code-block pre {
+        margin: 0;
+        white-space: pre-wrap; /* Allow wrapping */
+        word-wrap: break-word; /* Break long words */
+      }
+      .documentation-links {
+        text-align: center;
+        margin-top: 3em;
+        padding-top: 2em;
+        border-top: 1px dashed #eee;
+      }
+      .documentation-links ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+      }
+      .documentation-links li {
+        margin-bottom: 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 25px;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.9em;
+        color: #777;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header class="header-section">
-            <h1>TahuJS: Comprehensive AI Application Development Framework</h1>
-            <p>Simplifying the creation of AI-powered applications with LLM integration, built-in tools, and custom services.</p>
-        </header>
+      <header class="header-section">
+        <h1>TahuJS: Comprehensive AI Application Development Framework</h1>
+        <p>
+          Simplifying the creation of AI-powered applications with LLM
+          integration, built-in tools, and custom services.
+        </p>
+      </header>
 
-        <main>
-            <section id="introduction">
-                <h2>Introduction</h2>
-                <p>TahuJS is a JavaScript framework designed to streamline and accelerate the development of artificial intelligence-powered applications. By integrating various leading AI libraries and providing a robust set of built-in tools, TahuJS allows developers to focus on their application's core logic, rather than the complexities of AI integration.</p>
-                <p>Whether you aim to build intelligent agents that can interact dynamically, automate information retrieval from the web, analyze location data, or perform complex calculations, TahuJS provides a solid and easy-to-use foundation.</p>
-            </section>
+      <main>
+        <section id="introduction">
+          <h2>Introduction</h2>
+          <p>
+            TahuJS is a JavaScript framework designed to streamline and
+            accelerate the development of artificial intelligence-powered
+            applications. By integrating various leading AI libraries and
+            providing a robust set of built-in tools, TahuJS allows developers
+            to focus on their application's core logic, rather than the
+            complexities of AI integration.
+          </p>
+          <p>
+            Whether you aim to build intelligent agents that can interact
+            dynamically, automate information retrieval from the web, analyze
+            location data, or perform complex calculations, TahuJS provides a
+            solid and easy-to-use foundation.
+          </p>
+        </section>
 
-            <section id="key-features">
-                <h2>Key Features</h2>
-                <div class="feature-list">
-                    <div class="feature-item">
-                        <h3>AI Orchestration with LangChain.js</h3>
-                        <p>Harness the power of LangChain.js to build complex AI agents, chain Large Language Model (LLM) calls, and seamlessly integrate various tools. TahuJS provides abstractions that make it easy to define agent behaviors and AI workflows.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Multi-LLM Provider Support</h3>
-                        <p>Flexibility to choose your favorite LLM provider. TahuJS supports integration with:</p>
-                        <ul>
-                            <li>**OpenRouter:** Access a wide range of advanced models like Claude, GPT, and Gemini from a single API.</li>
-                            <li>**Google Gemini:** Leverage the capabilities of Gemini models directly from Google.</li>
-                        </ul>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Comprehensive Built-in Tools</h3>
-                        <p>TahuJS comes equipped with a suite of ready-to-use tools for various needs:</p>
-                        <ul>
-                            <li>**Web Search (`webSearch`):** Utilizes SerpApi, DuckDuckGo, and Google scraping.</li>
-                            <li>**Location Search (`findLocation`):** Finds locations with coordinate details, elevation, and map links.</li>
-                            <li>**Directions (`getDirections`):** Provides travel routes between two points.</li>
-                            <li>**Mathematical Calculations (`calculate`):** Evaluates complex mathematical expressions.</li>
-                            <li>**Web Scraping (`webScrape`):** Extracts relevant content from web pages.</li>
-                            <li>**Date & Time Information (`dateTime`):** Gets current time in various time zones.</li>
-                            <li>**Elevation (`getElevation`):** Retrieves elevation data for specific geographic coordinates.</li>
-                        </ul>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Powerful Custom Services</h3>
-                        <p>Built upon dedicated services like `SearchService` and `MapService`, TahuJS provides robust and extensible search and mapping functionalities, ensuring accurate and relevant results.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Configuration Validation</h3>
-                        <p>With its built-in `ConfigValidator`, TahuJS helps you ensure that all essential API settings and other configurations are correctly set up, minimizing errors and accelerating the development process.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Easy to Use & Extend</h3>
-                        <p>Designed with modularity in mind, TahuJS is easy to integrate into existing Node.js projects and allows you to register your own custom tools, extending its capabilities to meet your application's specific needs.</p>
-                    </div>
-                </div>
-            </section>
+        <section id="key-features">
+          <h2>Key Features</h2>
+          <div class="feature-list">
+            <div class="feature-item">
+              <h3>AI Orchestration with LangChain.js</h3>
+              <p>
+                Harness the power of LangChain.js to build complex AI agents,
+                chain Large Language Model (LLM) calls, and seamlessly integrate
+                various tools. TahuJS provides abstractions that make it easy to
+                define agent behaviors and AI workflows.
+              </p>
+            </div>
+            <div class="feature-item">
+              <h3>Multi-LLM Provider Support</h3>
+              <p>
+                Flexibility to choose your favorite LLM provider. TahuJS
+                supports integration with:
+              </p>
+              <ul>
+                <li>
+                  **OpenRouter:** Access a wide range of advanced models like
+                  Claude, GPT, and Gemini from a single API.
+                </li>
+                <li>
+                  **Google Gemini:** Leverage the capabilities of Gemini models
+                  directly from Google.
+                </li>
+              </ul>
+            </div>
+            <div class="feature-item">
+              <h3>Comprehensive Built-in Tools</h3>
+              <p>
+                TahuJS comes equipped with a suite of ready-to-use tools for
+                various needs:
+              </p>
+              <ul>
+                <li>
+                  **Web Search (`webSearch`):** Utilizes SerpApi, DuckDuckGo,
+                  and Google scraping.
+                </li>
+                <li>
+                  **Location Search (`findLocation`):** Finds locations with
+                  coordinate details, elevation, and map links.
+                </li>
+                <li>
+                  **Directions (`getDirections`):** Provides travel routes
+                  between two points.
+                </li>
+                <li>
+                  **Mathematical Calculations (`calculate`):** Evaluates complex
+                  mathematical expressions.
+                </li>
+                <li>
+                  **Web Scraping (`webScrape`):** Extracts relevant content from
+                  web pages.
+                </li>
+                <li>
+                  **Date & Time Information (`dateTime`):** Gets current time in
+                  various time zones.
+                </li>
+                <li>
+                  **Elevation (`getElevation`):** Retrieves elevation data for
+                  specific geographic coordinates.
+                </li>
+              </ul>
+            </div>
+            <div class="feature-item">
+              <h3>Powerful Custom Services</h3>
+              <p>
+                Built upon dedicated services like `SearchService` and
+                `MapService`, TahuJS provides robust and extensible search and
+                mapping functionalities, ensuring accurate and relevant results.
+              </p>
+            </div>
+            <div class="feature-item">
+              <h3>Configuration Validation</h3>
+              <p>
+                With its built-in `ConfigValidator`, TahuJS helps you ensure
+                that all essential API settings and other configurations are
+                correctly set up, minimizing errors and accelerating the
+                development process.
+              </p>
+            </div>
+            <div class="feature-item">
+              <h3>Easy to Use & Extend</h3>
+              <p>
+                Designed with modularity in mind, TahuJS is easy to integrate
+                into existing Node.js projects and allows you to register your
+                own custom tools, extending its capabilities to meet your
+                application's specific needs.
+              </p>
+            </div>
+          </div>
+        </section>
 
-            <section id="tech-stack">
-                <h2>Tech Stack Overview</h2>
-                <p>TahuJS is built on a foundation of modern and proven technologies:</p>
-                <ul>
-                    <li>**Core Language & Runtime:** JavaScript (ESM) running on Node.js.</li>
-                    <li>**AI Orchestration:** LangChain.js (`@langchain/openai`, `@langchain/google-genai`, `langchain`).</li>
-                    <li>**HTTP Requests:** Axios for all external API calls.</li>
-                    <li>**Web Scraping:** Cheerio for HTML parsing.</li>
-                    <li>**Mathematical Operations:** Math.js for calculations.</li>
-                    <li>**Terminal Utilities:** `chalk` for colored output and `qrcode-terminal` for QR codes.</li>
-                    <li>**Search Services:** Custom `SearchService` (SerpApi, DuckDuckGo, Google scraping).</li>
-                    <li>**Mapping & Location Services:** Custom `MapService` (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).</li>
-                    <li>**Configuration Management:** Custom `ConfigValidator`.</li>
-                </ul>
-            </section>
+        <section id="tech-stack">
+          <h2>Tech Stack Overview</h2>
+          <p>
+            TahuJS is built on a foundation of modern and proven technologies:
+          </p>
+          <ul>
+            <li>
+              **Core Language & Runtime:** JavaScript (ESM) running on Node.js.
+            </li>
+            <li>
+              **AI Orchestration:** LangChain.js (`@langchain/openai`,
+              `@langchain/google-genai`, `langchain`).
+            </li>
+            <li>**HTTP Requests:** Axios for all external API calls.</li>
+            <li>**Web Scraping:** Cheerio for HTML parsing.</li>
+            <li>**Mathematical Operations:** Math.js for calculations.</li>
+            <li>
+              **Terminal Utilities:** `chalk` for colored output and
+              `qrcode-terminal` for QR codes.
+            </li>
+            <li>
+              **Search Services:** Custom `SearchService` (SerpApi, DuckDuckGo,
+              Google scraping).
+            </li>
+            <li>
+              **Mapping & Location Services:** Custom `MapService`
+              (OpenStreetMap Nominatim, StaticMap, Open-Elevation API, Mapbox).
+            </li>
+            <li>**Configuration Management:** Custom `ConfigValidator`.</li>
+          </ul>
+        </section>
 
-            <section id="installation">
-                <h2>Installation</h2>
-                <p>To get started with TahuJS, follow these simple steps:</p>
-                <ol>
-                    <li>**Ensure Node.js is Installed:** TahuJS requires Node.js version 18 or higher.</li>
-                    <li>**Clone the Repository:**
-<div class="code-block"><pre>git clone https://github.com/Cloud-Dark/tahujs.git
-cd tahujs</pre></div>
-                    </li>
-                    <li>**Install Dependencies:**
-<div class="code-block"><pre>npm install</pre></div>
-                    </li>
-                    <li>**Configure API Keys:** Edit your configuration file (e.g., in `src/tahu.js` or where you instantiate TahuJS) with the necessary API keys from your LLM providers and other services.</li>
-                    <li>**Run Examples:** Explore the `example/` folder to see how TahuJS can be used in real-world scenarios.</li>
-                </ol>
-            </section>
+        <section id="installation">
+          <h2>Installation</h2>
+          <p>To get started with TahuJS, follow these simple steps:</p>
+          <ol>
+            <li>
+              **Ensure Node.js is Installed:** TahuJS requires Node.js version
+              18 or higher.
+            </li>
+            <li>
+              **Clone the Repository:**
+              <div class="code-block">
+                <pre>
+git clone https://github.com/Cloud-Dark/tahujs.git
+cd tahujs</pre
+                >
+              </div>
+            </li>
+            <li>
+              **Install Dependencies:**
+              <div class="code-block"><pre>npm install</pre></div>
+            </li>
+            <li>
+              **Configure API Keys:** Edit your configuration file (e.g., in
+              `src/tahu.js` or where you instantiate TahuJS) with the necessary
+              API keys from your LLM providers and other services.
+            </li>
+            <li>
+              **Run Examples:** Explore the `example/` folder to see how TahuJS
+              can be used in real-world scenarios.
+            </li>
+          </ol>
+        </section>
 
-            <section id="basic-usage-examples">
-                <h2>Basic Usage Examples</h2>
-                <h3>Creating a TahuJS Instance</h3>
-                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+        <section id="basic-usage-examples">
+          <h2>Basic Usage Examples</h2>
+          <h3>Creating a TahuJS Instance</h3>
+          <div class="code-block">
+            <pre><code>import { createTahu } from 'tahujs';
 
 const tahu = createTahu({
     provider: 'openrouter',
     apiKey: 'YOUR_API_KEY_HERE',
     model: 'google/gemini-2.0-flash-exp:free',
     serpApiKey: 'YOUR_SERPAPI_KEY' // If available
-});</code></pre></div>
+});</code></pre>
+          </div>
 
-                <h3>Performing AI Chat</h3>
-                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+          <h3>Performing AI Chat</h3>
+          <div class="code-block">
+            <pre><code>import { createTahu } from 'tahujs';
 
 async function runChat() {
     const tahu = createTahu({ /* your config */ });
     const chatResult = await tahu.chat('Explain the concept of AI briefly.');
     console.log(chatResult.response);
 }
-runChat();</code></pre></div>
+runChat();</code></pre>
+          </div>
 
-                <h3>Using Built-in Tools</h3>
-                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+          <h3>Using Built-in Tools</h3>
+          <div class="code-block">
+            <pre><code>import { createTahu } from 'tahujs';
 
 async function useTools() {
     const tahu = createTahu({ /* your config */ });
@@ -288,10 +402,12 @@ async function useTools() {
     const dateTimeResult = await tahu.useTool('dateTime', 'America/New_York');
     console.log('Date & Time:', dateTimeResult);
 }
-useTools();</code></pre></div>
+useTools();</code></pre>
+          </div>
 
-                <h3>Creating and Running AI Agents</h3>
-                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+          <h3>Creating and Running AI Agents</h3>
+          <div class="code-block">
+            <pre><code>import { createTahu } from 'tahujs';
 
 async function runAgentDemo() {
     const tahu = createTahu({ /* your config */ });
@@ -303,10 +419,12 @@ async function runAgentDemo() {
     const travelResult = await tahu.runAgent('TravelExpert', 'Plan a day trip to Bali. Find interesting places to visit and provide directions.');
     console.log('Travel Agent Result:', travelResult.response);
 }
-runAgentDemo();</code></pre></div>
+runAgentDemo();</code></pre>
+          </div>
 
-                <h3>LangChain Integration</h3>
-                <div class="code-block"><pre><code>import { createTahu } from 'tahujs';
+          <h3>LangChain Integration</h3>
+          <div class="code-block">
+            <pre><code>import { createTahu } from 'tahujs';
 
 async function langchainIntegrationDemo() {
     const tahu = createTahu({
@@ -324,25 +442,31 @@ async function langchainIntegrationDemo() {
     const result = await researchAgent.invoke({ input: task });
     console.log('LangChain Agent Result:', result.output);
 }
-langchainIntegrationDemo();</code></pre></div>
-            </section>
+langchainIntegrationDemo();</code></pre>
+          </div>
+        </section>
 
-            <section id="documentation">
-                <h2>Full Documentation</h2>
-                <p>For more in-depth guides on installation, configuration, API usage, and code examples, please visit our comprehensive documentation:</p>
-                <div class="documentation-links">
-                    <ul>
-                        <li><a href="docs/id.md">Dokumentasi dalam Bahasa Indonesia</a></li>
-                        <li><a href="docs/en.md">Documentation in English</a></li>
-                    </ul>
-                </div>
-            </section>
-        </main>
+        <section id="documentation">
+          <h2>Full Documentation</h2>
+          <p>
+            For more in-depth guides on installation, configuration, API usage,
+            and code examples, please visit our comprehensive documentation:
+          </p>
+          <div class="documentation-links">
+            <ul>
+              <li>
+                <a href="docs/id.md">Dokumentasi dalam Bahasa Indonesia</a>
+              </li>
+              <li><a href="docs/en.md">Documentation in English</a></li>
+            </ul>
+          </div>
+        </section>
+      </main>
 
-        <footer class="footer">
-            <p>&copy; 2024 TahuJS. All Rights Reserved.</p>
-            <p>Crafted with ❤️ for the AI community.</p>
-        </footer>
+      <footer class="footer">
+        <p>&copy; 2024 TahuJS. All Rights Reserved.</p>
+        <p>Crafted with ❤️ for the AI community.</p>
+      </footer>
     </div>
-</body>
+  </body>
 </html>

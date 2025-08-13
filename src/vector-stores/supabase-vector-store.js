@@ -1,4 +1,4 @@
-// src/vector-stores/supabase-vector-store.js
+
 import { createClient } from '@supabase/supabase-js';
 import { SupabaseVectorStore as LangchainSupabaseVectorStore } from '@langchain/supabase';
 import chalk from 'chalk';

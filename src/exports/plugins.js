@@ -5,8 +5,8 @@ import tahuFinancePlugin from '../plugins/tahu-finance.js';
 import tahuCurrencyPlugin from '../plugins/tahu-currency.js';
 
 export {
-    tahuCryptoPlugin,
-    tahuSocialPlugin,
-    tahuFinancePlugin,
-    tahuCurrencyPlugin
+  tahuCryptoPlugin,
+  tahuSocialPlugin,
+  tahuFinancePlugin,
+  tahuCurrencyPlugin,
 };

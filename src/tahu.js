@@ -19,216 +19,247 @@ import { VectorStoreManager } from './core/vector-store-manager.js'; // Import V
 import { ConfigValidator } from './utils/config-validator.js'; // Import ConfigValidator
 
 class TahuJS {
-    constructor(config = {}) {
-        this.config = {
-            provider: config.provider || 'openrouter',
-            apiKey: config.apiKey,
-            model: config.model || 'google/gemini-2.0-flash-exp:free',
-            temperature: config.temperature || 0.7,
-            maxTokens: config.maxTokens || 2000,
-            googleMapsApiKey: config.googleMapsApiKey,
-            serpApiKey: config.serpApiKey,
-            mapboxKey: config.mapboxKey,
-            ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434',
-            httpReferer: config.httpReferer,
-            xTitle: config.xTitle,
-            // New: embeddingProvider allows specifying the provider for embeddings
-            embeddingProvider: config.embeddingProvider || config.provider, 
-            embeddingModel: config.embeddingModel || this._getDefaultEmbeddingModel(config.embeddingProvider || config.provider), // Use embeddingProvider for default model
-            chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
-            supabaseUrl: config.supabaseUrl, // New: for Supabase URL
-            supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
-            ...config
-        };
+  constructor(config = {}) {
+    this.config = {
+      provider: config.provider || 'openrouter',
+      apiKey: config.apiKey,
+      model: config.model || 'google/gemini-2.0-flash-exp:free',
+      temperature: config.temperature || 0.7,
+      maxTokens: config.maxTokens || 2000,
+      googleMapsApiKey: config.googleMapsApiKey,
+      serpApiKey: config.serpApiKey,
+      mapboxKey: config.mapboxKey,
+      ollamaBaseUrl: config.ollamaBaseUrl || 'http://localhost:11434',
+      httpReferer: config.httpReferer,
+      xTitle: config.xTitle,
+      // New: embeddingProvider allows specifying the provider for embeddings
+      embeddingProvider: config.embeddingProvider || config.provider,
+      embeddingModel:
+        config.embeddingModel ||
+        this._getDefaultEmbeddingModel(
+          config.embeddingProvider || config.provider
+        ), // Use embeddingProvider for default model
+      chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
+      supabaseUrl: config.supabaseUrl, // New: for Supabase URL
+      supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
+      ...config,
+    };
 
-        // Validate configuration on initialization
-        const { warnings, errors } = ConfigValidator.validateConfig(this.config);
-        if (errors.length > 0) {
-            console.error(chalk.red('❌ TahuJS Initialization Errors:'));
-            errors.forEach(error => console.error(`   • ${error}`));
-            throw new Error('TahuJS failed to initialize due to configuration errors.');
-        }
-        if (warnings.length > 0) {
-            console.warn(chalk.yellow('⚠️  TahuJS Initialization Warnings:'));
-            warnings.forEach(warning => console.warn(`   • ${warning}`));
-        }
-
-        this.tools = new Map();
-        this.agents = new Map();
-        this.conversations = new Map();
-
-        // Initialize core components and managers
-        this.memoryDir = './memory';
-        if (!fs.existsSync(this.memoryDir)) {
-            fs.mkdirSync(this.memoryDir);
-        }
-        this.sqliteDb = new Database(`${this.memoryDir}/tahu_memory.db`);
-
-        this.searchService = new SearchService(this.config);
-        this.mapService = new MapService(this.config);
-        this.analyticsManager = new AnalyticsManager();
-
-        this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
-        this.llmManager = new LLMManager(this.config, this.tools, this.conversations, this.analyticsManager);
-        this.vectorStoreManager = new VectorStoreManager(this.config, this.llmManager, this.memoryDir, this.sqliteDb); // New: Initialize VectorStoreManager
-        this.toolManager = new ToolManager(this.tools, this.searchService, this.mapService, this.llmManager, this.vectorStoreManager); // Pass vectorStoreManager
-        this.agentManager = new AgentManager(this.agents, this.llmManager, this.memoryManager);
-        this.workflowManager = new WorkflowManager(this.llmManager, this.agentManager);
-        this.pluginManager = new PluginManager(this);
-
-        // Expose managers
-        this.analytics = this.analyticsManager;
-        this.vectorStore = this.vectorStoreManager; // New: Expose vectorStoreManager
-
-        console.log('🥘 TahuJS initialized successfully!');
+    // Validate configuration on initialization
+    const { warnings, errors } = ConfigValidator.validateConfig(this.config);
+    if (errors.length > 0) {
+      console.error(chalk.red('❌ TahuJS Initialization Errors:'));
+      errors.forEach((error) => console.error(`   • ${error}`));
+      throw new Error(
+        'TahuJS failed to initialize due to configuration errors.'
+      );
+    }
+    if (warnings.length > 0) {
+      console.warn(chalk.yellow('⚠️  TahuJS Initialization Warnings:'));
+      warnings.forEach((warning) => console.warn(`   • ${warning}`));
     }
 
-    _getDefaultEmbeddingModel(provider) {
-        switch (provider) {
-            case 'gemini':
-                return 'embedding-001';
-            case 'ollama':
-                return 'nomic-embed-text'; // Common Ollama embedding model
-            case 'openrouter': // OpenRouter uses OpenAI's embedding models
-            case 'openai':
-            default:
-                return 'text-embedding-ada-002'; // Default for OpenAI and OpenRouter
-        }
+    this.tools = new Map();
+    this.agents = new Map();
+    this.conversations = new Map();
+
+    // Initialize core components and managers
+    this.memoryDir = './memory';
+    if (!fs.existsSync(this.memoryDir)) {
+      fs.mkdirSync(this.memoryDir);
     }
+    this.sqliteDb = new Database(`${this.memoryDir}/tahu_memory.db`);
 
-    // =============== CORE AI METHODS (Delegated to Managers) ===============
+    this.searchService = new SearchService(this.config);
+    this.mapService = new MapService(this.config);
+    this.analyticsManager = new AnalyticsManager();
 
-    async chat(message, options = {}) {
-        return this.llmManager.chat(message, options);
+    this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
+    this.llmManager = new LLMManager(
+      this.config,
+      this.tools,
+      this.conversations,
+      this.analyticsManager
+    );
+    this.vectorStoreManager = new VectorStoreManager(
+      this.config,
+      this.llmManager,
+      this.memoryDir,
+      this.sqliteDb
+    ); // New: Initialize VectorStoreManager
+    this.toolManager = new ToolManager(
+      this.tools,
+      this.searchService,
+      this.mapService,
+      this.llmManager,
+      this.vectorStoreManager
+    ); // Pass vectorStoreManager
+    this.agentManager = new AgentManager(
+      this.agents,
+      this.llmManager,
+      this.memoryManager
+    );
+    this.workflowManager = new WorkflowManager(
+      this.llmManager,
+      this.agentManager
+    );
+    this.pluginManager = new PluginManager(this);
+
+    // Expose managers
+    this.analytics = this.analyticsManager;
+    this.vectorStore = this.vectorStoreManager; // New: Expose vectorStoreManager
+
+    console.log('🥘 TahuJS initialized successfully!');
+  }
+
+  _getDefaultEmbeddingModel(provider) {
+    switch (provider) {
+      case 'gemini':
+        return 'embedding-001';
+      case 'ollama':
+        return 'nomic-embed-text'; // Common Ollama embedding model
+      case 'openrouter': // OpenRouter uses OpenAI's embedding models
+      case 'openai':
+      default:
+        return 'text-embedding-ada-002'; // Default for OpenAI and OpenRouter
     }
+  }
 
-    async createLangChainAgent(systemPrompt) {
-        return this.llmManager.createLangChainAgent(systemPrompt);
-    }
+  // =============== CORE AI METHODS (Delegated to Managers) ===============
 
-    // =============== TOOL MANAGEMENT (Delegated to ToolManager) ===============
+  async chat(message, options = {}) {
+    return this.llmManager.chat(message, options);
+  }
 
-    registerTool(name, tool) {
-        this.toolManager.registerTool(name, tool);
-    }
+  async createLangChainAgent(systemPrompt) {
+    return this.llmManager.createLangChainAgent(systemPrompt);
+  }
 
-    async useTool(toolName, ...args) {
-        return this.toolManager.useTool(toolName, ...args);
-    }
+  // =============== TOOL MANAGEMENT (Delegated to ToolManager) ===============
 
-    listTools() {
-        return this.toolManager.listTools();
-    }
+  registerTool(name, tool) {
+    this.toolManager.registerTool(name, tool);
+  }
 
-    // =============== AGENT MANAGEMENT (Delegated to AgentManager) ===============
+  async useTool(toolName, ...args) {
+    return this.toolManager.useTool(toolName, ...args);
+  }
 
-    createAgent(name, config = {}) {
-        return this.agentManager.createAgent(name, config);
-    }
+  listTools() {
+    return this.toolManager.listTools();
+  }
 
-    createPrebuiltAgent(type, customConfig = {}) {
-        return this.agentManager.createPrebuiltAgent(type, customConfig);
-    }
+  // =============== AGENT MANAGEMENT (Delegated to AgentManager) ===============
 
-    async runAgent(agentName, task, options = {}) {
-        return this.agentManager.runAgent(agentName, task, options);
-    }
+  createAgent(name, config = {}) {
+    return this.agentManager.createAgent(name, config);
+  }
 
-    listAgents() {
-        return this.agentManager.listAgents();
-    }
+  createPrebuiltAgent(type, customConfig = {}) {
+    return this.agentManager.createPrebuiltAgent(type, customConfig);
+  }
 
-    getAgentInfo(agentName) {
-        return this.agentManager.getAgentInfo(agentName);
-    }
+  async runAgent(agentName, task, options = {}) {
+    return this.agentManager.runAgent(agentName, task, options);
+  }
 
-    // =============== WORKFLOW & PARALLEL PROCESSING (Delegated to WorkflowManager) ===============
+  listAgents() {
+    return this.agentManager.listAgents();
+  }
 
-    createWorkflow(workflowDefinition) {
-        return this.workflowManager.createWorkflow(workflowDefinition);
-    }
+  getAgentInfo(agentName) {
+    return this.agentManager.getAgentInfo(agentName);
+  }
 
-    async parallel(tasks) {
-        return this.workflowManager.parallel(tasks);
-    }
+  // =============== WORKFLOW & PARALLEL PROCESSING (Delegated to WorkflowManager) ===============
 
-    async batch(promptsAndOptions) {
-        return this.workflowManager.batch(promptsAndOptions);
-    }
+  createWorkflow(workflowDefinition) {
+    return this.workflowManager.createWorkflow(workflowDefinition);
+  }
 
-    // =============== PLUGIN SYSTEM (Delegated to PluginManager) ===============
+  async parallel(tasks) {
+    return this.workflowManager.parallel(tasks);
+  }
 
-    use(plugin) {
-        this.pluginManager.use(plugin);
-    }
+  async batch(promptsAndOptions) {
+    return this.workflowManager.batch(promptsAndOptions);
+  }
 
-    loadPlugins(directory) {
-        this.pluginManager.loadPlugins(directory);
-    
-    }
+  // =============== PLUGIN SYSTEM (Delegated to PluginManager) ===============
 
-    // =============== UTILITY METHODS (Remaining in TahuJS or delegated if appropriate) ===============
+  use(plugin) {
+    this.pluginManager.use(plugin);
+  }
 
-    clearConversation(conversationId = 'default') {
-        this.llmManager.clearConversation(conversationId);
-    }
+  loadPlugins(directory) {
+    this.pluginManager.loadPlugins(directory);
+  }
 
-    // AgentBuilder (remains here or can be moved to AgentManager if more complex)
-    builder() {
-        const tahuInstance = this; // Capture 'this' for the builder methods
-        const agentConfig = {
-            name: 'NewAgent',
-            systemPrompt: 'You are a helpful AI assistant.',
-            capabilities: [],
-            personality: 'helpful',
-            memoryType: 'volatile',
-            maxMemorySize: 10,
-            memoryPath: undefined
-        };
+  // =============== UTILITY METHODS (Remaining in TahuJS or delegated if appropriate) ===============
 
-        return {
-            name: function(name) {
-                agentConfig.name = name;
-                return this;
-            },
-            systemPrompt: function(prompt) {
-                agentConfig.systemPrompt = prompt;
-                return this;
-            },
-            addCapabilities: function(...capabilities) {
-                agentConfig.capabilities = [...new Set([...agentConfig.capabilities, ...capabilities])];
-                return this;
-            },
-            addPersonality: function(traits, mood, expertise) {
-                agentConfig.personality = { traits, mood, expertise };
-                return this;
-            },
-            addMemory: function(type, options = {}) {
-                agentConfig.memoryType = type;
-                agentConfig.maxMemorySize = options.maxMemorySize || agentConfig.maxMemorySize;
-                agentConfig.memoryPath = options.memoryPath;
-                return this;
-            },
-            build: function() {
-                return tahuInstance.createAgent(agentConfig.name, agentConfig);
-            }
-        };
-    }
+  clearConversation(conversationId = 'default') {
+    this.llmManager.clearConversation(conversationId);
+  }
+
+  // AgentBuilder (remains here or can be moved to AgentManager if more complex)
+  builder() {
+    const tahuInstance = this; // Capture 'this' for the builder methods
+    const agentConfig = {
+      name: 'NewAgent',
+      systemPrompt: 'You are a helpful AI assistant.',
+      capabilities: [],
+      personality: 'helpful',
+      memoryType: 'volatile',
+      maxMemorySize: 10,
+      memoryPath: undefined,
+    };
+
+    return {
+      name: function (name) {
+        agentConfig.name = name;
+        return this;
+      },
+      systemPrompt: function (prompt) {
+        agentConfig.systemPrompt = prompt;
+        return this;
+      },
+      addCapabilities: function (...capabilities) {
+        agentConfig.capabilities = [
+          ...new Set([...agentConfig.capabilities, ...capabilities]),
+        ];
+        return this;
+      },
+      addPersonality: function (traits, mood, expertise) {
+        agentConfig.personality = { traits, mood, expertise };
+        return this;
+      },
+      addMemory: function (type, options = {}) {
+        agentConfig.memoryType = type;
+        agentConfig.maxMemorySize =
+          options.maxMemorySize || agentConfig.maxMemorySize;
+        agentConfig.memoryPath = options.memoryPath;
+        return this;
+      },
+      build: function () {
+        return tahuInstance.createAgent(agentConfig.name, agentConfig);
+      },
+    };
+  }
 }
 
 // Factory functions
 export function createTahu(config) {
-    return new TahuJS(config);
+  return new TahuJS(config);
 }
 
 export function quickChat(apiKey, message, provider = 'openrouter') {
-    const tahu = new TahuJS({ apiKey, provider });
-    return tahu.chat(message);
+  const tahu = new TahuJS({ apiKey, provider });
+  return tahu.chat(message);
 }
 
 export function createQuickAgent(name, apiKey, systemPrompt) {
-    const tahu = new TahuJS({ apiKey });
-    return tahu.createAgent(name, { systemPrompt });
+  const tahu = new TahuJS({ apiKey });
+  return tahu.createAgent(name, { systemPrompt });
 }
 
 export default TahuJS;

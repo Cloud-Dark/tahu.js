@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "keywords": [
     "ai",
@@ -46,15 +48,20 @@
     "@langchain/community": "^0.0.52",
     "@langchain/google-genai": "^0.0.12",
     "@langchain/openai": "^0.0.28",
-    "@langchain/supabase": "^0.0.4",
-    "@supabase/supabase-js": "^2.43.4",
     "axios": "^1.6.8",
-    "better-sqlite3": "^12.2.0",
+    "better-sqlite3": "^9.6.0",
     "chalk": "^5.3.0",
     "cheerio": "^1.0.0-rc.12",
     "chromadb": "^1.8.1",
     "langchain": "^0.1.36",
     "mathjs": "^12.4.2",
     "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "babel-jest": "^30.0.5",
+    "jest": "^30.0.5",
+    "prettier": "^3.6.2"
   }
 }
