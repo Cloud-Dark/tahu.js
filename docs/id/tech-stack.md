@@ -14,4 +14,4 @@ TahuJS dibangun di atas fondasi teknologi modern dan terbukti:
 - **Manajemen Konfigurasi:** `ConfigValidator` kustom.
 
 - **Database:** `better-sqlite3` untuk persistensi memori SQLite dan basis pengetahuan.
-- **Basis Data Vektor:** `chromadb` untuk integrasi ChromaDB, `@supabase/supabase-js` dan `@langchain/community` untuk integrasi Supabase.
+- **Basis Data Vektor:** `chromadb` untuk integrasi ChromaDB.

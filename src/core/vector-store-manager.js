@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 import { SQLiteVectorStore } from '../vector-stores/sqlite-vector-store.js';
 import { ChromaVectorStore } from '../vector-stores/chroma-vector-store.js';
-import { SupabaseVectorStore } from '../vector-stores/supabase-vector-store.js'; // Import SupabaseVectorStore
+
 
 export class VectorStoreManager {
   constructor(config, llmManager, memoryDir, sqliteDb) {
@@ -42,20 +42,8 @@ export class VectorStoreManager {
         store = new ChromaVectorStore(name, chromaUrl);
         break;
       case 'supabase':
-        if (!this.config.supabaseUrl || !this.config.supabaseAnonKey) {
-          throw new Error(
-            chalk.red(
-              '❌ Supabase vector store requires supabaseUrl and supabaseAnonKey in TahuJS config.'
-            )
-          );
-        }
-        // Pass the LLMManager's embedding model instance
-        store = new SupabaseVectorStore(
-          this.config.supabaseUrl,
-          this.config.supabaseAnonKey,
-          options.tableName || name, // Use name as default table name
-          options.queryName,
-          this.llmManager.embeddingModel // Pass the embedding model
+        throw new Error(
+          chalk.yellow('💡 Supabase vector store is coming soon!')
         );
         break;
       default:
@@ -75,14 +63,9 @@ export class VectorStoreManager {
    */
   async addDocument(knowledgeBaseName, text, storeType, storeOptions = {}) {
     const store = this.getStore(knowledgeBaseName, storeType, storeOptions);
-    // SupabaseVectorStore's addDocument method (from LangchainSupabaseVectorStore) handles embedding internally
     // For other stores, we generate embedding first.
-    if (storeType === 'supabase') {
-      await store.addDocument(text); // Supabase store handles embedding internally
-    } else {
-      const embedding = await this.llmManager.getEmbeddings(text);
-      await store.addDocument(text, embedding);
-    }
+    const embedding = await this.llmManager.getEmbeddings(text);
+    await store.addDocument(text, embedding);
   }
 
   /**
