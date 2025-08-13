@@ -1,6 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
-import { SupabaseVectorStore as LangchainSupabaseVectorStore } from '@langchain/supabase';
+import { SupabaseVectorStore as LangchainSupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import chalk from 'chalk';
 
 export class SupabaseVectorStore {

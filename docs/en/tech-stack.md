@@ -14,4 +14,4 @@ TahuJS is built on a foundation of modern and proven technologies:
 - **Configuration Management:** Custom `ConfigValidator`.
 
 - **Database:** `better-sqlite3` for SQLite memory persistence and knowledge base.
-- **Vector Database:** `chromadb` for ChromaDB integration, `@supabase/supabase-js` and `@langchain/supabase` for Supabase integration.
+- **Vector Database:** `chromadb` for ChromaDB integration, `@supabase/supabase-js` and `@langchain/community` for Supabase integration.
