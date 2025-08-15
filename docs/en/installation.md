@@ -1,4 +1,10 @@
-# Installation
+# Installation and Quick Start
+
+## What is TahuJS?
+
+TahuJS is a JavaScript framework designed to streamline and accelerate the development of artificial intelligence-powered applications. It provides a simple, fast, and flexible way to create intelligent applications using various leading AI providers.
+
+## Installation
 
 To get started with TahuJS, follow these simple steps:
 
@@ -13,4 +19,25 @@ To get started with TahuJS, follow these simple steps:
     npm install
     ```
 4.  **Configure API Keys:** Set your API keys in environment variables or directly in your configuration when creating a TahuJS instance.
-5.  **Run Examples:** Explore the `example/` folder to see how TahuJS can be used in real-world scenarios.
+
+## Basic Usage (Hello World)
+
+Here's a minimal example to get TahuJS running:
+
+```javascript
+import { createTahu } from 'tahu.js';
+
+async function runHelloWorld() {
+  const tahu = createTahu({
+    provider: 'openrouter', // or 'openai', 'gemini', 'ollama'
+    apiKey: 'YOUR_API_KEY_HERE', // Replace with your actual API key
+    model: 'google/gemini-2.0-flash-exp:free', // Or your preferred model
+  });
+
+  const chatResult = await tahu.chat('Hello TahuJS, how are you?');
+  console.log(chatResult.response);
+}
+runHelloWorld();
+```
+
+For more detailed examples and provider-specific guides, please refer to the [Examples section](./examples.md).
