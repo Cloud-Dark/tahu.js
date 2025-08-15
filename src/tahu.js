@@ -88,6 +88,7 @@ class TahuJS {
       this.sqliteDb
     ); // New: Initialize VectorStoreManager
     this.toolManager = new ToolManager(
+      this.config, // Pass config here
       this.tools,
       this.searchService,
       this.mapService,

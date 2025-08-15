@@ -38,6 +38,36 @@ async function quickStart() {
     supabaseAnonKey: SUPABASE_ANON_KEY,
   });
 
+  // --- Example: Initializing TahuJS with specific tools enabled ---
+  console.log('\n--- Example: Initializing TahuJS with specific tools enabled ---');
+  const tahuLimitedTools = createTahu({
+    provider: 'openrouter',
+    apiKey: OPENROUTER_API_KEY,
+    model: 'google/gemini-2.0-flash-exp:free',
+    tools: {
+      enabled: [
+        tools.calculateTool.name,
+        tools.dateTimeTool.name,
+      ],
+    },
+  });
+
+  try {
+    console.log('Available tools for tahuLimitedTools:', tahuLimitedTools.listTools());
+    const limitedCalcResult = await tahuLimitedTools.useTool('calculate', '10 + 5');
+    console.log('Limited Tools Calc Result:', limitedCalcResult);
+
+    // This should fail if webSearchTool is not enabled
+    try {
+      await tahuLimitedTools.useTool('webSearch', 'latest news');
+    } catch (error) {
+      console.log('Expected error for disabled tool (webSearch):', error.message);
+    }
+  } catch (error) {
+    console.error('❌ Limited Tools Example Error:', error.message);
+  }
+  console.log('--- End Limited Tools Example ---\n');
+
   try {
     // --- 1. Create a simple agent using AgentBuilder ---
     console.log('🤖 Creating a simple agent using AgentBuilder...');

@@ -15,13 +15,14 @@ import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // 
 
 export class ToolManager {
   constructor(
+    config, // New: Pass config here
     toolsMap,
     searchService,
     mapService,
     llmManager,
     vectorStoreManager
   ) {
-    // Add vectorStoreManager
+    this.config = config; // Store config
     this.tools = toolsMap; // Reference to the main tools Map
     this.searchService = searchService;
     this.mapService = mapService;
@@ -31,59 +32,31 @@ export class ToolManager {
   }
 
   initializeBuiltInTools() {
-    this.registerTool(webSearchTool.name, {
-      description: webSearchTool.description,
-      execute: (query) => webSearchTool.execute(query, this.searchService),
-    });
+    const toolsToRegister = [
+      { name: webSearchTool.name, tool: webSearchTool, execute: (query) => webSearchTool.execute(query, this.searchService) },
+      { name: calculateTool.name, tool: calculateTool, execute: calculateTool.execute },
+      { name: findLocationTool.name, tool: findLocationTool, execute: (query) => findLocationTool.execute(query, this.mapService) },
+      { name: getDirectionsTool.name, tool: getDirectionsTool, execute: (input) => getDirectionsTool.execute(input, this.mapService) },
+      { name: getElevationTool.name, tool: getElevationTool, execute: (input) => getElevationTool.execute(input, this.mapService) },
+      { name: webScrapeTool.name, tool: webScrapeTool, execute: webScrapeTool.execute },
+      { name: dateTimeTool.name, tool: dateTimeTool, execute: dateTimeTool.execute },
+      { name: summarizeTool.name, tool: summarizeTool, execute: (text) => summarizeTool.execute(text, this.llmManager) },
+      { name: trainKnowledgeTool.name, tool: trainKnowledgeTool, execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) },
+      { name: retrieveKnowledgeTool.name, tool: retrieveKnowledgeTool, execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) },
+    ];
 
-    this.registerTool(calculateTool.name, {
-      description: calculateTool.description,
-      execute: calculateTool.execute,
-    });
+    const enabledToolsConfig = this.config.tools?.enabled;
 
-    this.registerTool(findLocationTool.name, {
-      description: findLocationTool.description,
-      execute: (query) => findLocationTool.execute(query, this.mapService),
-    });
-
-    this.registerTool(getDirectionsTool.name, {
-      description: getDirectionsTool.description,
-      execute: (input) => getDirectionsTool.execute(input, this.mapService),
-    });
-
-    this.registerTool(getElevationTool.name, {
-      description: getElevationTool.description,
-      execute: (input) => getElevationTool.execute(input, this.mapService),
-    });
-
-    this.registerTool(webScrapeTool.name, {
-      description: webScrapeTool.description,
-      execute: webScrapeTool.execute,
-    });
-
-    this.registerTool(dateTimeTool.name, {
-      description: dateTimeTool.description,
-      execute: dateTimeTool.execute,
-    });
-
-    this.registerTool(summarizeTool.name, {
-      description: summarizeTool.description,
-      execute: (text) => summarizeTool.execute(text, this.llmManager),
-    });
-
-    // Register the new trainKnowledge tool
-    this.registerTool(trainKnowledgeTool.name, {
-      description: trainKnowledgeTool.description,
-      execute: (input) =>
-        trainKnowledgeTool.execute(input, this.vectorStoreManager), // Pass vectorStoreManager
-    });
-
-    // Register the new retrieveKnowledge tool
-    this.registerTool(retrieveKnowledgeTool.name, {
-      description: retrieveKnowledgeTool.description,
-      execute: (input) =>
-        retrieveKnowledgeTool.execute(input, this.vectorStoreManager), // Pass vectorStoreManager
-    });
+    for (const { name, tool, execute } of toolsToRegister) {
+      if (!enabledToolsConfig || enabledToolsConfig.includes(name)) {
+        this.registerTool(name, {
+          description: tool.description,
+          execute: execute,
+        });
+      } else {
+        console.log(chalk.gray(`🔧 Tool "${name}" skipped (not enabled in config).`));
+      }
+    }
   }
 
   registerTool(name, tool) {

@@ -1,9 +1,9 @@
-// example/quick-start-gemini.js - Simple TahuJS Usage Example with Gemini 1.0 Pro
+// example/quick-start-gemini.js - Simple TahuJS Usage Example with Gemini
 
 import { createTahu } from '../src/tahu.js'; // Using library-style imports
 
 async function quickStartGemini() {
-  console.log('🚀 TahuJS Quick Start Demo with Gemini 1.0 Pro\n');
+  console.log('🚀 TahuJS Quick Start Demo with Gemini\n');
 
   // --- IMPORTANT: Replace with your actual API key ---
   const GEMINI_API_KEY = 'AIzaSyAUm394Y_jpQ41cfC0Cq6gljVSn4yBL-lQ'; // Replace with your actual Gemini API key
@@ -15,7 +15,7 @@ async function quickStartGemini() {
     return;
   }
 
-  // --- Initialize TahuJS with Gemini 1.0 Pro ---
+  // --- Initialize TahuJS with Gemini ---
   const tahuGemini = createTahu({
     provider: 'gemini',
     apiKey: GEMINI_API_KEY,
@@ -25,11 +25,11 @@ async function quickStartGemini() {
   });
 
   try {
-    console.log('\n--- Example: Using Gemini 1.0 Pro ---');
-    const geminiResponse = await tahuGemini.chat('Hello Gemini 1.0 Pro, how are you today?');
-    console.log('Gemini 1.0 Pro Response:', geminiResponse.response);
+    console.log('\n--- Example: Using Gemini ---');
+    const geminiResponse = await tahuGemini.chat('Hello Gemini, how are you today?');
+    console.log('Gemini Response:', geminiResponse.response);
   } catch (error) {
-    console.error('❌ Gemini 1.0 Pro Example Error:', error.message);
+    console.error('❌ Gemini Example Error:', error.message);
   }
   console.log('\n🎉 Quick Start Gemini Demo Finished!');
 }
