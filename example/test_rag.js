@@ -1,6 +1,6 @@
 // example/test_rag.js - RAG Demonstration with Train, Test, and Validation
 
-import { createTahu, tools } from 'tahu.js';
+import { createTahu, tools } from '../src/tahu.js';
 import fs from 'fs';
 import path from 'path';
 

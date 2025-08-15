@@ -1,6 +1,6 @@
 // example/demo.js - Comprehensive Demo of All TahuJS Features
 
-import TahuJS, { createTahu, quickChat, createQuickAgent } from 'tahu.js'; // Using library-style imports
+import TahuJS, { createTahu, quickChat, createQuickAgent } from '../src/tahu.js'; // Using library-style imports
 
 async function comprehensiveDemo() {
   console.log('🥘 TahuJS Comprehensive Demo Starting...\n');

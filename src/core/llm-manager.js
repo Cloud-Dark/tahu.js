@@ -42,9 +42,7 @@ export class LLMManager {
           });
           break;
         case 'gemini':
-          const geminiModelName = this.config.model.includes('gemini')
-            ? 'gemini-pro'
-            : this.config.model;
+          const geminiModelName = this.config.model;
           this.chatModel = new ChatGoogleGenerativeAI({
             modelName: geminiModelName,
             apiKey: this.config.apiKey,
