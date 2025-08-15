@@ -39,6 +39,37 @@ runGeminiChat();
 
 ## 🚀 Quick Start
 
-For detailed installation instructions and basic usage, please refer to the [Installation and Quick Start Guide](./docs/en/installation.md) (English) or [Panduan Instalasi dan Mulai Cepat](./docs/id/installation.md) (Bahasa Indonesia).
+### Installation
 
-For comprehensive code examples across different LLM providers, visit the [Examples section](./docs/en/examples.md) (English) or [Bagian Contoh](./docs/id/examples.md) (Bahasa Indonesia).
+Ensure you have **Node.js version 18 or higher** installed on your system.
+
+```bash
+# Clone the TahuJS repository
+git clone https://github.com/Cloud-Dark/tahu.js.git
+cd tahu.js
+
+# Install all necessary dependencies
+npm install
+```
+
+### Basic Usage
+
+Here's a minimal example to get TahuJS running:
+
+```javascript
+import { createTahu } from 'tahu.js';
+
+async function runHelloWorld() {
+  const tahu = createTahu({
+    provider: 'gemini', // or 'openrouter', 'openai', 'ollama'
+    apiKey: 'YOUR_API_API_KEY', // Replace with your actual API key
+    model: 'gemini-1.5-flash', // Or your preferred model
+  });
+
+  const chatResult = await tahu.chat('Hello TahuJS, how are you?');
+  console.log(chatResult.response);
+}
+runHelloWorld();
+```
+
+For more detailed examples and provider-specific guides, please refer to the [Examples section](./docs/en/examples.md) (English) or [Bagian Contoh](./docs/id/examples.md) (Bahasa Indonesia).
