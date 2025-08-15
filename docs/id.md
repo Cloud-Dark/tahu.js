@@ -162,35 +162,3 @@ Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan OpenRouter.
 
 TahuJS dilengkapi dengan seperangkat alat bawaan yang kuat yang dapat digunakan oleh agen atau secara langsung.
 
-### Alat OCR
-
-Alat OCR memungkinkan Anda mengekstrak teks dari file gambar dan PDF.
-
-```javascript
-import { createTahu } from '../../src/tahu.js';
-import path from 'path';
-import process from 'process'; // Import process for process.cwd()
-
-async function runOcrExample() {
-  const tahu = createTahu({
-    provider: 'openrouter', // Anda dapat menggunakan 'gemini', 'ollama', 'openai', atau 'openrouter'
-    apiKey: 'KUNCI_API_ANDA',
-    model: 'google/gemini-2.0-flash-exp:free', // Atau model pilihan Anda untuk penyedia yang dipilih
-    tools: {
-      enabled: ['ocr'], // Hanya aktifkan alat OCR
-    },
-  });
-
-  try {
-    console.log('\n--- Contoh Alat OCR ---');
-    const imagePath = path.join(process.cwd(), 'example', 'gemini', 'sample.png'); // Path ke gambar/PDF Anda
-    // Untuk pengujian nyata, ganti 'sample.png' dengan gambar/PDF yang berisi teks.
-    // Anda mungkin perlu menginstal data bahasa 'tesseract.js' untuk bahasa tertentu.
-    const extractedText = await tahu.useTool('ocr', imagePath);
-    console.log('Teks yang Diekstrak:', extractedText);
-  } catch (error) {
-    console.error('❌ Kesalahan Contoh OCR:', error.message);
-  }
-}
-runOcrExample();
-```

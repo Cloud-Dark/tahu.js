@@ -161,36 +161,3 @@ A more comprehensive demonstration of TahuJS features with OpenRouter.
 ## Built-in Tools
 
 TahuJS comes with a set of powerful built-in tools that can be used by agents or directly.
-
-### OCR Tool
-
-The OCR tool allows you to extract text from image and PDF files.
-
-```javascript
-import { createTahu } from '../../src/tahu.js';
-import path from 'path';
-import process from 'process'; // Import process for process.cwd()
-
-async function runOcrExample() {
-  const tahu = createTahu({
-    provider: 'openrouter', // You can use 'gemini', 'ollama', 'openai', or 'openrouter'
-    apiKey: 'YOUR_API_KEY',
-    model: 'google/gemini-2.0-flash-exp:free', // Or your preferred model for the chosen provider
-    tools: {
-      enabled: ['ocr'], // Enable only the OCR tool
-    },
-  });
-
-  try {
-    console.log('\n--- OCR Tool Example ---');
-    const imagePath = path.join(process.cwd(), 'example', 'gemini', 'sample.png'); // Path to your image/PDF
-    // For a real test, replace 'sample.png' with an image/PDF containing text.
-    // You might need to install 'tesseract.js' language data for specific languages.
-    const extractedText = await tahu.useTool('ocr', imagePath);
-    console.log('Extracted Text:', extractedText);
-  } catch (error) {
-    console.error('❌ OCR Example Error:', error.message);
-  }
-}
-runOcrExample();
-```
