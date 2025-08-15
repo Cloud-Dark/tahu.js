@@ -4,8 +4,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Cloud-Dark/tahu.js?style=social)](https://github.com/Cloud-Dark/tahu.js/stargazers)
 
-**Documentation:** [English](./docs/en/installation.md) | [Bahasa Indonesia](./docs/id/installation.md)
-**Examples:** [English](./docs/en/examples.md) | [Bahasa Indonesia](./docs/id/examples.md)
+**Documentation:** [English](./docs/en.md) | [Bahasa Indonesia](./docs/id.md)
 
 **The Ultimate Node.js Library for AI Agents & LLM Integration**
 
@@ -73,4 +72,4 @@ async function runHelloWorld() {
 runHelloWorld();
 ```
 
-For more detailed examples and provider-specific guides, please refer to the [Examples section](./docs/en/examples.md) (English) or [Bagian Contoh](./docs/id/examples.md) (Bahasa Indonesia).
+For more detailed examples and provider-specific guides, please refer to the [Documentation](./docs/en.md) (English) or [Dokumentasi](./docs/id.md) (Bahasa Indonesia).
