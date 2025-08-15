@@ -161,3 +161,12 @@ async function langchainIntegrationDemo() {
 }
 langchainIntegrationDemo();
 ```
+
+## Provider-Specific Examples
+
+TahuJS supports various LLM providers. Here are examples demonstrating how to use TahuJS with each specific provider:
+
+*   [Gemini Examples](gemini-examples.md)
+*   [Ollama Examples](ollama-examples.md)
+*   [OpenAI Examples](openai-examples.md)
+*   [OpenRouter Examples](openrouter-examples.md)

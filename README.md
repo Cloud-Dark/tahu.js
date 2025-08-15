@@ -5,6 +5,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Cloud-Dark/tahu.js?style=social)](https://github.com/Cloud-Dark/tahu.js/stargazers)
 
 **Documentation:** [English](./docs/en/introduction.md) | [Bahasa Indonesia](./docs/id/introduction.md)
+**Examples:** [English](./docs/en/examples.md) | [Bahasa Indonesia](./docs/id/examples.md)
 
 **The Ultimate Node.js Library for AI Agents & LLM Integration**
 
@@ -116,3 +117,12 @@ const retrievedKnowledge = await tahu.useTool(
 );
 console.log('Retrieved:', retrievedKnowledge);
 ```
+
+### Provider-Specific Quick Start Guides
+
+For quick start examples tailored to each LLM provider, refer to the following:
+
+*   [Gemini Quick Start](example/gemini/quick-start.js)
+*   [Ollama Quick Start](example/ollama/quick-start.js)
+*   [OpenAI Quick Start](example/openai/quick-start.js)
+*   [OpenRouter Quick Start](example/openrouter/quick-start.js)

@@ -42,6 +42,8 @@ class TahuJS {
       chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
       supabaseUrl: config.supabaseUrl, // New: for Supabase URL
       supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
+      debug: config.debug || false, // New: Debug mode, default to false
+      responseFormat: config.responseFormat || 'json', // New: Response format, default to 'json'
       ...config,
     };
 

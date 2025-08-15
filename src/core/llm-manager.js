@@ -254,7 +254,9 @@ export class LLMManager {
     const startTime = process.hrtime.bigint();
 
     try {
-      console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
+      if (this.config.debug) {
+        console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
+      }
       const response = await this.chatModel.invoke(lcMessages, {
         temperature: options.temperature || this.config.temperature,
         maxTokens: options.maxTokens || this.config.maxTokens,
@@ -263,7 +265,30 @@ export class LLMManager {
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1_000_000;
 
-      const responseContent = response.content;
+      let responseContent = response.content;
+
+      // Apply response formatting based on config
+      switch (this.config.responseFormat) {
+        case 'raw':
+          // No special formatting, return as is
+          break;
+        case 'md':
+          // Assume LLM output is already markdown or wrap if needed (basic markdown)
+          responseContent = `${responseContent}`;
+          break;
+        case 'json':
+        default:
+          // Attempt to parse as JSON, if fails, return as raw text
+          try {
+            responseContent = JSON.parse(responseContent);
+          } catch (e) {
+            if (this.config.debug) {
+              console.warn(chalk.yellow('⚠️  LLM response not valid JSON, returning as raw text.'));
+            }
+          }
+          break;
+      }
+
       history.push({ role: 'assistant', content: responseContent });
 
       const estimatedTokens = this.estimateTokens(message + responseContent);

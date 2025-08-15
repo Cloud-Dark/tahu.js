@@ -160,3 +160,12 @@ async function langchainIntegrationDemo() {
 }
 langchainIntegrationDemo();
 ```
+
+## Contoh Spesifik Penyedia
+
+TahuJS mendukung berbagai penyedia LLM. Berikut adalah contoh yang menunjukkan cara menggunakan TahuJS dengan setiap penyedia tertentu:
+
+*   [Contoh Gemini](gemini-examples.md)
+*   [Contoh Ollama](ollama-examples.md)
+*   [Contoh OpenAI](openai-examples.md)
+*   [Contoh OpenRouter](openrouter-examples.md)
