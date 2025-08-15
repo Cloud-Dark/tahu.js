@@ -12,6 +12,7 @@ import { dateTimeTool } from '../tools/date-time-tool.js';
 import { summarizeTool } from '../tools/summarize-tool.js';
 import { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // Import new tool
 import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // Import new tool
+import { ocrTool } from '../tools/ocr-tool.js'; // Import new OCR tool
 
 export class ToolManager {
   constructor(
@@ -44,6 +45,7 @@ export class ToolManager {
       { name: summarizeTool.name, description: summarizeTool.description, execute: (text) => summarizeTool.execute(text, this.llmManager) },
       { name: trainKnowledgeTool.name, description: trainKnowledgeTool.description, execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) },
       { name: retrieveKnowledgeTool.name, description: retrieveKnowledgeTool.description, execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) },
+      { name: ocrTool.name, description: ocrTool.description, execute: ocrTool.execute }, // New OCR tool
     ];
 
     // Populate allTools map

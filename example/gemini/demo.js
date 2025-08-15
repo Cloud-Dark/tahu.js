@@ -59,6 +59,13 @@ async function comprehensiveGeminiDemo() {
       'This is a very long text that needs to be summarized. It contains a lot of information about various topics, and the purpose is to demonstrate how the summarization tool can work effectively. The longer the text, the more useful this tool becomes for extracting key points and presenting them in a more concise and digestible format. This is particularly helpful in scenarios where you are dealing with large documents, articles, or transcripts and just need a quick overview.';
     const summaryResult = await tahu.useTool('summarize', longText); // Note: tool name is 'summarize'
     console.log(summaryResult);
+
+    console.log('\n👁️ OCR Tool Testing:');
+    const imagePath = path.join(process.cwd(), 'example', 'gemini', 'sample.png');
+    // For a real test, you would replace 'sample.png' with an image containing text.
+    // For this example, it will likely return empty or garbled text as sample.png is just a blank image.
+    const ocrResult = await tahu.useTool('ocr', imagePath);
+    console.log('OCR Result:', ocrResult);
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 3. Agent Management Testing ---

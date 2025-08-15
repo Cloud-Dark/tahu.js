@@ -36,6 +36,7 @@ runGeminiChat();
 - **🌍 Multi-Provider**: Seamless integration with OpenRouter, OpenAI, Google Gemini, and Ollama (local).
 - **🤖 Agent Framework**: Build complex multi-agent workflows with persistent memory.
 - **📊 Production Ready**: Robust error handling, configuration validation, and real-time analytics.
+- **👁️ OCR Support**: Extract text from images and PDF documents.
 
 ## 🚀 Quick Start
 
