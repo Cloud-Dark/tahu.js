@@ -92,7 +92,18 @@ tahu.loadPlugins('./src/plugins');
 
 ## Examples
 
-This section provides a comprehensive overview of TahuJS examples, categorized by LLM provider.
+This section provides a comprehensive overview of TahuJS examples, categorized by LLM provider and functionality.
+
+### OCR and Document Analysis Examples
+
+This section provides examples for using TahuJS's OCR and document analysis capabilities.
+
+*   **Analyze CVs**: Demonstrates how to use `cv_analyzer` to extract structured information from CV files.
+    [View Example](<../example/ocr_test/analyze_cvs.js>)
+*   **Analyze Images**: Shows how to perform OCR on image files using `ocr_advanced`.
+    [View Example](<../example/ocr_test/analyze_images.js>)
+*   **Analyze PDFs**: Illustrates how to extract text from PDF files using `pdf_analyzer` and refine it with AI.
+    [View Example](<../example/ocr_test/analyze_pdfs.js>)
 
 ### Gemini Examples
 
@@ -161,3 +172,15 @@ A more comprehensive demonstration of TahuJS features with OpenRouter.
 ## Built-in Tools
 
 TahuJS comes with a set of powerful built-in tools that can be used by agents or directly.
+
+### OCR and Document Analysis Tools
+
+TahuJS provides advanced tools for Optical Character Recognition (OCR) and document analysis, enabling your AI agents to extract and understand text from various file formats.
+
+*   **`ocr_advanced`**: Performs flexible, multi-stage OCR on image files (PNG, JPG, JPEG, BMP, GIF). It can extract raw text and optionally use an AI to enhance and format the results.
+*   **`pdf_analyzer`**: Extracts all text content from PDF files. This tool is essential for processing text-based PDFs and can be combined with AI for further analysis.
+*   **`cv_analyzer`**: Specifically designed to analyze CV (Curriculum Vitae) files, extracting structured information such as name, contact details, summary, skills, experience, and education. It leverages both PDF and OCR capabilities.
+
+### Other Built-in Tools
+
+(This section will be populated with other tools like web search, maps, calculations, etc.)

@@ -9,3 +9,4 @@ export { dateTimeTool } from '../tools/date-time-tool.js';
 export { summarizeTool } from '../tools/summarize-tool.js';
 export { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // New tool
 export { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // New tool
+export { ocrAdvancedTool } from '../tools/ocr-advanced-tool.js';

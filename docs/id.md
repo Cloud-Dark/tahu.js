@@ -92,7 +92,18 @@ tahu.loadPlugins('./src/plugins');
 
 ## Contoh
 
-Bagian ini menyediakan gambaran umum yang komprehensif tentang contoh TahuJS, dikategorikan berdasarkan penyedia LLM.
+Bagian ini menyediakan gambaran umum yang komprehensif tentang contoh TahuJS, dikategorikan berdasarkan penyedia LLM dan fungsionalitas.
+
+### Contoh Analisis OCR dan Dokumen
+
+Bagian ini menyediakan contoh penggunaan kemampuan analisis OCR dan dokumen TahuJS.
+
+*   **Analisis CV**: Menunjukkan cara menggunakan `cv_analyzer` untuk mengekstrak informasi terstruktur dari file CV.
+    [Lihat Contoh](<../example/ocr_test/analyze_cvs.js>)
+*   **Analisis Gambar**: Menunjukkan cara melakukan OCR pada file gambar menggunakan `ocr_advanced`.
+    [Lihat Contoh](<../example/ocr_test/analyze_images.js>)
+*   **Analisis PDF**: Mengilustrasikan cara mengekstrak teks dari file PDF menggunakan `pdf_analyzer` dan memperbaikinya dengan AI.
+    [Lihat Contoh](<../example/ocr_test/analyze_pdfs.js>)
 
 ### Contoh Gemini
 
@@ -161,4 +172,16 @@ Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan OpenRouter.
 ## Alat Bawaan
 
 TahuJS dilengkapi dengan seperangkat alat bawaan yang kuat yang dapat digunakan oleh agen atau secara langsung.
+
+### Alat Analisis OCR dan Dokumen
+
+TahuJS menyediakan alat canggih untuk Optical Character Recognition (OCR) dan analisis dokumen, memungkinkan agen AI Anda untuk mengekstrak dan memahami teks dari berbagai format file.
+
+*   **`ocr_advanced`**: Melakukan OCR multi-tahap yang fleksibel pada file gambar (PNG, JPG, JPEG, BMP, GIF). Ini dapat mengekstrak teks mentah dan secara opsional menggunakan AI untuk meningkatkan dan memformat hasilnya.
+*   **`pdf_analyzer`**: Mengekstrak semua konten teks dari file PDF. Alat ini penting untuk memproses PDF berbasis teks dan dapat digabungkan dengan AI untuk analisis lebih lanjut.
+*   **`cv_analyzer`**: Dirancang khusus untuk menganalisis file CV (Curriculum Vitae), mengekstrak informasi terstruktur seperti nama, detail kontak, ringkasan, keterampilan, pengalaman, dan pendidikan. Ini memanfaatkan kemampuan PDF dan OCR.
+
+### Alat Bawaan Lainnya
+
+(Bagian ini akan diisi dengan alat lain seperti pencarian web, peta, perhitungan, dll.)
 

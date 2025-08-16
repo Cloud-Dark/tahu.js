@@ -60,13 +60,7 @@ async function comprehensiveGeminiDemo() {
     const summaryResult = await tahu.useTool('summarize', longText); // Note: tool name is 'summarize'
     console.log(summaryResult);
 
-    console.log('\n👁️ OCR Tool Testing:');
-    const imagePath = path.join(process.cwd(), 'example', 'gemini', 'sample.png');
-    // For a real test, you would replace 'sample.png' with an image containing text.
-    // For this example, it will likely return empty or garbled text as sample.png is just a blank image.
-    const ocrResult = await tahu.useTool('ocr', imagePath);
-    console.log('OCR Result:', ocrResult);
-    console.log('\n' + '='.repeat(50) + '\n');
+    
 
     // --- 3. Agent Management Testing ---
     console.log('--- 3. Agent Management Testing ---');

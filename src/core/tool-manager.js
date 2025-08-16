@@ -13,6 +13,9 @@ import { summarizeTool } from '../tools/summarize-tool.js';
 import { trainKnowledgeTool } from '../tools/train-knowledge-tool.js'; // Import new tool
 import { retrieveKnowledgeTool } from '../tools/retrieve-knowledge-tool.js'; // Import new tool
 import { ocrTool } from '../tools/ocr-tool.js'; // Import new OCR tool
+import { ocrAdvancedTool } from '../tools/ocr-advanced-tool.js';
+import { pdfAnalyzerTool } from '../tools/pdf-analyzer-tool.js';
+import { cvAnalyzerTool } from '../tools/cv-analyzer-tool.js';
 
 export class ToolManager {
   constructor(
@@ -46,6 +49,9 @@ export class ToolManager {
       { name: trainKnowledgeTool.name, description: trainKnowledgeTool.description, execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) },
       { name: retrieveKnowledgeTool.name, description: retrieveKnowledgeTool.description, execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) },
       { name: ocrTool.name, description: ocrTool.description, execute: ocrTool.execute }, // New OCR tool
+      { name: ocrAdvancedTool.name, description: ocrAdvancedTool.description, execute: (filePath, options) => ocrAdvancedTool.execute(filePath, options, this.llmManager) },
+      { name: pdfAnalyzerTool.name, description: pdfAnalyzerTool.description, execute: pdfAnalyzerTool.execute },
+      { name: cvAnalyzerTool.name, description: cvAnalyzerTool.description, execute: (filePath, options) => cvAnalyzerTool.execute(filePath, options, this.llmManager) },
     ];
 
     // Populate allTools map

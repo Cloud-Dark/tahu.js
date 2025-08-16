@@ -1,12 +1,18 @@
 // example/quick-start-gemini.js - Simple TahuJS Usage Example with Gemini
 
 import { createTahu } from '../../src/tahu.js'; // Using library-style imports
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ES Module equivalent for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function quickStartGemini() {
   console.log('🚀 TahuJS Quick Start Demo with Gemini\n');
 
   // --- IMPORTANT: Replace with your actual API key ---
-  const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // Replace with your actual Gemini API key
+  const GEMINI_API_KEY = 'your_actual_api_key'; // Replace with your actual Gemini API key
 
   if (GEMINI_API_KEY.includes('YOUR_GEMINI_API_KEY')) {
     console.error(
@@ -23,13 +29,13 @@ async function quickStartGemini() {
     temperature: 0.7,
     maxTokens: 500,
     tools: {
-      enabled: ['calculate'], // Only enable the calculate tool for this instance
+      enabled: ['calculate'], // ocr_advanced is disabled as it has a dedicated example file
     },
   });
 
   try {
     console.log('\n--- Example: Using Gemini with calculate tool enabled ---');
-    console.log('Available tools:', tahuGemini.listTools()); // Should show only 'calculate'
+    console.log('Available tools:', tahuGemini.listTools()); 
 
     // Chat with Gemini
     const geminiResponse = await tahuGemini.chat('Hello Gemini, how are you today?');
@@ -43,7 +49,7 @@ async function quickStartGemini() {
     try {
       await tahuGemini.useTool('webSearch', 'latest news');
     } catch (error) {
-      console.log('Expected error for disabled tool (webSearch):', error.message);
+      console.log('\nExpected error for disabled tool (webSearch):', error.message);
     }
 
   } catch (error) {

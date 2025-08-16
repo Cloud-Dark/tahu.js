@@ -29,7 +29,7 @@ export class MapService {
         },
         headers: {
           'User-Agent':
-            'TahuJS/1.0.0 (https://github.com/yourusername/tahu.js)',
+            'TahuJS/1.0.0 (https://github.com/Cloud-Dark/tahu.js)',
         },
         timeout: 10000,
       });
