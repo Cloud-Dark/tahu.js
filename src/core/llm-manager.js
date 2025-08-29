@@ -232,6 +232,7 @@ export class LLMManager {
     }
 
     const conversation = options.conversationId || 'default';
+    const streaming = options.streaming || false;
 
     if (!this.conversations.has(conversation)) {
       this.conversations.set(conversation, []);
@@ -257,15 +258,52 @@ export class LLMManager {
       if (this.config.debug) {
         console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
       }
-      const response = await this.chatModel.invoke(lcMessages, {
-        temperature: options.temperature || this.config.temperature,
-        maxTokens: options.maxTokens || this.config.maxTokens,
-      });
+
+      let response;
+      let responseContent = '';
+
+      if (streaming) {
+        // Streaming response
+        const stream = await this.chatModel.stream(lcMessages, {
+          temperature: options.temperature || this.config.temperature,
+          maxTokens: options.maxTokens || this.config.maxTokens,
+        });
+
+        if (options.onChunk && typeof options.onChunk === 'function') {
+          // Handle streaming with callback
+          for await (const chunk of stream) {
+            const chunkContent = chunk.content || '';
+            responseContent += chunkContent;
+            options.onChunk({
+              content: chunkContent,
+              totalContent: responseContent,
+              finished: false
+            });
+          }
+          
+          // Final chunk
+          options.onChunk({
+            content: '',
+            totalContent: responseContent,
+            finished: true
+          });
+        } else {
+          // Collect all chunks
+          for await (const chunk of stream) {
+            responseContent += chunk.content || '';
+          }
+        }
+      } else {
+        // Non-streaming response
+        response = await this.chatModel.invoke(lcMessages, {
+          temperature: options.temperature || this.config.temperature,
+          maxTokens: options.maxTokens || this.config.maxTokens,
+        });
+        responseContent = response.content;
+      }
 
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1_000_000;
-
-      let responseContent = response.content;
 
       // Apply response formatting based on config
       switch (this.config.responseFormat) {
@@ -303,16 +341,21 @@ export class LLMManager {
         response: responseContent,
         conversationId: conversation,
         tokenUsage: options.includeUsage ? estimatedTokens : undefined,
+        streaming,
+        duration
       };
     } catch (error) {
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1_000_000;
       this.analyticsManager.recordError(duration);
 
-      console.error(
-        chalk.red(`❌ LLM Chat Error (${this.config.provider}):`),
-        error
-      );
+      if (this.config.debug) {
+        console.error(
+          chalk.red(`❌ LLM Chat Error (${this.config.provider}):`),
+          error
+        );
+      }
+      
       let errorMessage = `TahuJS Chat Error with ${this.config.provider}: ${error.message}`;
 
       if (error.response) {

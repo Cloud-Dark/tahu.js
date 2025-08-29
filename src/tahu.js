@@ -16,6 +16,7 @@ import { WorkflowManager } from './core/workflow-manager.js';
 import { PluginManager } from './core/plugin-manager.js';
 import { AnalyticsManager } from './core/analytics-manager.js';
 import { VectorStoreManager } from './core/vector-store-manager.js'; // Import VectorStoreManager
+import { LoggerManager } from './core/logger-manager.js'; // Import LoggerManager
 import { ConfigValidator } from './utils/config-validator.js'; // Import ConfigValidator
 
 class TahuJS {
@@ -42,8 +43,11 @@ class TahuJS {
       chromaDbUrl: config.chromaDbUrl, // New: for ChromaDB URL
       supabaseUrl: config.supabaseUrl, // New: for Supabase URL
       supabaseAnonKey: config.supabaseAnonKey, // New: for Supabase Anon Key
-      debug: config.debug || false, // New: Debug mode, default to false
-      responseFormat: config.responseFormat || 'json', // New: Response format, default to 'json'
+      debug: config.debug || false, // Debug mode, default to false
+      responseFormat: config.responseFormat || 'json', // Response format, default to 'json'
+      streaming: config.streaming || false, // Streaming mode, default to false
+      enableGuardrails: config.enableGuardrails || false, // Guardrails protection, default to false
+      maxLogEntries: config.maxLogEntries || 10000, // Max log entries in memory
       ...config,
     };
 
