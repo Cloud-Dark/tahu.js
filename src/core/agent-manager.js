@@ -108,9 +108,61 @@ export class AgentManager {
           },
         };
         break;
+      case 'nlp':
+        agentName = customConfig.name || 'NLPAgent';
+        agentConfig = {
+          systemPrompt:
+            'You are a natural language processing expert, specialized in text analysis, sentiment analysis, intent recognition, and language understanding.',
+          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'extractEntities', 'detectLanguage', 'classifyText'],
+          personality: {
+            traits: ['analytical', 'linguistic', 'precise'],
+            mood: 'focused',
+            expertise: ['nlp', 'text analysis', 'language processing', 'machine learning'],
+          },
+        };
+        break;
+      case 'translator':
+        agentName = customConfig.name || 'TranslatorAgent';
+        agentConfig = {
+          systemPrompt:
+            'You are a multilingual translation expert, capable of translating text between various languages while preserving context and meaning.',
+          capabilities: ['chat', 'detectLanguage', 'analyzeSentiment'],
+          personality: {
+            traits: ['multilingual', 'cultural-aware', 'precise'],
+            mood: 'helpful',
+            expertise: ['translation', 'linguistics', 'cultural context'],
+          },
+        };
+        break;
+      case 'chatbot':
+        agentName = customConfig.name || 'ChatbotAgent';
+        agentConfig = {
+          systemPrompt:
+            'You are a friendly and intelligent chatbot, designed to provide helpful responses and engage in natural conversations with users.',
+          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'search'],
+          personality: {
+            traits: ['friendly', 'helpful', 'engaging'],
+            mood: 'cheerful',
+            expertise: ['conversation', 'customer service', 'general knowledge'],
+          },
+        };
+        break;
+      case 'support':
+        agentName = customConfig.name || 'SupportAgent';
+        agentConfig = {
+          systemPrompt:
+            'You are a customer support specialist, trained to provide helpful assistance, troubleshoot issues, and ensure customer satisfaction.',
+          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'search', 'classifyText'],
+          personality: {
+            traits: ['patient', 'empathetic', 'solution-oriented'],
+            mood: 'professional',
+            expertise: ['customer service', 'problem solving', 'communication'],
+          },
+        };
+        break;
       default:
         throw new Error(
-          `Unknown pre-built agent type: ${type}. Available types: coder, writer, analyst, researcher.`
+          `Unknown pre-built agent type: ${type}. Available types: coder, writer, analyst, researcher, nlp, translator, chatbot, support.`
         );
     }
 

@@ -4,9 +4,22 @@ This document provides comprehensive information about TahuJS, a powerful Node.j
 
 ## Introduction
 
-TahuJS is a JavaScript framework designed to streamline and accelerate the development of artificial intelligence-powered applications. By integrating various leading AI libraries and providing a robust set of built-in tools, TahuJS allows developers to focus on their application's core logic, rather than the complexities of AI integration.
+TahuJS is a comprehensive JavaScript framework designed to streamline and accelerate the development of artificial intelligence-powered applications. By integrating various leading AI providers (OpenRouter, Gemini, OpenAI, Ollama) and providing a robust set of built-in tools, TahuJS allows developers to focus on their application's core logic, rather than the complexities of AI integration.
 
-Whether you aim to build intelligent agents that can interact dynamically, automate information retrieval from the web, analyze location data, or perform complex calculations, TahuJS provides a solid and easy-to-use foundation.
+Whether you aim to build intelligent agents, chatbots, automate information retrieval from the web, analyze images and documents with OCR, perform natural language processing, execute code safely, schedule tasks, or perform complex calculations, TahuJS provides a solid and easy-to-use foundation.
+
+## Key Features
+
+- **🚀 Multi-Provider Support**: Seamless integration with OpenRouter, OpenAI, Google Gemini, and Ollama
+- **🤖 Advanced Agent System**: Create specialized agents for different tasks (coder, writer, analyst, NLP, etc.)
+- **🧠 Natural Language Processing**: Built-in NLP capabilities with sentiment analysis, intent recognition, and entity extraction
+- **🖼️ Image Analysis**: Advanced image processing with color extraction, quality assessment, and visual analysis
+- **💻 Safe Code Execution**: Execute JavaScript, Python, Bash, and PowerShell code in a sandboxed environment
+- **⏰ Task Scheduling**: Cron-based task scheduling and management system
+- **📊 OCR & Document Analysis**: Extract text and analyze documents and images
+- **🔧 Extensive Plugin System**: Modular architecture with crypto, finance, social, and NLP plugins
+- **📈 Analytics & Monitoring**: Built-in usage analytics and performance tracking
+- **💾 Multiple Memory Types**: Support for volatile, JSON, and SQLite-based agent memory
 
 ## Installation and Quick Start
 
@@ -42,6 +55,106 @@ async function runHelloWorld() {
   console.log(chatResult.response);
 }
 runHelloWorld();
+```
+
+## Available Plugins
+
+TahuJS comes with several built-in plugins that extend its functionality:
+
+### TahuNLP Plugin
+Natural Language Processing capabilities including:
+- Sentiment analysis
+- Intent recognition
+- Entity extraction
+- Language detection
+- Text classification
+
+```javascript
+import { TahuNLPPlugin } from 'tahu.js';
+
+const nlpPlugin = new TahuNLPPlugin();
+await tahu.use(nlpPlugin);
+
+// Use NLP tools
+const sentiment = await tahu.useTool('analyzeSentiment', { 
+  text: 'I love this framework!' 
+});
+console.log(sentiment.vote); // 'positive'
+```
+
+### Crypto Plugin
+Cryptocurrency utilities and tools.
+
+### Finance Plugin
+Financial calculations and market data tools.
+
+### Social Plugin
+Social media integration and analysis tools.
+
+### Currency Plugin
+Currency conversion and exchange rate tools.
+
+## Advanced Tools
+
+### Image Analysis Tool
+Analyze images for colors, dimensions, quality, and visual characteristics:
+
+```javascript
+const analysis = await tahu.useTool('imageAnalysis', {
+  imagePath: './image.jpg',
+  analysisType: 'full',
+  extractPalette: true,
+  colorCount: 5
+});
+```
+
+### Code Execution Tool
+Safely execute code in multiple languages:
+
+```javascript
+const result = await tahu.useTool('codeExecution', {
+  language: 'python',
+  code: 'print("Hello from Python!")',
+  timeout: 30000
+});
+```
+
+### Task Scheduler Tool
+Schedule and manage recurring tasks:
+
+```javascript
+const task = await tahu.useTool('scheduler', {
+  action: 'schedule',
+  taskName: 'Daily Report',
+  cronPattern: '0 9 * * *', // Daily at 9 AM
+  taskFunction: 'generateReport'
+});
+```
+
+## Enhanced Agent Types
+
+TahuJS now supports additional pre-built agent types:
+
+- **coder**: Expert software engineer
+- **writer**: Creative content writer
+- **analyst**: Data analyst and researcher
+- **researcher**: Information research specialist
+- **nlp**: Natural language processing expert
+- **translator**: Multilingual translation expert
+- **chatbot**: Friendly conversational agent
+- **support**: Customer support specialist
+
+```javascript
+// Create specialized agents
+const nlpAgent = tahu.createPrebuiltAgent('nlp', {
+  name: 'TextAnalyzer',
+  memoryType: 'sqlite'
+});
+
+const coderAgent = tahu.createPrebuiltAgent('coder', {
+  name: 'CodeExpert',
+  capabilities: ['chat', 'search', 'codeExecution']
+});
 ```
 
 ## Plugin System

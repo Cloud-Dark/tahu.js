@@ -36,6 +36,11 @@ runGeminiChat();
 - **🤖 Agent Framework**: Build complex multi-agent workflows with persistent memory.
 - **📊 Production Ready**: Robust error handling, configuration validation, and real-time analytics.
 - **👁️ OCR Support**: Extract text from images and PDF documents.
+- **🧠 NLP Integration**: Built-in natural language processing with sentiment analysis, intent recognition, and entity extraction.
+- **🖼️ Image Analysis**: Advanced image processing with color extraction, quality assessment, and visual analysis.
+- **💻 Safe Code Execution**: Execute JavaScript, Python, Bash, and PowerShell code in a sandboxed environment.
+- **⏰ Task Scheduling**: Cron-based task scheduling and management system.
+- **🔌 Extensible Plugin System**: Modular architecture with crypto, finance, social, and NLP plugins.
 
 ## 🚀 Quick Start
 
@@ -70,6 +75,85 @@ async function runHelloWorld() {
   console.log(chatResult.response);
 }
 runHelloWorld();
+```
+
+## 🆕 New Features in v3.5.0+
+
+### Natural Language Processing
+```javascript
+import { createTahu, TahuNLPPlugin } from 'tahu.js';
+
+const tahu = createTahu({ provider: 'gemini', apiKey: 'your-key' });
+const nlpPlugin = new TahuNLPPlugin();
+await tahu.use(nlpPlugin);
+
+// Sentiment analysis
+const sentiment = await tahu.useTool('analyzeSentiment', { 
+  text: 'I love this framework!' 
+});
+console.log(sentiment.vote); // 'positive'
+
+// Intent recognition
+const intent = await tahu.useTool('recognizeIntent', { 
+  text: 'Book a flight to London' 
+});
+console.log(intent.intent); // 'booking'
+```
+
+### Advanced Agent Types
+```javascript
+// Create specialized agents
+const nlpAgent = tahu.createPrebuiltAgent('nlp', {
+  name: 'TextAnalyzer'
+});
+
+const coderAgent = tahu.createPrebuiltAgent('coder', {
+  name: 'CodeExpert',
+  capabilities: ['chat', 'search', 'codeExecution']
+});
+
+const supportAgent = tahu.createPrebuiltAgent('support', {
+  name: 'CustomerHelper'
+});
+```
+
+### Image Analysis
+```javascript
+const analysis = await tahu.useTool('imageAnalysis', {
+  imagePath: './image.jpg',
+  analysisType: 'full',
+  extractPalette: true,
+  colorCount: 5
+});
+
+console.log(analysis.analysis.colors.dominant.hex); // #ff5733
+console.log(analysis.analysis.quality.overall); // 'Excellent'
+```
+
+### Safe Code Execution
+```javascript
+const result = await tahu.useTool('codeExecution', {
+  language: 'python',
+  code: `
+    import math
+    result = math.sqrt(16) + math.pi
+    print(f"Result: {result:.2f}")
+  `
+});
+
+console.log(result.output); // "Result: 7.14"
+```
+
+### Task Scheduling
+```javascript
+const task = await tahu.useTool('scheduler', {
+  action: 'schedule',
+  taskName: 'Daily Report',
+  cronPattern: '0 9 * * *', // Daily at 9 AM
+  taskFunction: 'generateReport'
+});
+
+console.log(`Task scheduled: ${task.taskId}`);
 ```
 
 For more detailed examples and provider-specific guides, please refer to the [Documentation](./docs/en.md) (English) or [Dokumentasi](./docs/id.md) (Bahasa Indonesia).

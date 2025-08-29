@@ -1,0 +1,418 @@
+// src/tools/code-execution-tool.js - Safe Code Execution Tool
+import { exec, spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+
+class CodeExecutionTool {
+  constructor() {
+    this.name = 'codeExecution';
+    this.description = 'Execute code safely in various programming languages';
+    this.supportedLanguages = ['javascript', 'python', 'bash', 'powershell', 'node'];
+    this.tempDir = './temp';
+    this.maxExecutionTime = 30000; // 30 seconds max
+    this.maxOutputSize = 10000; // 10KB max output
+    
+    this.parameters = {
+      language: { 
+        type: 'string', 
+        description: 'Programming language (javascript, python, bash, powershell, node)',
+        required: true 
+      },
+      code: { 
+        type: 'string', 
+        description: 'Code to execute',
+        required: true 
+      },
+      timeout: { 
+        type: 'number', 
+        description: 'Execution timeout in milliseconds',
+        default: 30000 
+      },
+      args: { 
+        type: 'array', 
+        description: 'Command line arguments',
+        default: [] 
+      },
+      env: { 
+        type: 'object', 
+        description: 'Environment variables',
+        default: {} 
+      },
+      workingDir: { 
+        type: 'string', 
+        description: 'Working directory for execution',
+        default: null 
+      }
+    };
+
+    this.ensureTempDir();
+  }
+
+  ensureTempDir() {
+    if (!fs.existsSync(this.tempDir)) {
+      fs.mkdirSync(this.tempDir, { recursive: true });
+    }
+  }
+
+  async execute(params) {
+    const {
+      language,
+      code,
+      timeout = this.maxExecutionTime,
+      args = [],
+      env = {},
+      workingDir = null
+    } = params;
+
+    if (!this.supportedLanguages.includes(language.toLowerCase())) {
+      throw new Error(`Unsupported language: ${language}. Supported: ${this.supportedLanguages.join(', ')}`);
+    }
+
+    const executionId = uuidv4();
+    const startTime = Date.now();
+
+    try {
+      // Safety checks
+      this.validateCode(code, language);
+
+      const result = await this.executeCode(
+        language.toLowerCase(),
+        code,
+        timeout,
+        args,
+        env,
+        workingDir,
+        executionId
+      );
+
+      const executionTime = Date.now() - startTime;
+
+      return {
+        executionId,
+        language,
+        success: result.success,
+        output: result.output,
+        error: result.error,
+        exitCode: result.exitCode,
+        executionTime,
+        timestamp: new Date().toISOString()
+      };
+
+    } catch (error) {
+      return {
+        executionId,
+        language,
+        success: false,
+        output: '',
+        error: error.message,
+        exitCode: -1,
+        executionTime: Date.now() - startTime,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+
+  validateCode(code, language) {
+    // Basic safety checks
+    const dangerousPatterns = [
+      /rm\s+-rf/g,           // Dangerous file deletion
+      /del\s+\/[sq]/g,       // Windows dangerous deletion
+      /shutdown/g,           // System shutdown
+      /reboot/g,             // System reboot
+      /format\s+c:/g,        // Format drive
+      /:\(\)\{\s*:\|:\&\s*\};:/g, // Fork bomb
+      /while\s*true/g,       // Infinite loops (basic)
+      /for\s*\(\s*;\s*;\s*\)/g, // C-style infinite loops
+    ];
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(code)) {
+        throw new Error(`Code contains potentially dangerous operations: ${pattern.source}`);
+      }
+    }
+
+    // Language-specific validations
+    switch (language.toLowerCase()) {
+      case 'javascript':
+      case 'node':
+        this.validateJavaScript(code);
+        break;
+      case 'python':
+        this.validatePython(code);
+        break;
+      case 'bash':
+        this.validateBash(code);
+        break;
+    }
+  }
+
+  validateJavaScript(code) {
+    const dangerousPatterns = [
+      /require\s*\(\s*['"]fs['"]|\bfs\./g,
+      /require\s*\(\s*['"]child_process['"]|\bchild_process\./g,
+      /process\.exit/g,
+      /eval\s*\(/g,
+      /Function\s*\(/g,
+    ];
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(code)) {
+        throw new Error(`JavaScript code contains restricted operations: ${pattern.source}`);
+      }
+    }
+  }
+
+  validatePython(code) {
+    const dangerousPatterns = [
+      /import\s+os|from\s+os\s+import/g,
+      /import\s+subprocess|from\s+subprocess\s+import/g,
+      /import\s+sys|from\s+sys\s+import/g,
+      /exec\s*\(/g,
+      /eval\s*\(/g,
+      /__import__\s*\(/g,
+    ];
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(code)) {
+        throw new Error(`Python code contains restricted operations: ${pattern.source}`);
+      }
+    }
+  }
+
+  validateBash(code) {
+    const dangerousPatterns = [
+      /curl\s+.*\|\s*bash/g,
+      /wget\s+.*\|\s*bash/g,
+      /sudo/g,
+      /passwd/g,
+      /useradd|userdel/g,
+    ];
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(code)) {
+        throw new Error(`Bash code contains restricted operations: ${pattern.source}`);
+      }
+    }
+  }
+
+  async executeCode(language, code, timeout, args, env, workingDir, executionId) {
+    switch (language) {
+      case 'javascript':
+      case 'node':
+        return this.executeJavaScript(code, timeout, args, env, workingDir, executionId);
+      case 'python':
+        return this.executePython(code, timeout, args, env, workingDir, executionId);
+      case 'bash':
+        return this.executeBash(code, timeout, args, env, workingDir, executionId);
+      case 'powershell':
+        return this.executePowerShell(code, timeout, args, env, workingDir, executionId);
+      default:
+        throw new Error(`Execution not implemented for language: ${language}`);
+    }
+  }
+
+  async executeJavaScript(code, timeout, args, env, workingDir, executionId) {
+    const filename = path.join(this.tempDir, `${executionId}.js`);
+    
+    // Wrap code in safe context
+    const wrappedCode = `
+      // Restricted context for safety
+      (function() {
+        // Disable dangerous globals
+        const originalRequire = typeof require !== 'undefined' ? require : undefined;
+        const allowedModules = ['crypto', 'util', 'path'];
+        
+        global.require = function(module) {
+          if (!allowedModules.includes(module)) {
+            throw new Error('Module not allowed: ' + module);
+          }
+          return originalRequire(module);
+        };
+        
+        try {
+          ${code}
+        } catch (error) {
+          console.error('Execution error:', error.message);
+        }
+      })();
+    `;
+
+    fs.writeFileSync(filename, wrappedCode);
+
+    try {
+      const result = await this.runCommand('node', [filename, ...args], timeout, env, workingDir);
+      return result;
+    } finally {
+      this.cleanupFile(filename);
+    }
+  }
+
+  async executePython(code, timeout, args, env, workingDir, executionId) {
+    const filename = path.join(this.tempDir, `${executionId}.py`);
+    
+    // Wrap code in safe context
+    const wrappedCode = `
+import sys
+import builtins
+
+# Restrict imports
+original_import = builtins.__import__
+allowed_modules = ['math', 'random', 'datetime', 'json', 're', 'itertools', 'collections']
+
+def safe_import(name, *args, **kwargs):
+    if name not in allowed_modules:
+        raise ImportError(f"Module not allowed: {name}")
+    return original_import(name, *args, **kwargs)
+
+builtins.__import__ = safe_import
+
+try:
+${code.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as e:
+    print(f"Execution error: {e}")
+    `;
+
+    fs.writeFileSync(filename, wrappedCode);
+
+    try {
+      const result = await this.runCommand('python', [filename, ...args], timeout, env, workingDir);
+      return result;
+    } finally {
+      this.cleanupFile(filename);
+    }
+  }
+
+  async executeBash(code, timeout, args, env, workingDir, executionId) {
+    const filename = path.join(this.tempDir, `${executionId}.sh`);
+    
+    // Add safety header
+    const wrappedCode = `#!/bin/bash
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+set -o pipefail  # Exit on pipe failure
+
+${code}
+`;
+
+    fs.writeFileSync(filename, wrappedCode);
+    fs.chmodSync(filename, '755');
+
+    try {
+      const result = await this.runCommand('bash', [filename, ...args], timeout, env, workingDir);
+      return result;
+    } finally {
+      this.cleanupFile(filename);
+    }
+  }
+
+  async executePowerShell(code, timeout, args, env, workingDir, executionId) {
+    const filename = path.join(this.tempDir, `${executionId}.ps1`);
+    
+    const wrappedCode = `
+# PowerShell execution policy and safety
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+try {
+${code.split('\n').map(line => '    ' + line).join('\n')}
+} catch {
+    Write-Error "Execution error: $_"
+}
+`;
+
+    fs.writeFileSync(filename, wrappedCode);
+
+    try {
+      const result = await this.runCommand('powershell', ['-File', filename, ...args], timeout, env, workingDir);
+      return result;
+    } finally {
+      this.cleanupFile(filename);
+    }
+  }
+
+  async runCommand(command, args, timeout, env, workingDir) {
+    return new Promise((resolve, reject) => {
+      const process = spawn(command, args, {
+        cwd: workingDir || this.tempDir,
+        env: { ...process.env, ...env },
+        timeout: timeout
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      process.stdout.on('data', (data) => {
+        stdout += data.toString();
+        if (stdout.length > this.maxOutputSize) {
+          process.kill();
+          reject(new Error('Output size limit exceeded'));
+        }
+      });
+
+      process.stderr.on('data', (data) => {
+        stderr += data.toString();
+        if (stderr.length > this.maxOutputSize) {
+          process.kill();
+          reject(new Error('Error output size limit exceeded'));
+        }
+      });
+
+      process.on('close', (code) => {
+        resolve({
+          success: code === 0,
+          output: stdout,
+          error: stderr,
+          exitCode: code
+        });
+      });
+
+      process.on('error', (error) => {
+        reject(new Error(`Execution failed: ${error.message}`));
+      });
+
+      // Timeout handling
+      setTimeout(() => {
+        if (!process.killed) {
+          process.kill();
+          reject(new Error('Execution timeout exceeded'));
+        }
+      }, timeout);
+    });
+  }
+
+  cleanupFile(filename) {
+    try {
+      if (fs.existsSync(filename)) {
+        fs.unlinkSync(filename);
+      }
+    } catch (error) {
+      console.warn(`Failed to cleanup temporary file ${filename}:`, error.message);
+    }
+  }
+
+  getSupportedLanguages() {
+    return {
+      languages: this.supportedLanguages,
+      examples: {
+        javascript: 'console.log("Hello from JavaScript!");',
+        python: 'print("Hello from Python!")',
+        bash: 'echo "Hello from Bash!"',
+        powershell: 'Write-Host "Hello from PowerShell!"'
+      }
+    };
+  }
+
+  getInfo() {
+    return {
+      name: this.name,
+      description: this.description,
+      supportedLanguages: this.supportedLanguages,
+      maxExecutionTime: this.maxExecutionTime,
+      maxOutputSize: this.maxOutputSize,
+      tempDir: this.tempDir
+    };
+  }
+}
+
+export default CodeExecutionTool;

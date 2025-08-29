@@ -28,9 +28,6 @@ async function quickStartGemini() {
     model: 'gemini-2.0-flash',
     temperature: 0.7,
     maxTokens: 500,
-    tools: {
-      enabled: ['calculate'], // ocr_advanced is disabled as it has a dedicated example file
-    },
   });
 
   try {
