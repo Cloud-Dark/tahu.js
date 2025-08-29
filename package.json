@@ -1,6 +1,6 @@
 {
   "name": "tahu.js",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "A comprehensive Node.js library for AI Agents & LLM Integration, simplifying the creation of intelligent applications.",
   "main": "index.js",
   "type": "module",
