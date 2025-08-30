@@ -1,5 +1,6 @@
 // src/core/tool-manager.js
 import chalk from 'chalk';
+import TahuJS from '../tahu.js';
 
 // Import tools
 import { webSearchTool } from '../tools/web-search-tool.js';
@@ -36,22 +37,99 @@ export class ToolManager {
     this.initializeBuiltInTools();
   }
 
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
+  }
+
   initializeBuiltInTools() {
     const allBuiltInTools = [
-      { name: webSearchTool.name, description: webSearchTool.description, execute: (query) => webSearchTool.execute(query, this.searchService) },
-      { name: calculateTool.name, description: calculateTool.description, execute: calculateTool.execute },
-      { name: findLocationTool.name, description: findLocationTool.description, execute: (query) => findLocationTool.execute(query, this.mapService) },
-      { name: getDirectionsTool.name, description: getDirectionsTool.description, execute: (input) => getDirectionsTool.execute(input, this.mapService) },
-      { name: getElevationTool.name, description: getElevationTool.description, execute: (input) => getElevationTool.execute(input, this.mapService) },
-      { name: webScrapeTool.name, description: webScrapeTool.description, execute: webScrapeTool.execute },
-      { name: dateTimeTool.name, description: dateTimeTool.description, execute: dateTimeTool.execute },
-      { name: summarizeTool.name, description: summarizeTool.description, execute: (text) => summarizeTool.execute(text, this.llmManager) },
-      { name: trainKnowledgeTool.name, description: trainKnowledgeTool.description, execute: (input) => trainKnowledgeTool.execute(input, this.vectorStoreManager) },
-      { name: retrieveKnowledgeTool.name, description: retrieveKnowledgeTool.description, execute: (input) => retrieveKnowledgeTool.execute(input, this.vectorStoreManager) },
-      { name: ocrTool.name, description: ocrTool.description, execute: ocrTool.execute }, // New OCR tool
-      { name: ocrAdvancedTool.name, description: ocrAdvancedTool.description, execute: (filePath, options) => ocrAdvancedTool.execute(filePath, options, this.llmManager) },
-      { name: pdfAnalyzerTool.name, description: pdfAnalyzerTool.description, execute: pdfAnalyzerTool.execute },
-      { name: cvAnalyzerTool.name, description: cvAnalyzerTool.description, execute: (filePath, options) => cvAnalyzerTool.execute(filePath, options, this.llmManager) },
+      {
+        name: webSearchTool.name,
+        description: webSearchTool.description,
+        execute: (query) => webSearchTool.execute(query, this.searchService),
+      },
+      {
+        name: calculateTool.name,
+        description: calculateTool.description,
+        execute: calculateTool.execute,
+      },
+      {
+        name: findLocationTool.name,
+        description: findLocationTool.description,
+        execute: (query) => findLocationTool.execute(query, this.mapService),
+      },
+      {
+        name: getDirectionsTool.name,
+        description: getDirectionsTool.description,
+        execute: (input) => getDirectionsTool.execute(input, this.mapService),
+      },
+      {
+        name: getElevationTool.name,
+        description: getElevationTool.description,
+        execute: (input) => getElevationTool.execute(input, this.mapService),
+      },
+      {
+        name: webScrapeTool.name,
+        description: webScrapeTool.description,
+        execute: webScrapeTool.execute,
+      },
+      {
+        name: dateTimeTool.name,
+        description: dateTimeTool.description,
+        execute: dateTimeTool.execute,
+      },
+      {
+        name: summarizeTool.name,
+        description: summarizeTool.description,
+        execute: (text) => summarizeTool.execute(text, this.llmManager),
+      },
+      {
+        name: trainKnowledgeTool.name,
+        description: trainKnowledgeTool.description,
+        execute: (input) =>
+          trainKnowledgeTool.execute(input, this.vectorStoreManager),
+      },
+      {
+        name: retrieveKnowledgeTool.name,
+        description: retrieveKnowledgeTool.description,
+        execute: (input) =>
+          retrieveKnowledgeTool.execute(input, this.vectorStoreManager),
+      },
+      {
+        name: ocrTool.name,
+        description: ocrTool.description,
+        execute: ocrTool.execute,
+      }, // New OCR tool
+      {
+        name: ocrAdvancedTool.name,
+        description: ocrAdvancedTool.description,
+        execute: (filePath, options) =>
+          ocrAdvancedTool.execute(filePath, options, this.llmManager),
+      },
+      {
+        name: pdfAnalyzerTool.name,
+        description: pdfAnalyzerTool.description,
+        execute: pdfAnalyzerTool.execute,
+      },
+      {
+        name: cvAnalyzerTool.name,
+        description: cvAnalyzerTool.description,
+        execute: (filePath, options) =>
+          cvAnalyzerTool.execute(filePath, options, this.llmManager),
+      },
     ];
 
     // Populate allTools map
@@ -81,7 +159,7 @@ export class ToolManager {
       parameters: tool.parameters || {},
       registered: new Date().toISOString(),
     });
-    console.log(`🔧 Tool "${name}" registered successfully!`);
+    this._debugLog(`🔧 Tool "${name}" registered successfully!`);
   }
 
   async useTool(toolName, ...args) {
@@ -97,7 +175,7 @@ export class ToolManager {
     }
 
     try {
-      console.log(`🔧 Using tool: ${toolName}`);
+      this._debugLog(`🔧 Using tool: ${toolName}`);
       const result = await tool.execute(...args);
       return result;
     } catch (error) {

@@ -64,7 +64,9 @@ async function analyzeImageFiles() {
       // --- 1. Standard OCR Analysis (Manual/Tesseract) ---
       console.log(`
 --- 1. Standard OCR Analysis (Raw Result with full object view) ---`);
-      const standardResult = await tahu.useTool('ocr_advanced', filePath, { language: 'eng' });
+      const standardResult = await tahu.useTool('ocr_advanced', filePath, {
+        language: 'eng',
+      });
       console.log('✅ Standard Result (Raw Data):');
       console.log(JSON.stringify(standardResult.rawOcrResult, null, 2));
 
@@ -77,11 +79,15 @@ async function analyzeImageFiles() {
       const aiResult = await tahu.useTool('ocr_advanced', filePath, aiOptions);
       console.log('✅ AI-Generated Report:');
       console.log(aiResult.aiEnhancedResult);
-
     } catch (error) {
       console.error(`❌ Failed to analyze ${file}: ${error.message}`);
-      if (error.message.includes('Unknown format') || error.message.includes('unsupported file type')) {
-        console.warn(`💡 Tip: The file '${file}' might be corrupted or not a valid image format.`);
+      if (
+        error.message.includes('Unknown format') ||
+        error.message.includes('unsupported file type')
+      ) {
+        console.warn(
+          `💡 Tip: The file '${file}' might be corrupted or not a valid image format.`
+        );
       }
     }
   }

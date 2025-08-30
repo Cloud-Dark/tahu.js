@@ -18,7 +18,9 @@ async function analyzeCvFiles() {
 
   // Ensure the CV directory exists
   if (!fs.existsSync(cvDir)) {
-    console.error(`❌ CV directory not found: ${cvDir}. Please create it and add CV files.`);
+    console.error(
+      `❌ CV directory not found: ${cvDir}. Please create it and add CV files.`
+    );
     return;
   }
 
@@ -82,26 +84,40 @@ async function analyzeCvFiles() {
         // Using the improved logging from analyze_pdfs.js
         console.log(`    File Path: ${pdfResult.filePath}`);
         console.log(`    Page Count: ${pdfResult.pageCount}`);
-        console.log(`    Text Content Length: ${pdfResult.textContent.length} characters`);
+        console.log(
+          `    Text Content Length: ${pdfResult.textContent.length} characters`
+        );
         if (pdfResult.pdfInfo) {
-          console.log(`    PDF Info: ${JSON.stringify(pdfResult.pdfInfo, null, 2)}`);
+          console.log(
+            `    PDF Info: ${JSON.stringify(pdfResult.pdfInfo, null, 2)}`
+          );
         } else {
           console.log(`    PDF Info: Not Available`);
         }
-        console.log(`    Full Text Content (first 500 chars):\n'''\n${pdfResult.textContent.substring(0, 500)}\n'''`);
+        console.log(
+          `    Full Text Content (first 500 chars):\n'''\n${pdfResult.textContent.substring(0, 500)}\n'''`
+        );
       } else if (['.png', '.jpg', '.jpeg', '.bmp', '.gif'].includes(ext)) {
         console.log(`  Running Baseline OCR Analysis...`);
-        const ocrResult = await tahu.useTool('ocr_advanced', filePath, { language: 'eng' });
+        const ocrResult = await tahu.useTool('ocr_advanced', filePath, {
+          language: 'eng',
+        });
         console.log('  ✅ OCR Analysis Result (Raw Data):');
         console.log(JSON.stringify(ocrResult.rawOcrResult, null, 2));
       }
-
     } catch (error) {
       console.error(`❌ Failed to analyze ${file}: ${error.message}`);
-      if (error.message.includes('Unknown format') || error.message.includes('unsupported file type')) {
-        console.warn(`💡 Tip: The file '${file}' might be corrupted or not a valid image/PDF format.`);
+      if (
+        error.message.includes('Unknown format') ||
+        error.message.includes('unsupported file type')
+      ) {
+        console.warn(
+          `💡 Tip: The file '${file}' might be corrupted or not a valid image/PDF format.`
+        );
       } else if (error.message.includes('Failed to extract text from PDF')) {
-        console.warn(`💡 Tip: Ensure 'pdf.js-extract' is installed (npm install pdf.js-extract) and the PDF is not corrupted/protected.`);
+        console.warn(
+          `💡 Tip: Ensure 'pdf.js-extract' is installed (npm install pdf.js-extract) and the PDF is not corrupted/protected.`
+        );
       }
     }
   }

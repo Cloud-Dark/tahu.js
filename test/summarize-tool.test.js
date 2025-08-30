@@ -1,1 +1,5 @@
-describe('Summarize Tool', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('Summarize Tool', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

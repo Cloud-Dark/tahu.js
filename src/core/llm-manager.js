@@ -10,6 +10,7 @@ import { pull } from 'langchain/hub';
 import { HumanMessage, AIMessage } from 'langchain/schema';
 import { ChatOllama } from '@langchain/community/chat_models/ollama';
 import chalk from 'chalk';
+import TahuJS from '../tahu.js';
 
 export class LLMManager {
   constructor(config, toolsMap, conversationsMap, analyticsManager) {
@@ -21,6 +22,23 @@ export class LLMManager {
     this.embeddingModel = null; // New: Embedding model
     this.initializeChatModel();
     this.initializeEmbeddingModel(); // New: Initialize embedding model
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
   }
 
   initializeChatModel() {
@@ -69,11 +87,11 @@ export class LLMManager {
         default:
           throw new Error(`Unsupported provider: ${this.config.provider}`);
       }
-      console.log(
+      this._debugLog(
         `🔗 LangChain chat model initialized for provider: ${this.config.provider}`
       );
     } catch (error) {
-      console.error(
+      this._debugError(
         '❌ Failed to initialize LangChain chat model:',
         error.message
       );
@@ -88,7 +106,7 @@ export class LLMManager {
       const embeddingModelName = this.config.embeddingModel;
 
       if (!embeddingProvider || !embeddingModelName) {
-        console.warn(
+        this._debugWarn(
           chalk.yellow(
             `⚠️  Embedding model not fully configured (provider: ${embeddingProvider}, model: ${embeddingModelName}). Skipping embedding model initialization.`
           )
@@ -132,7 +150,7 @@ export class LLMManager {
           });
           break;
         default:
-          console.warn(
+          this._debugWarn(
             chalk.yellow(
               `⚠️  Unsupported embedding provider: ${embeddingProvider}. Skipping embedding model initialization.`
             )
@@ -140,15 +158,13 @@ export class LLMManager {
           this.embeddingModel = null;
           return;
       }
-      console.log(
+      this._debugLog(
         `🔗 LangChain embedding model initialized for provider: ${embeddingProvider} with model: ${embeddingModelName}`
       );
     } catch (error) {
-      console.error(
-        chalk.red(
-          '❌ Failed to initialize LangChain embedding model:',
-          error.message
-        )
+      this._debugError(
+        '❌ Failed to initialize LangChain embedding model:',
+        error.message
       );
       this.embeddingModel = null;
     }
@@ -162,7 +178,7 @@ export class LLMManager {
       );
     }
     try {
-      console.log(
+      this._debugLog(
         chalk.blue(
           `🧠 Generating embeddings for text (length: ${text.length})...`
         )
@@ -170,8 +186,8 @@ export class LLMManager {
       const embeddings = await this.embeddingModel.embedQuery(text);
       return embeddings;
     } catch (error) {
-      console.error(
-        chalk.red('❌ Embedding generation failed:', error.message)
+      this._debugError(
+        '❌ Embedding generation failed:', error.message
       );
       throw new Error(`Failed to generate embeddings: ${error.message}`);
     }
@@ -203,7 +219,7 @@ export class LLMManager {
         'LangChain chat model is not initialized. Check your configuration.'
       );
     }
-    console.log('🤖 Creating LangChain agent...');
+    this._debugLog('🤖 Creating LangChain agent...');
     const tools = this.getLangChainTools();
 
     const prompt = await pull('hwchase17/react');
@@ -220,7 +236,7 @@ export class LLMManager {
       verbose: true,
     });
 
-    console.log('🤖 LangChain Agent Executor created successfully!');
+    this._debugLog('🤖 LangChain Agent Executor created successfully!');
     return agentExecutor;
   }
 
@@ -255,9 +271,9 @@ export class LLMManager {
     const startTime = process.hrtime.bigint();
 
     try {
-      if (this.config.debug) {
-        console.log(`🔄 Calling LLM via LangChain (${this.config.provider})...`);
-      }
+      this._debugLog(
+        `🔄 Calling LLM via LangChain (${this.config.provider})...`
+      );
 
       let response;
       let responseContent = '';
@@ -277,15 +293,15 @@ export class LLMManager {
             options.onChunk({
               content: chunkContent,
               totalContent: responseContent,
-              finished: false
+              finished: false,
             });
           }
-          
+
           // Final chunk
           options.onChunk({
             content: '',
             totalContent: responseContent,
-            finished: true
+            finished: true,
           });
         } else {
           // Collect all chunks
@@ -320,9 +336,11 @@ export class LLMManager {
           try {
             responseContent = JSON.parse(responseContent);
           } catch (e) {
-            if (this.config.debug) {
-              console.warn(chalk.yellow('⚠️  LLM response not valid JSON, returning as raw text.'));
-            }
+            this._debugWarn(
+              chalk.yellow(
+                '⚠️  LLM response not valid JSON, returning as raw text.'
+              )
+            );
           }
           break;
       }
@@ -342,20 +360,18 @@ export class LLMManager {
         conversationId: conversation,
         tokenUsage: options.includeUsage ? estimatedTokens : undefined,
         streaming,
-        duration
+        duration,
       };
     } catch (error) {
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1_000_000;
       this.analyticsManager.recordError(duration);
 
-      if (this.config.debug) {
-        console.error(
-          chalk.red(`❌ LLM Chat Error (${this.config.provider}):`),
-          error
-        );
-      }
-      
+      this._debugError(
+        chalk.red(`❌ LLM Chat Error (${this.config.provider}):`),
+        error
+      );
+
       let errorMessage = `TahuJS Chat Error with ${this.config.provider}: ${error.message}`;
 
       if (error.response) {

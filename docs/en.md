@@ -62,7 +62,9 @@ runHelloWorld();
 TahuJS comes with several built-in plugins that extend its functionality:
 
 ### TahuNLP Plugin
+
 Natural Language Processing capabilities including:
+
 - Sentiment analysis
 - Intent recognition
 - Entity extraction
@@ -76,27 +78,32 @@ const nlpPlugin = new TahuNLPPlugin();
 await tahu.use(nlpPlugin);
 
 // Use NLP tools
-const sentiment = await tahu.useTool('analyzeSentiment', { 
-  text: 'I love this framework!' 
+const sentiment = await tahu.useTool('analyzeSentiment', {
+  text: 'I love this framework!',
 });
 console.log(sentiment.vote); // 'positive'
 ```
 
 ### Crypto Plugin
+
 Cryptocurrency utilities and tools.
 
 ### Finance Plugin
+
 Financial calculations and market data tools.
 
 ### Social Plugin
+
 Social media integration and analysis tools.
 
 ### Currency Plugin
+
 Currency conversion and exchange rate tools.
 
 ## Advanced Tools
 
 ### Image Analysis Tool
+
 Analyze images for colors, dimensions, quality, and visual characteristics:
 
 ```javascript
@@ -104,22 +111,24 @@ const analysis = await tahu.useTool('imageAnalysis', {
   imagePath: './image.jpg',
   analysisType: 'full',
   extractPalette: true,
-  colorCount: 5
+  colorCount: 5,
 });
 ```
 
 ### Code Execution Tool
+
 Safely execute code in multiple languages:
 
 ```javascript
 const result = await tahu.useTool('codeExecution', {
   language: 'python',
   code: 'print("Hello from Python!")',
-  timeout: 30000
+  timeout: 30000,
 });
 ```
 
 ### Task Scheduler Tool
+
 Schedule and manage recurring tasks:
 
 ```javascript
@@ -127,7 +136,7 @@ const task = await tahu.useTool('scheduler', {
   action: 'schedule',
   taskName: 'Daily Report',
   cronPattern: '0 9 * * *', // Daily at 9 AM
-  taskFunction: 'generateReport'
+  taskFunction: 'generateReport',
 });
 ```
 
@@ -148,12 +157,12 @@ TahuJS now supports additional pre-built agent types:
 // Create specialized agents
 const nlpAgent = tahu.createPrebuiltAgent('nlp', {
   name: 'TextAnalyzer',
-  memoryType: 'sqlite'
+  memoryType: 'sqlite',
 });
 
 const coderAgent = tahu.createPrebuiltAgent('coder', {
   name: 'CodeExpert',
-  capabilities: ['chat', 'search', 'codeExecution']
+  capabilities: ['chat', 'search', 'codeExecution'],
 });
 ```
 
@@ -211,12 +220,12 @@ This section provides a comprehensive overview of TahuJS examples, categorized b
 
 This section provides examples for using TahuJS's OCR and document analysis capabilities.
 
-*   **Analyze CVs**: Demonstrates how to use `cv_analyzer` to extract structured information from CV files.
-    [View Example](<../example/ocr_test/analyze_cvs.js>)
-*   **Analyze Images**: Shows how to perform OCR on image files using `ocr_advanced`.
-    [View Example](<../example/ocr_test/analyze_images.js>)
-*   **Analyze PDFs**: Illustrates how to extract text from PDF files using `pdf_analyzer` and refine it with AI.
-    [View Example](<../example/ocr_test/analyze_pdfs.js>)
+- **Analyze CVs**: Demonstrates how to use `cv_analyzer` to extract structured information from CV files.
+  [View Example](../example/ocr_test/analyze_cvs.js)
+- **Analyze Images**: Shows how to perform OCR on image files using `ocr_advanced`.
+  [View Example](../example/ocr_test/analyze_images.js)
+- **Analyze PDFs**: Illustrates how to extract text from PDF files using `pdf_analyzer` and refine it with AI.
+  [View Example](../example/ocr_test/analyze_pdfs.js)
 
 ### Gemini Examples
 
@@ -226,13 +235,13 @@ This section provides examples for using TahuJS with Gemini.
 
 A simple example to get started with Gemini.
 
-[View Quick Start Example](<../example/gemini/quick-start.js>)
+[View Quick Start Example](../example/gemini/quick-start.js)
 
 #### Comprehensive Demo
 
 A more comprehensive demonstration of TahuJS features with Gemini.
 
-[View Comprehensive Demo](<../example/gemini/demo.js>)
+[View Comprehensive Demo](../example/gemini/demo.js)
 
 ### Ollama Examples
 
@@ -242,13 +251,13 @@ This section provides examples for using TahuJS with Ollama.
 
 A simple example to get started with Ollama.
 
-[View Quick Start Example](<../example/ollama/quick-start.js>)
+[View Quick Start Example](../example/ollama/quick-start.js)
 
 #### Comprehensive Demo
 
 A more comprehensive demonstration of TahuJS features with Ollama.
 
-[View Comprehensive Demo](<../example/ollama/demo.js>)
+[View Comprehensive Demo](../example/ollama/demo.js)
 
 ### OpenAI Examples
 
@@ -258,13 +267,13 @@ This section provides examples for using TahuJS with OpenAI.
 
 A simple example to get started with OpenAI.
 
-[View Quick Start Example](<../example/openai/quick-start.js>)
+[View Quick Start Example](../example/openai/quick-start.js)
 
 #### Comprehensive Demo
 
 A more comprehensive demonstration of TahuJS features with OpenAI.
 
-[View Comprehensive Demo](<../example/openai/demo.js>)
+[View Comprehensive Demo](../example/openai/demo.js)
 
 ### OpenRouter Examples
 
@@ -274,13 +283,13 @@ This section provides examples for using TahuJS with OpenRouter.
 
 A simple example to get started with OpenRouter.
 
-[View Quick Start Example](<../example/openrouter/quick-start.js>)
+[View Quick Start Example](../example/openrouter/quick-start.js)
 
 #### Comprehensive Demo
 
 A more comprehensive demonstration of TahuJS features with OpenRouter.
 
-[View Comprehensive Demo](<../example/openrouter/demo.js>)
+[View Comprehensive Demo](../example/openrouter/demo.js)
 
 ## Built-in Tools
 
@@ -290,9 +299,9 @@ TahuJS comes with a set of powerful built-in tools that can be used by agents or
 
 TahuJS provides advanced tools for Optical Character Recognition (OCR) and document analysis, enabling your AI agents to extract and understand text from various file formats.
 
-*   **`ocr_advanced`**: Performs flexible, multi-stage OCR on image files (PNG, JPG, JPEG, BMP, GIF). It can extract raw text and optionally use an AI to enhance and format the results.
-*   **`pdf_analyzer`**: Extracts all text content from PDF files. This tool is essential for processing text-based PDFs and can be combined with AI for further analysis.
-*   **`cv_analyzer`**: Specifically designed to analyze CV (Curriculum Vitae) files, extracting structured information such as name, contact details, summary, skills, experience, and education. It leverages both PDF and OCR capabilities.
+- **`ocr_advanced`**: Performs flexible, multi-stage OCR on image files (PNG, JPG, JPEG, BMP, GIF). It can extract raw text and optionally use an AI to enhance and format the results.
+- **`pdf_analyzer`**: Extracts all text content from PDF files. This tool is essential for processing text-based PDFs and can be combined with AI for further analysis.
+- **`cv_analyzer`**: Specifically designed to analyze CV (Curriculum Vitae) files, extracting structured information such as name, contact details, summary, skills, experience, and education. It leverages both PDF and OCR capabilities.
 
 ### Other Built-in Tools
 

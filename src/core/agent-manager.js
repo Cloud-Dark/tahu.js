@@ -1,11 +1,30 @@
 // src/core/agent-manager.js
 import chalk from 'chalk';
+import TahuJS from '../tahu.js';
 
 export class AgentManager {
-  constructor(agentsMap, llmManager, memoryManager) {
+  constructor(agentsMap, llmManager, memoryManager, config = {}) {
     this.agents = agentsMap; // Reference to the main agents Map
     this.llmManager = llmManager;
     this.memoryManager = memoryManager;
+    this.config = config;
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
   }
 
   createAgent(name, config = {}) {
@@ -41,7 +60,7 @@ export class AgentManager {
     );
 
     this.agents.set(name, agent);
-    console.log(
+    this._debugLog(
       `🤖 Agent "${name}" created successfully! Memory type: ${agent.memoryType}`
     );
     return agent;
@@ -113,11 +132,23 @@ export class AgentManager {
         agentConfig = {
           systemPrompt:
             'You are a natural language processing expert, specialized in text analysis, sentiment analysis, intent recognition, and language understanding.',
-          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'extractEntities', 'detectLanguage', 'classifyText'],
+          capabilities: [
+            'chat',
+            'analyzeSentiment',
+            'recognizeIntent',
+            'extractEntities',
+            'detectLanguage',
+            'classifyText',
+          ],
           personality: {
             traits: ['analytical', 'linguistic', 'precise'],
             mood: 'focused',
-            expertise: ['nlp', 'text analysis', 'language processing', 'machine learning'],
+            expertise: [
+              'nlp',
+              'text analysis',
+              'language processing',
+              'machine learning',
+            ],
           },
         };
         break;
@@ -139,11 +170,20 @@ export class AgentManager {
         agentConfig = {
           systemPrompt:
             'You are a friendly and intelligent chatbot, designed to provide helpful responses and engage in natural conversations with users.',
-          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'search'],
+          capabilities: [
+            'chat',
+            'analyzeSentiment',
+            'recognizeIntent',
+            'search',
+          ],
           personality: {
             traits: ['friendly', 'helpful', 'engaging'],
             mood: 'cheerful',
-            expertise: ['conversation', 'customer service', 'general knowledge'],
+            expertise: [
+              'conversation',
+              'customer service',
+              'general knowledge',
+            ],
           },
         };
         break;
@@ -152,7 +192,13 @@ export class AgentManager {
         agentConfig = {
           systemPrompt:
             'You are a customer support specialist, trained to provide helpful assistance, troubleshoot issues, and ensure customer satisfaction.',
-          capabilities: ['chat', 'analyzeSentiment', 'recognizeIntent', 'search', 'classifyText'],
+          capabilities: [
+            'chat',
+            'analyzeSentiment',
+            'recognizeIntent',
+            'search',
+            'classifyText',
+          ],
           personality: {
             traits: ['patient', 'empathetic', 'solution-oriented'],
             mood: 'professional',

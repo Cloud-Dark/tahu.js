@@ -68,13 +68,19 @@ async function analyzePdfFiles() {
       console.log('✅ PDF Analysis Result (Raw Text):');
       console.log(`  File Path: ${pdfResult.filePath}`);
       console.log(`  Page Count: ${pdfResult.pageCount}`);
-      console.log(`  Text Content Length: ${pdfResult.textContent.length} characters`);
+      console.log(
+        `  Text Content Length: ${pdfResult.textContent.length} characters`
+      );
       if (pdfResult.pdfInfo) {
-        console.log(`  PDF Info: ${JSON.stringify(pdfResult.pdfInfo, null, 2)}`);
+        console.log(
+          `  PDF Info: ${JSON.stringify(pdfResult.pdfInfo, null, 2)}`
+        );
       } else {
         console.log(`  PDF Info: Not Available`);
       }
-      console.log(`  Full Text Content (first 500 chars):\n'''\n${pdfResult.textContent.substring(0, 500)}\n'''`);
+      console.log(
+        `  Full Text Content (first 500 chars):\n'''\n${pdfResult.textContent.substring(0, 500)}\n'''`
+      );
 
       // --- 2. AI-Enhanced Text Refinement (with LLM) ---
       console.log(`
@@ -88,17 +94,20 @@ Text to refine:
 '''
 ${pdfResult.textContent}
 '''`;
-        const aiRefinedResult = await tahu.llmManager.chat(refinementPrompt, { responseFormat: 'text' });
+        const aiRefinedResult = await tahu.llmManager.chat(refinementPrompt, {
+          responseFormat: 'text',
+        });
         console.log('✅ AI-Refined Text:');
         console.log(aiRefinedResult.response);
       } else {
         console.log('ℹ️ No text extracted from PDF, skipping AI refinement.');
       }
-
     } catch (error) {
       console.error(`❌ Failed to analyze ${file}: ${error.message}`);
       if (error.message.includes('Failed to extract text from PDF')) {
-        console.warn(`💡 Tip: Ensure 'pdf.js-extract' is installed (npm install pdf.js-extract) and the PDF is not corrupted/protected.`);
+        console.warn(
+          `💡 Tip: Ensure 'pdf.js-extract' is installed (npm install pdf.js-extract) and the PDF is not corrupted/protected.`
+        );
       }
     }
   }

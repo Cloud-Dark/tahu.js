@@ -10,7 +10,8 @@ import chalk from 'chalk';
 
 export const cvAnalyzerTool = {
   name: 'cv_analyzer',
-  description: 'Analyzes a CV (resume) from an image or PDF file using OCR and AI to extract structured information.',
+  description:
+    'Analyzes a CV (resume) from an image or PDF file using OCR and AI to extract structured information.',
   execute: async (filePath, options = {}, llmManager) => {
     const { debug = false } = options;
 
@@ -29,18 +30,28 @@ export const cvAnalyzerTool = {
 
     try {
       if (['.png', '.jpg', '.jpeg', '.bmp', '.gif'].includes(fileExtension)) {
-        if (debug) console.log(chalk.blue('[DEBUG] Processing image CV with Tesseract.'));
+        if (debug)
+          console.log(
+            chalk.blue('[DEBUG] Processing image CV with Tesseract.')
+          );
         const worker = await createWorker('eng'); // Default to English for OCR
         const { data } = await worker.recognize(absolutePath);
         await worker.terminate();
         extractedText = data.text;
       } else if (fileExtension === '.pdf') {
-        if (debug) console.log(chalk.blue('[DEBUG] Processing PDF CV with pdf.js-extract.'));
+        if (debug)
+          console.log(
+            chalk.blue('[DEBUG] Processing PDF CV with pdf.js-extract.')
+          );
         const pdfExtract = new PDFExtract();
         const data = await pdfExtract.extract(absolutePath, {});
-        extractedText = data.pages.map(page => page.content.map(item => item.str).join(' ')).join('\n\n');
+        extractedText = data.pages
+          .map((page) => page.content.map((item) => item.str).join(' '))
+          .join('\n\n');
       } else {
-        throw new Error(`Unsupported file type for CV analysis: ${fileExtension}. Only image and PDF files are supported.`);
+        throw new Error(
+          `Unsupported file type for CV analysis: ${fileExtension}. Only image and PDF files are supported.`
+        );
       }
 
       if (!extractedText || extractedText.trim() === '') {
@@ -48,7 +59,10 @@ export const cvAnalyzerTool = {
       }
 
       // --- AI Analysis of Extracted Text ---
-      if (debug) console.log(chalk.blue('[DEBUG] Sending extracted text to LLM for CV analysis.'));
+      if (debug)
+        console.log(
+          chalk.blue('[DEBUG] Sending extracted text to LLM for CV analysis.')
+        );
       if (!llmManager) {
         throw new Error('LLMManager is required for AI analysis of CVs.');
       }
@@ -72,14 +86,19 @@ ${extractedText}
 
 Return only the JSON object.`;
 
-      const aiResponse = await llmManager.chat(analysisPrompt, { responseFormat: 'json' });
-      
-      if (debug) console.log(chalk.green('[DEBUG] CV analysis by LLM successful.'));
-      return aiResponse.response; // Assuming .response holds the JSON object
+      const aiResponse = await llmManager.chat(analysisPrompt, {
+        responseFormat: 'json',
+      });
 
+      if (debug)
+        console.log(chalk.green('[DEBUG] CV analysis by LLM successful.'));
+      return aiResponse.response; // Assuming .response holds the JSON object
     } catch (error) {
       if (debug) {
-        console.error(chalk.red("❌ [DEBUG] CV Analyzer Tool Error: ${error.message}"), error);
+        console.error(
+          chalk.red('❌ [DEBUG] CV Analyzer Tool Error: ${error.message}'),
+          error
+        );
       }
       throw new Error(`Failed to analyze CV: ${error.message}`);
     }

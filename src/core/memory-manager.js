@@ -2,11 +2,13 @@
 import fs from 'fs';
 import Database from 'better-sqlite3';
 import chalk from 'chalk';
+import TahuJS from '../tahu.js';
 
 export class MemoryManager {
-  constructor(memoryDir, sqliteDb) {
+  constructor(memoryDir, sqliteDb, config = {}) {
     this.memoryDir = memoryDir;
     this.sqliteDb = sqliteDb;
+    this.config = config;
 
     if (!fs.existsSync(this.memoryDir)) {
       fs.mkdirSync(this.memoryDir);
@@ -17,6 +19,23 @@ export class MemoryManager {
                 memory_data TEXT
             );
         `);
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
   }
 
   _getJsonMemoryPath(agentName) {
@@ -65,7 +84,7 @@ export class MemoryManager {
       const filePath = memoryPath || this._getJsonMemoryPath(agentName);
       try {
         fs.writeFileSync(filePath, JSON.stringify(memoryData, null, 2), 'utf8');
-        console.log(
+        this._debugLog(
           chalk.green(
             `💾 JSON memory saved for agent "${agentName}" to ${filePath}`
           )
@@ -83,7 +102,7 @@ export class MemoryManager {
       );
       try {
         stmt.run(agentName, JSON.stringify(memoryData));
-        console.log(
+        this._debugLog(
           chalk.green(`💾 SQLite memory saved for agent "${agentName}"`)
         );
       } catch (error) {

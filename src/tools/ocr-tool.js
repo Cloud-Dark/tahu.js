@@ -6,7 +6,8 @@ import chalk from 'chalk';
 
 export const ocrTool = {
   name: 'ocr',
-  description: 'Performs Optical Character Recognition (OCR) on an image or PDF file. Input should be the absolute path to the file.',
+  description:
+    'Performs Optical Character Recognition (OCR) on an image or PDF file. Input should be the absolute path to the file.',
   execute: async (filePath) => {
     if (!filePath) {
       throw new Error('File path is required for OCR.');
@@ -22,7 +23,9 @@ export const ocrTool = {
     let text = '';
 
     try {
-      const { data: { text: extractedText } } = await worker.recognize(absolutePath);
+      const {
+        data: { text: extractedText },
+      } = await worker.recognize(absolutePath);
       text = extractedText;
     } catch (error) {
       console.error(chalk.red(`❌ OCR Tool Error: ${error.message}`));

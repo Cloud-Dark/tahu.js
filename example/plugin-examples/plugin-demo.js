@@ -19,10 +19,10 @@ async function runPluginDemo() {
     // Install NLP plugin
     const nlpPlugin = new TahuNLPPlugin();
     const nlpInstalled = await nlpPlugin.install(tahu);
-    
+
     if (nlpInstalled) {
       console.log('✅ NLP Plugin installed successfully');
-      
+
       // Show plugin info
       const nlpInfo = nlpPlugin.getInfo();
       console.log('Plugin Info:', JSON.stringify(nlpInfo, null, 2));
@@ -34,28 +34,36 @@ async function runPluginDemo() {
       // Sentiment Analysis
       const sentimentResult = await tahu.useTool('analyzeSentiment', {
         text: 'I absolutely love this new AI framework! It makes development so much easier.',
-        language: 'en'
+        language: 'en',
       });
       console.log('Sentiment Analysis:', sentimentResult);
 
       // Language Detection
       const languageResult = await tahu.useTool('detectLanguage', {
-        text: 'Bonjour, comment allez-vous aujourd\'hui?'
+        text: "Bonjour, comment allez-vous aujourd'hui?",
       });
       console.log('Language Detection:', languageResult);
 
       // Train and test intent recognition
       await nlpPlugin.trainIntent('greeting', [
-        'hello', 'hi', 'hey there', 'good morning', 'good evening'
+        'hello',
+        'hi',
+        'hey there',
+        'good morning',
+        'good evening',
       ]);
 
       await nlpPlugin.trainIntent('goodbye', [
-        'bye', 'goodbye', 'see you later', 'farewell', 'take care'
+        'bye',
+        'goodbye',
+        'see you later',
+        'farewell',
+        'take care',
       ]);
 
       const intentResult = await tahu.useTool('recognizeIntent', {
         text: 'Hey there, how are you doing today?',
-        language: 'en'
+        language: 'en',
       });
       console.log('Intent Recognition:', intentResult);
     }
@@ -107,21 +115,24 @@ async function runPluginDemo() {
       const imageAnalysisInfo = tahu.imageAnalysisTool?.getInfo();
       if (imageAnalysisInfo) {
         console.log('Image Analysis Tool Info:', imageAnalysisInfo);
-        
+
         // Try to analyze an image if available
         const sampleImagePath = './example/ocr_test/image_files/full_color.png';
         try {
           const imageResult = await tahu.useTool('imageAnalysis', {
             imagePath: sampleImagePath,
-            analysisType: 'basic'
+            analysisType: 'basic',
           });
           console.log('Image Analysis Result (basic):', {
             fileName: imageResult.fileName,
             dimensions: imageResult.analysis.dimensions,
-            fileSize: imageResult.analysis.fileInfo?.sizeFormatted
+            fileSize: imageResult.analysis.fileInfo?.sizeFormatted,
           });
         } catch (imgError) {
-          console.log('⚠️ Image analysis skipped (no sample image):', imgError.message);
+          console.log(
+            '⚠️ Image analysis skipped (no sample image):',
+            imgError.message
+          );
         }
       }
     } catch (error) {
@@ -134,27 +145,27 @@ async function runPluginDemo() {
       const codeExecInfo = tahu.codeExecutionTool?.getInfo();
       if (codeExecInfo) {
         console.log('Code Execution Tool Info:', codeExecInfo);
-        
+
         // Execute simple JavaScript
         const jsResult = await tahu.useTool('codeExecution', {
           language: 'javascript',
-          code: 'console.log("Hello from TahuJS Code Execution!"); console.log(Math.PI * 2);'
+          code: 'console.log("Hello from TahuJS Code Execution!"); console.log(Math.PI * 2);',
         });
         console.log('JavaScript Execution Result:', {
           success: jsResult.success,
           output: jsResult.output.trim(),
-          executionTime: jsResult.executionTime
+          executionTime: jsResult.executionTime,
         });
 
         // Execute simple Python
         const pythonResult = await tahu.useTool('codeExecution', {
           language: 'python',
-          code: 'print("Hello from Python!")\nprint(f"Square of 7: {7**2}")'
+          code: 'print("Hello from Python!")\nprint(f"Square of 7: {7**2}")',
         });
         console.log('Python Execution Result:', {
           success: pythonResult.success,
           output: pythonResult.output.trim(),
-          executionTime: pythonResult.executionTime
+          executionTime: pythonResult.executionTime,
         });
       }
     } catch (error) {
@@ -167,14 +178,14 @@ async function runPluginDemo() {
       const schedulerInfo = tahu.schedulerTool?.getInfo();
       if (schedulerInfo) {
         console.log('Scheduler Tool Info:', schedulerInfo);
-        
+
         // Schedule a demo task
         const scheduleResult = await tahu.useTool('scheduler', {
           action: 'schedule',
           taskName: 'Demo Task',
           cronPattern: '*/10 * * * * *', // Every 10 seconds
           taskFunction: 'console.log("Demo task executed!")',
-          immediate: false
+          immediate: false,
         });
         console.log('Task Scheduled:', scheduleResult);
 
@@ -185,7 +196,7 @@ async function runPluginDemo() {
         // Cancel the demo task
         await tahu.useTool('scheduler', {
           action: 'cancel',
-          taskId: scheduleResult.taskId
+          taskId: scheduleResult.taskId,
         });
         console.log('Demo task cancelled');
       }
@@ -200,21 +211,22 @@ async function runPluginDemo() {
     const enhancedAgent = tahu.createPrebuiltAgent('nlp', {
       name: 'AdvancedNLPAgent',
       capabilities: [
-        'chat', 
-        'analyzeSentiment', 
-        'recognizeIntent', 
-        'extractEntities', 
+        'chat',
+        'analyzeSentiment',
+        'recognizeIntent',
+        'extractEntities',
         'detectLanguage',
         'classifyText',
-        'codeExecution'
-      ]
+        'codeExecution',
+      ],
     });
 
     console.log(`Created Enhanced Agent: ${enhancedAgent.name}`);
     console.log(`Capabilities: ${enhancedAgent.capabilities.join(', ')}`);
 
     // Test the enhanced agent
-    const agentTask = "Analyze the sentiment of this text and then write a simple Python script to categorize it: 'This product is absolutely amazing! I love everything about it and would definitely recommend it to others.'";
+    const agentTask =
+      "Analyze the sentiment of this text and then write a simple Python script to categorize it: 'This product is absolutely amazing! I love everything about it and would definitely recommend it to others.'";
     const agentResult = await tahu.runAgent('AdvancedNLPAgent', agentTask);
     console.log('\nEnhanced Agent Task:', agentTask);
     console.log('Agent Response:', agentResult.response);
@@ -224,8 +236,10 @@ async function runPluginDemo() {
 
     console.log('Installed Plugins:');
     console.log('- TahuNLP Plugin (Natural Language Processing)');
-    console.log('- Built-in Tool Plugins (Image Analysis, Code Execution, Scheduler)');
-    
+    console.log(
+      '- Built-in Tool Plugins (Image Analysis, Code Execution, Scheduler)'
+    );
+
     const finalToolList = tahu.listTools();
     console.log(`\nTotal Available Tools: ${finalToolList.length}`);
     console.log('All Tools:', finalToolList.join(', '));
@@ -237,7 +251,6 @@ async function runPluginDemo() {
 
     console.log('\n✅ Plugin System Demo completed successfully!');
     console.log('🎉 TahuJS Plugin System is fully functional!');
-
   } catch (error) {
     console.error('❌ Demo failed:', error);
     process.exit(1);

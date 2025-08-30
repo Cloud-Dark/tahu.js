@@ -2,7 +2,7 @@
 import chalk from 'chalk';
 import { SQLiteVectorStore } from '../vector-stores/sqlite-vector-store.js';
 import { ChromaVectorStore } from '../vector-stores/chroma-vector-store.js';
-
+import TahuJS from '../tahu.js';
 
 export class VectorStoreManager {
   constructor(config, llmManager, memoryDir, sqliteDb) {
@@ -15,6 +15,23 @@ export class VectorStoreManager {
     // Default embedding dimension (e.g., for text-embedding-ada-002)
     // This should ideally be dynamic based on the chosen embedding model
     this.defaultEmbeddingDimension = 1536;
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
   }
 
   /**

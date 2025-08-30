@@ -1,1 +1,5 @@
-describe('Train Knowledge Tool', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('Train Knowledge Tool', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

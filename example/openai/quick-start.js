@@ -22,6 +22,7 @@ async function quickStartOpenAI() {
     model: 'gpt-3.5-turbo', // Or 'gpt-4'
     temperature: 0.7,
     maxTokens: 500,
+    debug: true, // Enable debug mode to see detailed logging
     tools: {
       enabled: ['calculate'], // Only enable the calculate tool for this instance
     },
@@ -32,20 +33,27 @@ async function quickStartOpenAI() {
     console.log('Available tools:', tahuOpenAI.listTools()); // Should show only 'calculate'
 
     // Chat with OpenAI
-    const openaiResponse = await tahuOpenAI.chat('Hello OpenAI, how are you today?');
+    const openaiResponse = await tahuOpenAI.chat(
+      'Hello OpenAI, how are you today?'
+    );
     console.log('OpenAI Response:', openaiResponse.response);
 
     // Use the enabled calculate tool
-    const calcResult = await tahuOpenAI.useTool('calculate', '75 * 2 + (200 / 4)');
+    const calcResult = await tahuOpenAI.useTool(
+      'calculate',
+      '75 * 2 + (200 / 4)'
+    );
     console.log('Calculation Result:', calcResult);
 
     // Attempt to use a disabled tool (webSearch)
     try {
       await tahuOpenAI.useTool('webSearch', 'latest news');
     } catch (error) {
-      console.log('Expected error for disabled tool (webSearch):', error.message);
+      console.log(
+        'Expected error for disabled tool (webSearch):',
+        error.message
+      );
     }
-
   } catch (error) {
     console.error('❌ OpenAI Example Error:', error.message);
   }

@@ -1,6 +1,10 @@
 // example/gemini/demo.js - Comprehensive Gemini Demo of TahuJS Features
 
-import TahuJS, { createTahu, quickChat, createQuickAgent } from '../../src/tahu.js';
+import TahuJS, {
+  createTahu,
+  quickChat,
+  createQuickAgent,
+} from '../../src/tahu.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -60,8 +64,6 @@ async function comprehensiveGeminiDemo() {
     const summaryResult = await tahu.useTool('summarize', longText); // Note: tool name is 'summarize'
     console.log(summaryResult);
 
-    
-
     // --- 3. Agent Management Testing ---
     console.log('--- 3. Agent Management Testing ---');
 
@@ -109,7 +111,8 @@ async function comprehensiveGeminiDemo() {
 
     // Use agent with retrieved knowledge
     const ragAgent = tahu.createAgent('GeminiRAGAgent', {
-      systemPrompt: 'You are an AI assistant that answers questions based on provided knowledge.',
+      systemPrompt:
+        'You are an AI assistant that answers questions based on provided knowledge.',
       capabilities: ['retrieveKnowledge'],
       memoryType: 'volatile',
     });
@@ -131,7 +134,9 @@ async function comprehensiveGeminiDemo() {
       debug: true,
     });
     console.log('\nRunning chat in debug mode (you should see more logs):');
-    const debugResponse = await tahuDebug.chat('What is the capital of Germany?');
+    const debugResponse = await tahuDebug.chat(
+      'What is the capital of Germany?'
+    );
     console.log('Debug Mode Response:', debugResponse.response);
 
     // Raw Text Response Format
@@ -142,7 +147,9 @@ async function comprehensiveGeminiDemo() {
       responseFormat: 'raw',
     });
     console.log('\nRunning chat with raw text response format:');
-    const rawResponse = await tahuRaw.chat('Tell me a short poem about nature.');
+    const rawResponse = await tahuRaw.chat(
+      'Tell me a short poem about nature.'
+    );
     console.log('Raw Text Response:', rawResponse.response);
 
     // Markdown Response Format
@@ -153,7 +160,9 @@ async function comprehensiveGeminiDemo() {
       responseFormat: 'md',
     });
     console.log('\nRunning chat with markdown response format:');
-    const mdResponse = await tahuMd.chat('Explain the concept of quantum computing in markdown format.');
+    const mdResponse = await tahuMd.chat(
+      'Explain the concept of quantum computing in markdown format.'
+    );
     console.log('Markdown Response:', mdResponse.response);
     console.log('\n' + '='.repeat(50) + '\n');
 

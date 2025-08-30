@@ -28,12 +28,18 @@ export const pdfAnalyzerTool = {
     try {
       const data = await pdfExtract.extract(absolutePath, {});
       // Concatenate text from all pages
-      fullText = data.pages.map(page => {
-        return page.content.map(item => item.str).join(' ');
-      }).join('\n\n');
-      
+      fullText = data.pages
+        .map((page) => {
+          return page.content.map((item) => item.str).join(' ');
+        })
+        .join('\n\n');
+
       if (debug) {
-        console.log(chalk.green(`[DEBUG] PDF text extracted successfully. Total characters: ${fullText.length}`));
+        console.log(
+          chalk.green(
+            `[DEBUG] PDF text extracted successfully. Total characters: ${fullText.length}`
+          )
+        );
       }
 
       return {
@@ -42,10 +48,12 @@ export const pdfAnalyzerTool = {
         pageCount: data.pages.length,
         pdfInfo: data.pdfInfo,
       };
-
     } catch (error) {
       if (debug) {
-        console.error(chalk.red(`❌ [DEBUG] PDF Analyzer Tool Error: ${error.message}`), error);
+        console.error(
+          chalk.red(`❌ [DEBUG] PDF Analyzer Tool Error: ${error.message}`),
+          error
+        );
       }
       throw new Error(`Failed to extract text from PDF: ${error.message}`);
     }

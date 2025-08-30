@@ -80,7 +80,7 @@ class TahuJS {
     this.mapService = new MapService(this.config);
     this.analyticsManager = new AnalyticsManager();
 
-    this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb);
+    this.memoryManager = new MemoryManager(this.memoryDir, this.sqliteDb, this.config);
     this.llmManager = new LLMManager(
       this.config,
       this.tools,
@@ -104,7 +104,8 @@ class TahuJS {
     this.agentManager = new AgentManager(
       this.agents,
       this.llmManager,
-      this.memoryManager
+      this.memoryManager,
+      this.config
     );
     this.workflowManager = new WorkflowManager(
       this.llmManager,
@@ -116,7 +117,57 @@ class TahuJS {
     this.analytics = this.analyticsManager;
     this.vectorStore = this.vectorStoreManager; // New: Expose vectorStoreManager
 
-    console.log('🥘 TahuJS initialized successfully!');
+    this._debugLog('🥘 TahuJS initialized successfully!');
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    if (this.config.debug) {
+      console.log(chalk.cyan('[DEBUG]'), message, ...args);
+    }
+  }
+
+  _debugInfo(message, ...args) {
+    if (this.config.debug) {
+      console.info(chalk.blue('[INFO]'), message, ...args);
+    }
+  }
+
+  _debugWarn(message, ...args) {
+    if (this.config.debug) {
+      console.warn(chalk.yellow('[WARN]'), message, ...args);
+    }
+  }
+
+  _debugError(message, ...args) {
+    if (this.config.debug) {
+      console.error(chalk.red('[ERROR]'), message, ...args);
+    }
+  }
+
+  // Static debug logger for use in other modules
+  static debugLog(debug, message, ...args) {
+    if (debug) {
+      console.log(chalk.cyan('[DEBUG]'), message, ...args);
+    }
+  }
+
+  static debugInfo(debug, message, ...args) {
+    if (debug) {
+      console.info(chalk.blue('[INFO]'), message, ...args);
+    }
+  }
+
+  static debugWarn(debug, message, ...args) {
+    if (debug) {
+      console.warn(chalk.yellow('[WARN]'), message, ...args);
+    }
+  }
+
+  static debugError(debug, message, ...args) {
+    if (debug) {
+      console.error(chalk.red('[ERROR]'), message, ...args);
+    }
   }
 
   _getDefaultEmbeddingModel(provider) {

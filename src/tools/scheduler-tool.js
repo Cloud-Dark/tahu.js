@@ -11,39 +11,40 @@ class SchedulerTool {
     this.scheduledTasks = new Map();
     this.tasksFile = './memory/scheduled_tasks.json';
     this.loadTasks();
-    
+
     this.parameters = {
-      action: { 
-        type: 'string', 
+      action: {
+        type: 'string',
         description: 'Action to perform: schedule, list, cancel, start, stop',
-        required: true 
+        required: true,
       },
-      taskId: { 
-        type: 'string', 
-        description: 'Task ID (required for cancel, start, stop actions)' 
+      taskId: {
+        type: 'string',
+        description: 'Task ID (required for cancel, start, stop actions)',
       },
-      cronPattern: { 
-        type: 'string', 
-        description: 'Cron pattern for scheduling (e.g., "0 9 * * *" for daily at 9 AM)' 
+      cronPattern: {
+        type: 'string',
+        description:
+          'Cron pattern for scheduling (e.g., "0 9 * * *" for daily at 9 AM)',
       },
-      taskName: { 
-        type: 'string', 
-        description: 'Human readable task name' 
+      taskName: {
+        type: 'string',
+        description: 'Human readable task name',
       },
-      taskFunction: { 
-        type: 'string', 
-        description: 'Function to execute (callback name or description)' 
+      taskFunction: {
+        type: 'string',
+        description: 'Function to execute (callback name or description)',
       },
-      timezone: { 
-        type: 'string', 
+      timezone: {
+        type: 'string',
         description: 'Timezone for the task (e.g., "America/New_York")',
-        default: 'UTC' 
+        default: 'UTC',
       },
-      immediate: { 
-        type: 'boolean', 
+      immediate: {
+        type: 'boolean',
         description: 'Execute task immediately after scheduling',
-        default: false 
-      }
+        default: false,
+      },
     };
   }
 
@@ -62,7 +63,9 @@ class SchedulerTool {
       case 'stop':
         return this.stopTask(params.taskId);
       default:
-        throw new Error(`Unknown action: ${action}. Available actions: schedule, list, cancel, start, stop`);
+        throw new Error(
+          `Unknown action: ${action}. Available actions: schedule, list, cancel, start, stop`
+        );
     }
   }
 
@@ -72,7 +75,7 @@ class SchedulerTool {
       taskName,
       taskFunction,
       timezone = 'UTC',
-      immediate = false
+      immediate = false,
     } = params;
 
     if (!cronPattern) {
@@ -100,21 +103,25 @@ class SchedulerTool {
       nextRun: null,
       runCount: 0,
       isActive: false,
-      status: 'scheduled'
+      status: 'scheduled',
     };
 
     try {
       // Create the scheduled task
-      const scheduledTask = cron.schedule(cronPattern, () => {
-        this.executeScheduledTask(taskId);
-      }, {
-        scheduled: false, // Don't start immediately
-        timezone: timezone
-      });
+      const scheduledTask = cron.schedule(
+        cronPattern,
+        () => {
+          this.executeScheduledTask(taskId);
+        },
+        {
+          scheduled: false, // Don't start immediately
+          timezone: timezone,
+        }
+      );
 
       task.cronJob = scheduledTask;
       task.nextRun = this.getNextRun(cronPattern, timezone);
-      
+
       // Start the task
       scheduledTask.start();
       task.isActive = true;
@@ -128,24 +135,25 @@ class SchedulerTool {
         await this.executeScheduledTask(taskId);
       }
 
-      console.log(`✅ Task "${taskName}" scheduled successfully with ID: ${taskId}`);
-      
+      console.log(
+        `✅ Task "${taskName}" scheduled successfully with ID: ${taskId}`
+      );
+
       return {
         success: true,
         taskId,
         taskName,
         cronPattern,
         nextRun: task.nextRun,
-        message: `Task scheduled successfully. Next run: ${task.nextRun}`
+        message: `Task scheduled successfully. Next run: ${task.nextRun}`,
       };
-
     } catch (error) {
       throw new Error(`Failed to schedule task: ${error.message}`);
     }
   }
 
   listTasks() {
-    const tasks = Array.from(this.scheduledTasks.values()).map(task => ({
+    const tasks = Array.from(this.scheduledTasks.values()).map((task) => ({
       id: task.id,
       name: task.name,
       cronPattern: task.cronPattern,
@@ -155,13 +163,13 @@ class SchedulerTool {
       created: task.created,
       lastRun: task.lastRun,
       nextRun: task.nextRun,
-      runCount: task.runCount
+      runCount: task.runCount,
     }));
 
     return {
       totalTasks: tasks.length,
-      activeTasks: tasks.filter(t => t.isActive).length,
-      tasks
+      activeTasks: tasks.filter((t) => t.isActive).length,
+      tasks,
     };
   }
 
@@ -179,19 +187,18 @@ class SchedulerTool {
       if (task.cronJob) {
         task.cronJob.destroy();
       }
-      
+
       this.scheduledTasks.delete(taskId);
       this.saveTasks();
 
       console.log(`✅ Task "${task.name}" (${taskId}) cancelled successfully`);
-      
+
       return {
         success: true,
         taskId,
         taskName: task.name,
-        message: `Task "${task.name}" cancelled successfully`
+        message: `Task "${task.name}" cancelled successfully`,
       };
-
     } catch (error) {
       throw new Error(`Failed to cancel task: ${error.message}`);
     }
@@ -210,7 +217,7 @@ class SchedulerTool {
     if (task.isActive) {
       return {
         success: false,
-        message: `Task "${task.name}" is already active`
+        message: `Task "${task.name}" is already active`,
       };
     }
 
@@ -224,15 +231,14 @@ class SchedulerTool {
       }
 
       console.log(`✅ Task "${task.name}" started successfully`);
-      
+
       return {
         success: true,
         taskId,
         taskName: task.name,
         nextRun: task.nextRun,
-        message: `Task "${task.name}" started successfully`
+        message: `Task "${task.name}" started successfully`,
       };
-
     } catch (error) {
       throw new Error(`Failed to start task: ${error.message}`);
     }
@@ -251,7 +257,7 @@ class SchedulerTool {
     if (!task.isActive) {
       return {
         success: false,
-        message: `Task "${task.name}" is already stopped`
+        message: `Task "${task.name}" is already stopped`,
       };
     }
 
@@ -265,14 +271,13 @@ class SchedulerTool {
       }
 
       console.log(`✅ Task "${task.name}" stopped successfully`);
-      
+
       return {
         success: true,
         taskId,
         taskName: task.name,
-        message: `Task "${task.name}" stopped successfully`
+        message: `Task "${task.name}" stopped successfully`,
       };
-
     } catch (error) {
       throw new Error(`Failed to stop task: ${error.message}`);
     }
@@ -287,26 +292,25 @@ class SchedulerTool {
 
     try {
       console.log(`🔄 Executing scheduled task: ${task.name} (${taskId})`);
-      
+
       task.lastRun = new Date().toISOString();
       task.runCount += 1;
       task.nextRun = this.getNextRun(task.cronPattern, task.timezone);
-      
+
       // Here you would execute the actual task function
       // For now, we'll just log the execution
       console.log(`Task "${task.name}" executed successfully`);
-      
+
       // Save the updated task info
       this.saveTasks();
-      
+
       return {
         success: true,
         taskId,
         taskName: task.name,
         executedAt: task.lastRun,
-        runCount: task.runCount
+        runCount: task.runCount,
       };
-
     } catch (error) {
       console.error(`❌ Failed to execute task "${task.name}":`, error);
       task.lastError = error.message;
@@ -321,9 +325,9 @@ class SchedulerTool {
       // In a real implementation, you'd use a proper cron parser
       const task = cron.schedule(cronPattern, () => {}, {
         scheduled: false,
-        timezone
+        timezone,
       });
-      
+
       // For now, return a placeholder
       return new Date(Date.now() + 60000).toISOString(); // Next minute as placeholder
     } catch (error) {
@@ -336,16 +340,16 @@ class SchedulerTool {
       if (fs.existsSync(this.tasksFile)) {
         const data = fs.readFileSync(this.tasksFile, 'utf8');
         const tasks = JSON.parse(data);
-        
+
         // Restore scheduled tasks (without the actual cron jobs)
-        tasks.forEach(task => {
+        tasks.forEach((task) => {
           // Don't restore the cronJob, just the data
           delete task.cronJob;
           task.status = 'stopped'; // All tasks start as stopped after restart
           task.isActive = false;
           this.scheduledTasks.set(task.id, task);
         });
-        
+
         console.log(`📅 Loaded ${tasks.length} scheduled tasks from storage`);
       }
     } catch (error) {
@@ -360,7 +364,7 @@ class SchedulerTool {
         fs.mkdirSync(memoryDir, { recursive: true });
       }
 
-      const tasks = Array.from(this.scheduledTasks.values()).map(task => {
+      const tasks = Array.from(this.scheduledTasks.values()).map((task) => {
         // Don't save the cronJob object, just the data
         const { cronJob, ...taskData } = task;
         return taskData;
@@ -384,7 +388,7 @@ class SchedulerTool {
       'monthly-1st-9am': '0 9 1 * *',
       'yearly-jan-1st': '0 0 1 1 *',
       'workdays-9am': '0 9 * * 1-5',
-      'weekend-10am': '0 10 * * 6,0'
+      'weekend-10am': '0 10 * * 6,0',
     };
   }
 
@@ -392,9 +396,11 @@ class SchedulerTool {
     return {
       name: this.name,
       description: this.description,
-      activeTasks: Array.from(this.scheduledTasks.values()).filter(t => t.isActive).length,
+      activeTasks: Array.from(this.scheduledTasks.values()).filter(
+        (t) => t.isActive
+      ).length,
       totalTasks: this.scheduledTasks.size,
-      commonPatterns: SchedulerTool.getCommonPatterns()
+      commonPatterns: SchedulerTool.getCommonPatterns(),
     };
   }
 }

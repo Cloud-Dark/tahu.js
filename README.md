@@ -20,7 +20,9 @@ async function runGeminiChat() {
     model: 'gemini-1.5-flash', // Or 'gemini-1.0-pro'
   });
 
-  const response = await tahu.chat('Hello Gemini, what is the capital of France?');
+  const response = await tahu.chat(
+    'Hello Gemini, what is the capital of France?'
+  );
   console.log(response.response);
 }
 runGeminiChat();
@@ -69,6 +71,7 @@ async function runHelloWorld() {
     provider: 'gemini', // or 'openrouter', 'openai', 'ollama'
     apiKey: 'YOUR_API_API_KEY', // Replace with your actual API key
     model: 'gemini-1.5-flash', // Or your preferred model
+    debug: false, // Set to true to enable detailed logging
   });
 
   const chatResult = await tahu.chat('Hello TahuJS, how are you?');
@@ -77,9 +80,41 @@ async function runHelloWorld() {
 runHelloWorld();
 ```
 
+### 🔧 Debug Mode & Logging
+
+TahuJS includes a powerful debug mode that provides detailed logging for troubleshooting and development:
+
+```javascript
+const tahu = createTahu({
+  provider: 'gemini',
+  apiKey: 'YOUR_API_KEY',
+  debug: true, // Enable debug mode
+});
+```
+
+**When debug mode is enabled (`debug: true`):**
+- ✅ Detailed initialization logs
+- ✅ Plugin loading and installation logs
+- ✅ Tool execution and error logs  
+- ✅ LLM API calls and responses
+- ✅ Memory management operations
+- ✅ Vector store operations
+
+**When debug mode is disabled (`debug: false`, default):**
+- ❌ No internal logging (cleaner output)
+- ✅ Only critical errors shown
+- ✅ Better performance for production
+
+**Debug Logging Levels:**
+- `[DEBUG]` - General debug information
+- `[INFO]` - Important system information
+- `[WARN]` - Warning messages
+- `[ERROR]` - Error messages
+
 ## 🆕 New Features in v3.5.0+
 
 ### Natural Language Processing
+
 ```javascript
 import { createTahu, TahuNLPPlugin } from 'tahu.js';
 
@@ -88,42 +123,44 @@ const nlpPlugin = new TahuNLPPlugin();
 await tahu.use(nlpPlugin);
 
 // Sentiment analysis
-const sentiment = await tahu.useTool('analyzeSentiment', { 
-  text: 'I love this framework!' 
+const sentiment = await tahu.useTool('analyzeSentiment', {
+  text: 'I love this framework!',
 });
 console.log(sentiment.vote); // 'positive'
 
 // Intent recognition
-const intent = await tahu.useTool('recognizeIntent', { 
-  text: 'Book a flight to London' 
+const intent = await tahu.useTool('recognizeIntent', {
+  text: 'Book a flight to London',
 });
 console.log(intent.intent); // 'booking'
 ```
 
 ### Advanced Agent Types
+
 ```javascript
 // Create specialized agents
 const nlpAgent = tahu.createPrebuiltAgent('nlp', {
-  name: 'TextAnalyzer'
+  name: 'TextAnalyzer',
 });
 
 const coderAgent = tahu.createPrebuiltAgent('coder', {
   name: 'CodeExpert',
-  capabilities: ['chat', 'search', 'codeExecution']
+  capabilities: ['chat', 'search', 'codeExecution'],
 });
 
 const supportAgent = tahu.createPrebuiltAgent('support', {
-  name: 'CustomerHelper'
+  name: 'CustomerHelper',
 });
 ```
 
 ### Image Analysis
+
 ```javascript
 const analysis = await tahu.useTool('imageAnalysis', {
   imagePath: './image.jpg',
   analysisType: 'full',
   extractPalette: true,
-  colorCount: 5
+  colorCount: 5,
 });
 
 console.log(analysis.analysis.colors.dominant.hex); // #ff5733
@@ -131,6 +168,7 @@ console.log(analysis.analysis.quality.overall); // 'Excellent'
 ```
 
 ### Safe Code Execution
+
 ```javascript
 const result = await tahu.useTool('codeExecution', {
   language: 'python',
@@ -138,19 +176,20 @@ const result = await tahu.useTool('codeExecution', {
     import math
     result = math.sqrt(16) + math.pi
     print(f"Result: {result:.2f}")
-  `
+  `,
 });
 
 console.log(result.output); // "Result: 7.14"
 ```
 
 ### Task Scheduling
+
 ```javascript
 const task = await tahu.useTool('scheduler', {
   action: 'schedule',
   taskName: 'Daily Report',
   cronPattern: '0 9 * * *', // Daily at 9 AM
-  taskFunction: 'generateReport'
+  taskFunction: 'generateReport',
 });
 
 console.log(`Task scheduled: ${task.taskId}`);

@@ -1,5 +1,6 @@
 // src/plugins/tahu-nlp.js - Natural Language Processing Plugin
 import { dockStart } from '@nlpjs/basic';
+import TahuJS from '../tahu.js';
 
 class TahuNLPPlugin {
   constructor() {
@@ -9,11 +10,30 @@ class TahuNLPPlugin {
     this.dock = null;
     this.nlp = null;
     this.isInitialized = false;
+    this.debug = false; // Will be set during install
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.debug, message, ...args);
   }
 
   async install(tahu) {
-    console.log('🧠 Installing TahuNLP plugin...');
-    
+    this.debug = tahu.config.debug; // Get debug setting from tahu instance
+    this._debugLog('🧠 Installing TahuNLP plugin...');
+
     try {
       // Initialize NLP.js dock with basic configuration
       this.dock = await dockStart({
@@ -27,17 +47,17 @@ class TahuNLPPlugin {
         },
         use: ['Basic'],
       });
-      
+
       this.nlp = this.dock.get('nlp');
       this.isInitialized = true;
-      
+
       // Add NLP tools to TahuJS
       this._registerNLPTools(tahu);
-      
-      console.log('✅ TahuNLP plugin installed successfully!');
+
+      this._debugLog('✅ TahuNLP plugin installed successfully!');
       return true;
     } catch (error) {
-      console.error('❌ Failed to install TahuNLP plugin:', error);
+      this._debugError('❌ Failed to install TahuNLP plugin:', error);
       return false;
     }
   }
@@ -49,25 +69,29 @@ class TahuNLPPlugin {
       description: 'Analyze sentiment of text (positive, negative, neutral)',
       parameters: {
         text: { type: 'string', description: 'Text to analyze sentiment' },
-        language: { type: 'string', description: 'Language code (en, id)', default: 'en' }
+        language: {
+          type: 'string',
+          description: 'Language code (en, id)',
+          default: 'en',
+        },
       },
       execute: async (params) => {
         if (!this.isInitialized) {
           throw new Error('NLP plugin not initialized');
         }
-        
+
         const { text, language = 'en' } = params;
         const result = await this.nlp.process(language, text);
-        
+
         return {
           text,
           language,
           sentiment: result.sentiment,
           score: result.sentiment?.score || 0,
           comparative: result.sentiment?.comparative || 0,
-          vote: result.sentiment?.vote || 'neutral'
+          vote: result.sentiment?.vote || 'neutral',
         };
-      }
+      },
     });
 
     // Intent Recognition Tool
@@ -76,25 +100,29 @@ class TahuNLPPlugin {
       description: 'Recognize intent from text using trained NLP model',
       parameters: {
         text: { type: 'string', description: 'Text to recognize intent from' },
-        language: { type: 'string', description: 'Language code (en, id)', default: 'en' }
+        language: {
+          type: 'string',
+          description: 'Language code (en, id)',
+          default: 'en',
+        },
       },
       execute: async (params) => {
         if (!this.isInitialized) {
           throw new Error('NLP plugin not initialized');
         }
-        
+
         const { text, language = 'en' } = params;
         const result = await this.nlp.process(language, text);
-        
+
         return {
           text,
           language,
           intent: result.intent || 'None',
           score: result.score || 0,
           entities: result.entities || [],
-          classifications: result.classifications || []
+          classifications: result.classifications || [],
         };
-      }
+      },
     });
 
     // Entity Extraction Tool
@@ -103,23 +131,27 @@ class TahuNLPPlugin {
       description: 'Extract named entities from text',
       parameters: {
         text: { type: 'string', description: 'Text to extract entities from' },
-        language: { type: 'string', description: 'Language code (en, id)', default: 'en' }
+        language: {
+          type: 'string',
+          description: 'Language code (en, id)',
+          default: 'en',
+        },
       },
       execute: async (params) => {
         if (!this.isInitialized) {
           throw new Error('NLP plugin not initialized');
         }
-        
+
         const { text, language = 'en' } = params;
         const result = await this.nlp.process(language, text);
-        
+
         return {
           text,
           language,
           entities: result.entities || [],
-          entitiesCount: result.entities?.length || 0
+          entitiesCount: result.entities?.length || 0,
         };
-      }
+      },
     });
 
     // Language Detection Tool
@@ -127,22 +159,22 @@ class TahuNLPPlugin {
       name: 'detectLanguage',
       description: 'Detect the language of given text',
       parameters: {
-        text: { type: 'string', description: 'Text to detect language' }
+        text: { type: 'string', description: 'Text to detect language' },
       },
       execute: async (params) => {
         if (!this.isInitialized) {
           throw new Error('NLP plugin not initialized');
         }
-        
+
         const { text } = params;
         const result = await this.nlp.process(text);
-        
+
         return {
           text,
           language: result.locale || 'unknown',
-          score: result.localeIso2 || 'unknown'
+          score: result.localeIso2 || 'unknown',
         };
-      }
+      },
     });
 
     // Text Classification Tool
@@ -151,24 +183,28 @@ class TahuNLPPlugin {
       description: 'Classify text into predefined categories',
       parameters: {
         text: { type: 'string', description: 'Text to classify' },
-        language: { type: 'string', description: 'Language code (en, id)', default: 'en' }
+        language: {
+          type: 'string',
+          description: 'Language code (en, id)',
+          default: 'en',
+        },
       },
       execute: async (params) => {
         if (!this.isInitialized) {
           throw new Error('NLP plugin not initialized');
         }
-        
+
         const { text, language = 'en' } = params;
         const result = await this.nlp.process(language, text);
-        
+
         return {
           text,
           language,
           classifications: result.classifications || [],
           intent: result.intent || 'None',
-          score: result.score || 0
+          score: result.score || 0,
         };
-      }
+      },
     });
   }
 
@@ -180,17 +216,19 @@ class TahuNLPPlugin {
 
     try {
       // Add utterances for the intent
-      utterances.forEach(utterance => {
+      utterances.forEach((utterance) => {
         this.nlp.addDocument(language, utterance, intent);
       });
 
       // Train the model
       await this.nlp.train();
-      
-      console.log(`✅ Intent '${intent}' trained with ${utterances.length} utterances`);
+
+      this._debugLog(
+        `✅ Intent '${intent}' trained with ${utterances.length} utterances`
+      );
       return true;
     } catch (error) {
-      console.error(`❌ Failed to train intent '${intent}':`, error);
+      this._debugError(`❌ Failed to train intent '${intent}':`, error);
       return false;
     }
   }
@@ -204,11 +242,13 @@ class TahuNLPPlugin {
     try {
       this.nlp.addNamedEntityText(entityType, entityName, language, utterances);
       await this.nlp.train();
-      
-      console.log(`✅ Named entity '${entityName}' of type '${entityType}' added`);
+
+      this._debugLog(
+        `✅ Named entity '${entityName}' of type '${entityType}' added`
+      );
       return true;
     } catch (error) {
-      console.error(`❌ Failed to add named entity '${entityName}':`, error);
+      this._debugError(`❌ Failed to add named entity '${entityName}':`, error);
       return false;
     }
   }
@@ -221,10 +261,10 @@ class TahuNLPPlugin {
 
     try {
       await this.nlp.save(filepath);
-      console.log(`✅ NLP model saved to ${filepath}`);
+      this._debugLog(`✅ NLP model saved to ${filepath}`);
       return true;
     } catch (error) {
-      console.error(`❌ Failed to save model to ${filepath}:`, error);
+      this._debugError(`❌ Failed to save model to ${filepath}:`, error);
       return false;
     }
   }
@@ -237,10 +277,10 @@ class TahuNLPPlugin {
 
     try {
       await this.nlp.load(filepath);
-      console.log(`✅ NLP model loaded from ${filepath}`);
+      this._debugLog(`✅ NLP model loaded from ${filepath}`);
       return true;
     } catch (error) {
-      console.error(`❌ Failed to load model from ${filepath}:`, error);
+      this._debugError(`❌ Failed to load model from ${filepath}:`, error);
       return false;
     }
   }
@@ -255,11 +295,11 @@ class TahuNLPPlugin {
       supportedLanguages: ['en', 'id'],
       availableTools: [
         'analyzeSentiment',
-        'recognizeIntent', 
+        'recognizeIntent',
         'extractEntities',
         'detectLanguage',
-        'classifyText'
-      ]
+        'classifyText',
+      ],
     };
   }
 }

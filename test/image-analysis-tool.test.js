@@ -1,1 +1,5 @@
-describe('Image Analysis Tool', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('Image Analysis Tool', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

@@ -32,10 +32,12 @@ async function quickStartGemini() {
 
   try {
     console.log('\n--- Example: Using Gemini with calculate tool enabled ---');
-    console.log('Available tools:', tahuGemini.listTools()); 
+    console.log('Available tools:', tahuGemini.listTools());
 
     // Chat with Gemini
-    const geminiResponse = await tahuGemini.chat('Hello Gemini, how are you today?');
+    const geminiResponse = await tahuGemini.chat(
+      'Hello Gemini, how are you today?'
+    );
     console.log('Gemini Response:', geminiResponse.response);
 
     // Use the enabled calculate tool
@@ -46,9 +48,11 @@ async function quickStartGemini() {
     try {
       await tahuGemini.useTool('webSearch', 'latest news');
     } catch (error) {
-      console.log('\nExpected error for disabled tool (webSearch):', error.message);
+      console.log(
+        '\nExpected error for disabled tool (webSearch):',
+        error.message
+      );
     }
-
   } catch (error) {
     console.error('❌ Gemini Example Error:', error.message);
   }
@@ -64,7 +68,9 @@ async function quickStartGemini() {
 
   try {
     console.log('Running chat in debug mode (you should see more logs):');
-    const debugResponse = await tahuDebug.chat('What is the capital of France?');
+    const debugResponse = await tahuDebug.chat(
+      'What is the capital of France?'
+    );
     console.log('Debug Mode Response:', debugResponse.response);
   } catch (error) {
     console.error('❌ Debug Mode Example Error:', error.message);
@@ -81,7 +87,9 @@ async function quickStartGemini() {
 
   try {
     console.log('Running chat with raw text response format:');
-    const rawResponse = await tahuRaw.chat('Tell me a short story about a brave knight.');
+    const rawResponse = await tahuRaw.chat(
+      'Tell me a short story about a brave knight.'
+    );
     console.log('Raw Text Response:', rawResponse.response);
   } catch (error) {
     console.error('❌ Raw Text Format Example Error:', error.message);
@@ -98,7 +106,9 @@ async function quickStartGemini() {
 
   try {
     console.log('Running chat with markdown response format:');
-    const mdResponse = await tahuMd.chat('Explain the concept of recursion in markdown format.');
+    const mdResponse = await tahuMd.chat(
+      'Explain the concept of recursion in markdown format.'
+    );
     console.log('Markdown Response:', mdResponse.response);
   } catch (error) {
     console.error('❌ Markdown Format Example Error:', error.message);
@@ -106,6 +116,5 @@ async function quickStartGemini() {
 
   console.log('\n🎉 Quick Start Gemini Demo Finished!');
 }
-
 
 quickStartGemini().catch(console.error);

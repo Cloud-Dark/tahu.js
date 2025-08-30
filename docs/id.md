@@ -36,6 +36,7 @@ async function runHelloWorld() {
     provider: 'openrouter', // atau 'openai', 'gemini', 'ollama'
     apiKey: 'KUNCI_API_ANDA_DI_SINI', // Ganti dengan kunci API Anda yang sebenarnya
     model: 'google/gemini-2.0-flash-exp:free', // Atau model pilihan Anda
+    debug: false, // Setel ke true untuk mengaktifkan logging detail
   });
 
   const chatResult = await tahu.chat('Halo TahuJS, apa kabar?');
@@ -43,6 +44,37 @@ async function runHelloWorld() {
 }
 runHelloWorld();
 ```
+
+### 🔧 Mode Debug & Logging
+
+TahuJS menyertakan mode debug yang kuat yang menyediakan logging detail untuk pemecahan masalah dan pengembangan:
+
+```javascript
+const tahu = createTahu({
+  provider: 'gemini',
+  apiKey: 'KUNCI_API_ANDA',
+  debug: true, // Mengaktifkan mode debug
+});
+```
+
+**Ketika mode debug diaktifkan (`debug: true`):**
+- ✅ Log inisialisasi detail
+- ✅ Log pemuatan dan instalasi plugin
+- ✅ Log eksekusi tool dan error  
+- ✅ Log panggilan dan respons LLM API
+- ✅ Log operasi manajemen memori
+- ✅ Log operasi vector store
+
+**Ketika mode debug dinonaktifkan (`debug: false`, default):**
+- ❌ Tidak ada logging internal (output lebih bersih)
+- ✅ Hanya error kritis yang ditampilkan
+- ✅ Performa lebih baik untuk produksi
+
+**Level Debug Logging:**
+- `[DEBUG]` - Informasi debug umum
+- `[INFO]` - Informasi sistem penting
+- `[WARN]` - Pesan peringatan
+- `[ERROR]` - Pesan error
 
 ## Sistem Plugin
 
@@ -98,12 +130,12 @@ Bagian ini menyediakan gambaran umum yang komprehensif tentang contoh TahuJS, di
 
 Bagian ini menyediakan contoh penggunaan kemampuan analisis OCR dan dokumen TahuJS.
 
-*   **Analisis CV**: Menunjukkan cara menggunakan `cv_analyzer` untuk mengekstrak informasi terstruktur dari file CV.
-    [Lihat Contoh](<../example/ocr_test/analyze_cvs.js>)
-*   **Analisis Gambar**: Menunjukkan cara melakukan OCR pada file gambar menggunakan `ocr_advanced`.
-    [Lihat Contoh](<../example/ocr_test/analyze_images.js>)
-*   **Analisis PDF**: Mengilustrasikan cara mengekstrak teks dari file PDF menggunakan `pdf_analyzer` dan memperbaikinya dengan AI.
-    [Lihat Contoh](<../example/ocr_test/analyze_pdfs.js>)
+- **Analisis CV**: Menunjukkan cara menggunakan `cv_analyzer` untuk mengekstrak informasi terstruktur dari file CV.
+  [Lihat Contoh](../example/ocr_test/analyze_cvs.js)
+- **Analisis Gambar**: Menunjukkan cara melakukan OCR pada file gambar menggunakan `ocr_advanced`.
+  [Lihat Contoh](../example/ocr_test/analyze_images.js)
+- **Analisis PDF**: Mengilustrasikan cara mengekstrak teks dari file PDF menggunakan `pdf_analyzer` dan memperbaikinya dengan AI.
+  [Lihat Contoh](../example/ocr_test/analyze_pdfs.js)
 
 ### Contoh Gemini
 
@@ -113,13 +145,13 @@ Bagian ini menyediakan contoh penggunaan TahuJS dengan Gemini.
 
 Contoh sederhana untuk memulai dengan Gemini.
 
-[Lihat Contoh Mulai Cepat](<../example/gemini/quick-start.js>)
+[Lihat Contoh Mulai Cepat](../example/gemini/quick-start.js)
 
 #### Demo Komprehensif
 
 Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan Gemini.
 
-[Lihat Demo Komprehensif](<../example/gemini/demo.js>)
+[Lihat Demo Komprehensif](../example/gemini/demo.js)
 
 ### Contoh Ollama
 
@@ -129,13 +161,13 @@ Bagian ini menyediakan contoh penggunaan TahuJS dengan Ollama.
 
 Contoh sederhana untuk memulai dengan Ollama.
 
-[Lihat Contoh Mulai Cepat](<../example/ollama/quick-start.js>)
+[Lihat Contoh Mulai Cepat](../example/ollama/quick-start.js)
 
 #### Demo Komprehensif
 
 Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan Ollama.
 
-[Lihat Demo Komprehensif](<../example/ollama/demo.js>)
+[Lihat Demo Komprehensif](../example/ollama/demo.js)
 
 ### Contoh OpenAI
 
@@ -145,13 +177,13 @@ Bagian ini menyediakan contoh penggunaan TahuJS dengan OpenAI.
 
 Contoh sederhana untuk memulai dengan OpenAI.
 
-[Lihat Contoh Mulai Cepat](<../example/openai/quick-start.js>)
+[Lihat Contoh Mulai Cepat](../example/openai/quick-start.js)
 
 #### Demo Komprehensif
 
 Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan OpenAI.
 
-[Lihat Demo Komprehensif](<../example/openai/demo.js>)
+[Lihat Demo Komprehensif](../example/openai/demo.js)
 
 ### Contoh OpenRouter
 
@@ -161,13 +193,13 @@ Bagian ini menyediakan contoh penggunaan TahuJS dengan OpenRouter.
 
 Contoh sederhana untuk memulai dengan OpenRouter.
 
-[Lihat Contoh Mulai Cepat](<../example/openrouter/quick-start.js>)
+[Lihat Contoh Mulai Cepat](../example/openrouter/quick-start.js)
 
 #### Demo Komprehensif
 
 Demonstrasi yang lebih komprehensif tentang fitur TahuJS dengan OpenRouter.
 
-[Lihat Demo Komprehensif](<../example/openrouter/demo.js>)
+[Lihat Demo Komprehensif](../example/openrouter/demo.js)
 
 ## Alat Bawaan
 
@@ -177,11 +209,10 @@ TahuJS dilengkapi dengan seperangkat alat bawaan yang kuat yang dapat digunakan 
 
 TahuJS menyediakan alat canggih untuk Optical Character Recognition (OCR) dan analisis dokumen, memungkinkan agen AI Anda untuk mengekstrak dan memahami teks dari berbagai format file.
 
-*   **`ocr_advanced`**: Melakukan OCR multi-tahap yang fleksibel pada file gambar (PNG, JPG, JPEG, BMP, GIF). Ini dapat mengekstrak teks mentah dan secara opsional menggunakan AI untuk meningkatkan dan memformat hasilnya.
-*   **`pdf_analyzer`**: Mengekstrak semua konten teks dari file PDF. Alat ini penting untuk memproses PDF berbasis teks dan dapat digabungkan dengan AI untuk analisis lebih lanjut.
-*   **`cv_analyzer`**: Dirancang khusus untuk menganalisis file CV (Curriculum Vitae), mengekstrak informasi terstruktur seperti nama, detail kontak, ringkasan, keterampilan, pengalaman, dan pendidikan. Ini memanfaatkan kemampuan PDF dan OCR.
+- **`ocr_advanced`**: Melakukan OCR multi-tahap yang fleksibel pada file gambar (PNG, JPG, JPEG, BMP, GIF). Ini dapat mengekstrak teks mentah dan secara opsional menggunakan AI untuk meningkatkan dan memformat hasilnya.
+- **`pdf_analyzer`**: Mengekstrak semua konten teks dari file PDF. Alat ini penting untuk memproses PDF berbasis teks dan dapat digabungkan dengan AI untuk analisis lebih lanjut.
+- **`cv_analyzer`**: Dirancang khusus untuk menganalisis file CV (Curriculum Vitae), mengekstrak informasi terstruktur seperti nama, detail kontak, ringkasan, keterampilan, pengalaman, dan pendidikan. Ini memanfaatkan kemampuan PDF dan OCR.
 
 ### Alat Bawaan Lainnya
 
 (Bagian ini akan diisi dengan alat lain seperti pencarian web, peta, perhitungan, dll.)
-

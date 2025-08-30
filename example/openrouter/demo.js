@@ -1,6 +1,10 @@
 // example/openrouter/demo.js - Comprehensive OpenRouter Demo of TahuJS Features
 
-import TahuJS, { createTahu, quickChat, createQuickAgent } from '../../src/tahu.js';
+import TahuJS, {
+  createTahu,
+  quickChat,
+  createQuickAgent,
+} from '../../src/tahu.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,7 +16,9 @@ async function comprehensiveOpenRouterDemo() {
 
   // Check API key
   if (OPENROUTER_API_KEY.includes('YOUR_OPENROUTER_API_KEY')) {
-    console.warn('⚠️  Warning: OpenRouter API key not set. Some demos may fail.');
+    console.warn(
+      '⚠️  Warning: OpenRouter API key not set. Some demos may fail.'
+    );
   }
 
   // --- Initialize TahuJS with OpenRouter ---
@@ -33,8 +39,7 @@ async function comprehensiveOpenRouterDemo() {
 
   try {
     // --- 1. Chat Testing with OpenRouter ---
-    console.log('\n--- 1. Chat Testing with OpenRouter ---
-');
+    console.log('\n--- 1. Chat Testing with OpenRouter ---');
 
     console.log('\n💬 Chat with OpenRouter:');
     const chatResultOpenRouter = await tahu.chat(
@@ -44,8 +49,7 @@ async function comprehensiveOpenRouterDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 2. Built-in Tool Testing (enabled by default or configured) ---
-    console.log('--- 2. Built-in Tool Testing ---
-');
+    console.log('--- 2. Built-in Tool Testing ---');
 
     console.log('\n🧮 Calculator Testing:');
     const calcResult = await tahu.useTool('calculate', '25 * 4 + sqrt(16)');
@@ -61,11 +65,8 @@ async function comprehensiveOpenRouterDemo() {
     const summaryResult = await tahu.useTool('summarize', longText);
     console.log(summaryResult);
 
-    
-
     // --- 3. Agent Management Testing ---
-    console.log('--- 3. Agent Management Testing ---
-');
+    console.log('--- 3. Agent Management Testing ---');
 
     const travelAgent = tahu
       .builder()
@@ -86,8 +87,7 @@ async function comprehensiveOpenRouterDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 4. Knowledge Training and Retrieval (RAG) Testing ---
-    console.log('--- 4. Knowledge Training and Retrieval (RAG) Testing ---
-');
+    console.log('--- 4. Knowledge Training and Retrieval (RAG) Testing ---');
 
     const knowledgeBaseName = 'openrouter_rag_docs';
     const storeType = 'sqlite';
@@ -108,7 +108,8 @@ async function comprehensiveOpenRouterDemo() {
     console.log('Retrieval Result:\n', retrieveResult);
 
     const ragAgent = tahu.createAgent('OpenRouterRAGAgent', {
-      systemPrompt: 'You are an AI assistant that answers questions based on provided knowledge.',
+      systemPrompt:
+        'You are an AI assistant that answers questions based on provided knowledge.',
       capabilities: ['retrieveKnowledge'],
       memoryType: 'volatile',
     });
@@ -120,8 +121,7 @@ async function comprehensiveOpenRouterDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 5. Debug Mode and Response Format Testing ---
-    console.log('--- 5. Debug Mode and Response Format Testing ---
-');
+    console.log('--- 5. Debug Mode and Response Format Testing ---');
 
     const tahuDebug = createTahu({
       provider: 'openrouter',
@@ -140,7 +140,9 @@ async function comprehensiveOpenRouterDemo() {
       responseFormat: 'raw',
     });
     console.log('\nRunning chat with raw text response format:');
-    const rawResponse = await tahuRaw.chat('Tell me a short story about a magical forest.');
+    const rawResponse = await tahuRaw.chat(
+      'Tell me a short story about a magical forest.'
+    );
     console.log('Raw Text Response:', rawResponse.response);
 
     const tahuMd = createTahu({
@@ -150,7 +152,9 @@ async function comprehensiveOpenRouterDemo() {
       responseFormat: 'md',
     });
     console.log('\nRunning chat with markdown response format:');
-    const mdResponse = await tahuMd.chat('Explain the concept of artificial intelligence in markdown format.');
+    const mdResponse = await tahuMd.chat(
+      'Explain the concept of artificial intelligence in markdown format.'
+    );
     console.log('Markdown Response:', mdResponse.response);
     console.log('\n' + '='.repeat(50) + '\n');
 

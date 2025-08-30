@@ -2,6 +2,7 @@
 import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
+import TahuJS from '../tahu.js';
 
 export class LoggerManager {
   constructor(config = {}) {
@@ -12,6 +13,23 @@ export class LoggerManager {
     this.maxLogEntries = config.maxLogEntries || 10000;
     this.ensureLogDirectory();
     this.initializeDefaultLogger();
+  }
+
+  // Debug logging methods - only logs when debug mode is enabled
+  _debugLog(message, ...args) {
+    TahuJS.debugLog(this.config.debug, message, ...args);
+  }
+
+  _debugInfo(message, ...args) {
+    TahuJS.debugInfo(this.config.debug, message, ...args);
+  }
+
+  _debugWarn(message, ...args) {
+    TahuJS.debugWarn(this.config.debug, message, ...args);
+  }
+
+  _debugError(message, ...args) {
+    TahuJS.debugError(this.config.debug, message, ...args);
   }
 
   ensureLogDirectory() {
@@ -27,16 +45,16 @@ export class LoggerManager {
     // Create custom format
     const customFormat = winston.format.combine(
       winston.format.timestamp({
-        format: 'YYYY-MM-DD HH:mm:ss'
+        format: 'YYYY-MM-DD HH:mm:ss',
       }),
       winston.format.errors({ stack: true }),
       winston.format.printf(({ timestamp, level, message, ...meta }) => {
         let log = `${timestamp} [${level.toUpperCase()}]: ${message}`;
-        
+
         if (Object.keys(meta).length > 0) {
           log += ` ${JSON.stringify(meta, null, 2)}`;
         }
-        
+
         return log;
       })
     );
@@ -50,7 +68,7 @@ export class LoggerManager {
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.json()
-        )
+        ),
       }),
 
       // Combined log file
@@ -59,7 +77,7 @@ export class LoggerManager {
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.json()
-        )
+        ),
       }),
 
       // Daily rotating file
@@ -71,15 +89,17 @@ export class LoggerManager {
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.json()
-        )
-      })
+        ),
+      }),
     ];
 
     // Add console transport if debug mode is enabled
     if (showConsole) {
-      transports.push(new winston.transports.Console({
-        format: customFormat
-      }));
+      transports.push(
+        new winston.transports.Console({
+          format: customFormat,
+        })
+      );
     }
 
     // Create default logger
@@ -89,15 +109,15 @@ export class LoggerManager {
       defaultMeta: { service: 'tahu-js' },
       transports: transports,
       exceptionHandlers: [
-        new winston.transports.File({ 
-          filename: path.join(this.logDir, 'exceptions.log') 
-        })
+        new winston.transports.File({
+          filename: path.join(this.logDir, 'exceptions.log'),
+        }),
       ],
       rejectionHandlers: [
-        new winston.transports.File({ 
-          filename: path.join(this.logDir, 'rejections.log') 
-        })
-      ]
+        new winston.transports.File({
+          filename: path.join(this.logDir, 'rejections.log'),
+        }),
+      ],
     });
 
     this.loggers.set('default', defaultLogger);
@@ -111,7 +131,7 @@ export class LoggerManager {
     this.info('LoggerManager initialized', {
       logLevel,
       showConsole,
-      logDir: this.logDir
+      logDir: this.logDir,
     });
   }
 
@@ -121,7 +141,7 @@ export class LoggerManager {
       info: console.info,
       warn: console.warn,
       error: console.error,
-      debug: console.debug
+      debug: console.debug,
     };
 
     // Store original console for restoration
@@ -173,10 +193,10 @@ export class LoggerManager {
       defaultMeta: { service: name },
       transports: [
         new winston.transports.File({
-          filename: path.join(this.logDir, filename)
+          filename: path.join(this.logDir, filename),
         }),
-        ...(this.config.debug ? [new winston.transports.Console()] : [])
-      ]
+        ...(this.config.debug ? [new winston.transports.Console()] : []),
+      ],
     });
 
     this.loggers.set(name, logger);
@@ -212,7 +232,7 @@ export class LoggerManager {
       level,
       message,
       meta,
-      id: this.generateLogId()
+      id: this.generateLogId(),
     };
 
     // Add to in-memory log entries
@@ -234,7 +254,7 @@ export class LoggerManager {
   // Log parsing and management methods
   parseLogFile(filename, options = {}) {
     const filePath = path.join(this.logDir, filename);
-    
+
     if (!fs.existsSync(filePath)) {
       throw new Error(`Log file not found: ${filename}`);
     }
@@ -242,10 +262,10 @@ export class LoggerManager {
     try {
       const content = fs.readFileSync(filePath, 'utf8');
       const lines = content.trim().split('\n');
-      
+
       const logs = lines
-        .filter(line => line.trim())
-        .map(line => {
+        .filter((line) => line.trim())
+        .map((line) => {
           try {
             return JSON.parse(line);
           } catch (e) {
@@ -254,33 +274,42 @@ export class LoggerManager {
               timestamp: new Date().toISOString(),
               level: 'info',
               message: line,
-              raw: true
+              raw: true,
             };
           }
         });
 
       // Apply filters if provided
       let filteredLogs = logs;
-      
+
       if (options.level) {
-        filteredLogs = filteredLogs.filter(log => log.level === options.level);
+        filteredLogs = filteredLogs.filter(
+          (log) => log.level === options.level
+        );
       }
-      
+
       if (options.startDate) {
         const startDate = new Date(options.startDate);
-        filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= startDate);
+        filteredLogs = filteredLogs.filter(
+          (log) => new Date(log.timestamp) >= startDate
+        );
       }
-      
+
       if (options.endDate) {
         const endDate = new Date(options.endDate);
-        filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) <= endDate);
+        filteredLogs = filteredLogs.filter(
+          (log) => new Date(log.timestamp) <= endDate
+        );
       }
-      
+
       if (options.search) {
         const searchTerm = options.search.toLowerCase();
-        filteredLogs = filteredLogs.filter(log => 
-          log.message?.toLowerCase().includes(searchTerm) ||
-          JSON.stringify(log.meta || {}).toLowerCase().includes(searchTerm)
+        filteredLogs = filteredLogs.filter(
+          (log) =>
+            log.message?.toLowerCase().includes(searchTerm) ||
+            JSON.stringify(log.meta || {})
+              .toLowerCase()
+              .includes(searchTerm)
         );
       }
 
@@ -294,7 +323,7 @@ export class LoggerManager {
         totalEntries: logs.length,
         filteredEntries: filteredLogs.length,
         logs: filteredLogs,
-        filters: options
+        filters: options,
       };
     } catch (error) {
       throw new Error(`Error parsing log file ${filename}: ${error.message}`);
@@ -303,29 +332,30 @@ export class LoggerManager {
 
   getRecentLogs(limit = 100, level = null) {
     let logs = [...this.logEntries];
-    
+
     if (level) {
-      logs = logs.filter(log => log.level === level);
+      logs = logs.filter((log) => log.level === level);
     }
-    
+
     return logs.slice(-limit);
   }
 
   searchLogs(query, options = {}) {
     const searchTerm = query.toLowerCase();
     const limit = options.limit || 100;
-    
+
     const matchingLogs = this.logEntries
-      .filter(log => 
-        log.message?.toLowerCase().includes(searchTerm) ||
-        JSON.stringify(log.meta).toLowerCase().includes(searchTerm)
+      .filter(
+        (log) =>
+          log.message?.toLowerCase().includes(searchTerm) ||
+          JSON.stringify(log.meta).toLowerCase().includes(searchTerm)
       )
       .slice(-limit);
 
     return {
       query,
       totalMatches: matchingLogs.length,
-      logs: matchingLogs
+      logs: matchingLogs,
     };
   }
 
@@ -337,8 +367,8 @@ export class LoggerManager {
       recent: {
         lastHour: 0,
         lastDay: 0,
-        lastWeek: 0
-      }
+        lastWeek: 0,
+      },
     };
 
     const now = new Date();
@@ -349,7 +379,7 @@ export class LoggerManager {
     for (const entry of this.logEntries) {
       // Count by level
       stats.levels[entry.level] = (stats.levels[entry.level] || 0) + 1;
-      
+
       // Count by time periods
       const entryTime = new Date(entry.timestamp);
       if (entryTime >= oneHourAgo) {
@@ -373,15 +403,16 @@ export class LoggerManager {
     }
 
     if (options.files) {
-      const logFiles = fs.readdirSync(this.logDir)
-        .filter(file => file.endsWith('.log'));
-      
+      const logFiles = fs
+        .readdirSync(this.logDir)
+        .filter((file) => file.endsWith('.log'));
+
       for (const file of logFiles) {
         if (!options.exclude || !options.exclude.includes(file)) {
           fs.writeFileSync(path.join(this.logDir, file), '');
         }
       }
-      
+
       this.info('Log files cleared', { filesCleared: logFiles.length });
     }
 
@@ -389,18 +420,19 @@ export class LoggerManager {
       success: true,
       message: 'Logs cleared successfully',
       clearedMemory: options.memory || false,
-      clearedFiles: options.files || false
+      clearedFiles: options.files || false,
     };
   }
 
   exportLogs(format = 'json', filename = null) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const exportFilename = filename || `tahu-logs-export-${timestamp}.${format}`;
+    const exportFilename =
+      filename || `tahu-logs-export-${timestamp}.${format}`;
     const exportPath = path.join(this.logDir, exportFilename);
 
     try {
       let content;
-      
+
       switch (format.toLowerCase()) {
         case 'json':
           content = JSON.stringify(this.logEntries, null, 2);
@@ -408,13 +440,19 @@ export class LoggerManager {
         case 'csv':
           const headers = 'timestamp,level,message,meta\n';
           const rows = this.logEntries
-            .map(log => `"${log.timestamp}","${log.level}","${log.message}","${JSON.stringify(log.meta)}"`)
+            .map(
+              (log) =>
+                `"${log.timestamp}","${log.level}","${log.message}","${JSON.stringify(log.meta)}"`
+            )
             .join('\n');
           content = headers + rows;
           break;
         case 'txt':
           content = this.logEntries
-            .map(log => `${log.timestamp} [${log.level.toUpperCase()}]: ${log.message} ${JSON.stringify(log.meta)}`)
+            .map(
+              (log) =>
+                `${log.timestamp} [${log.level.toUpperCase()}]: ${log.message} ${JSON.stringify(log.meta)}`
+            )
             .join('\n');
           break;
         default:
@@ -422,11 +460,11 @@ export class LoggerManager {
       }
 
       fs.writeFileSync(exportPath, content);
-      
-      this.info('Logs exported', { 
-        format, 
-        filename: exportFilename, 
-        entries: this.logEntries.length 
+
+      this.info('Logs exported', {
+        format,
+        filename: exportFilename,
+        entries: this.logEntries.length,
       });
 
       return {
@@ -434,7 +472,7 @@ export class LoggerManager {
         filename: exportFilename,
         path: exportPath,
         entries: this.logEntries.length,
-        format
+        format,
       };
     } catch (error) {
       this.error('Failed to export logs', { error: error.message });
@@ -444,16 +482,17 @@ export class LoggerManager {
 
   // Utility methods
   listLogFiles() {
-    const files = fs.readdirSync(this.logDir)
-      .filter(file => file.endsWith('.log'))
-      .map(file => {
+    const files = fs
+      .readdirSync(this.logDir)
+      .filter((file) => file.endsWith('.log'))
+      .map((file) => {
         const filePath = path.join(this.logDir, file);
         const stats = fs.statSync(filePath);
         return {
           filename: file,
           size: stats.size,
           modified: stats.mtime,
-          created: stats.birthtime
+          created: stats.birthtime,
         };
       })
       .sort((a, b) => b.modified - a.modified);
@@ -467,14 +506,14 @@ export class LoggerManager {
       logDir: this.logDir,
       maxLogEntries: this.maxLogEntries,
       loggersCount: this.loggers.size,
-      consoleOverridden: !this.config.debug
+      consoleOverridden: !this.config.debug,
     };
   }
 
   updateConfig(newConfig) {
     const oldDebug = this.config.debug;
     this.config = { ...this.config, ...newConfig };
-    
+
     // Reinitialize if debug mode changed
     if (oldDebug !== this.config.debug) {
       if (this.config.debug) {
@@ -482,10 +521,10 @@ export class LoggerManager {
       } else {
         this.overrideConsole();
       }
-      
-      this.info('Logger configuration updated', { 
-        oldDebug, 
-        newDebug: this.config.debug 
+
+      this.info('Logger configuration updated', {
+        oldDebug,
+        newDebug: this.config.debug,
       });
     }
   }

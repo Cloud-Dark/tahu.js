@@ -1,1 +1,5 @@
-describe('Web Scrape Tool', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('Web Scrape Tool', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

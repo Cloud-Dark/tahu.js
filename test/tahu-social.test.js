@@ -1,1 +1,5 @@
-describe('Tahu Social Plugin', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('Tahu Social Plugin', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

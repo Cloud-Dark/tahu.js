@@ -26,7 +26,9 @@ async function quickStartOllama() {
     console.log('Available tools:', tahuOllama.listTools()); // Should show only 'calculate'
 
     // Chat with Ollama
-    const ollamaResponse = await tahuOllama.chat('Hello Ollama, how are you today?');
+    const ollamaResponse = await tahuOllama.chat(
+      'Hello Ollama, how are you today?'
+    );
     console.log('Ollama Response:', ollamaResponse.response);
 
     // Use the enabled calculate tool
@@ -37,16 +39,22 @@ async function quickStartOllama() {
     try {
       await tahuOllama.useTool('webSearch', 'latest news');
     } catch (error) {
-      console.log('Expected error for disabled tool (webSearch):', error.message);
+      console.log(
+        'Expected error for disabled tool (webSearch):',
+        error.message
+      );
     }
-
   } catch (error) {
     console.error('❌ Ollama Example Error:', error.message);
     if (error.message.includes('ECONNREFUSED')) {
       console.error('💡 Ensure Ollama server is running at', OLLAMA_BASE_URL);
     }
     if (error.message.includes('model')) {
-      console.error('💡 Ensure model', OLLAMA_MODEL, 'is downloaded on your Ollama instance.');
+      console.error(
+        '💡 Ensure model',
+        OLLAMA_MODEL,
+        'is downloaded on your Ollama instance.'
+      );
     }
   }
   console.log('\n🎉 Quick Start Ollama Demo Finished!');

@@ -30,11 +30,15 @@ async function quickStartOpenRouter() {
   });
 
   try {
-    console.log('\n--- Example: Using OpenRouter with calculate tool enabled ---');
+    console.log(
+      '\n--- Example: Using OpenRouter with calculate tool enabled ---'
+    );
     console.log('Available tools:', tahuOpenRouter.listTools()); // Should show only 'calculate'
 
     // Chat with OpenRouter
-    const openRouterResponse = await tahuOpenRouter.chat('Hello OpenRouter, how are you today?');
+    const openRouterResponse = await tahuOpenRouter.chat(
+      'Hello OpenRouter, how are you today?'
+    );
     console.log('OpenRouter Response:', openRouterResponse.response);
 
     // Use the enabled calculate tool
@@ -45,9 +49,11 @@ async function quickStartOpenRouter() {
     try {
       await tahuOpenRouter.useTool('webSearch', 'latest news');
     } catch (error) {
-      console.log('Expected error for disabled tool (webSearch):', error.message);
+      console.log(
+        'Expected error for disabled tool (webSearch):',
+        error.message
+      );
     }
-
   } catch (error) {
     console.error('❌ OpenRouter Example Error:', error.message);
   }

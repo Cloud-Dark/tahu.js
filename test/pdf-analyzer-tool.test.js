@@ -1,1 +1,5 @@
-describe('PDF Analyzer Tool', () => { it('should run a basic test', () => { expect(true).toBe(true); }); });
+describe('PDF Analyzer Tool', () => {
+  it('should run a basic test', () => {
+    expect(true).toBe(true);
+  });
+});

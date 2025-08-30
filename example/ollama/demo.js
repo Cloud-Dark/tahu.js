@@ -28,11 +28,9 @@ async function comprehensiveOllamaDemo() {
 
   try {
     // --- 1. Chat Testing with Ollama ---
-    console.log('\n--- 1. Chat Testing with Ollama ---
-');
+    console.log('\n--- 1. Chat Testing with Ollama ---');
 
-    console.log('\n💬 Chat with Ollama:
-');
+    console.log('\n💬 Chat with Ollama:');
     const chatResultOllama = await tahu.chat(
       'What is the capital of France?'
     );
@@ -40,16 +38,13 @@ async function comprehensiveOllamaDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 2. Built-in Tool Testing (enabled by default or configured) ---
-    console.log('--- 2. Built-in Tool Testing ---
-');
+    console.log('--- 2. Built-in Tool Testing ---');
 
-    console.log('\n🧮 Calculator Testing:
-');
+    console.log('\n🧮 Calculator Testing:');
     const calcResult = await tahu.useTool('calculate', '25 * 4 + sqrt(16)');
     console.log(calcResult);
 
-    console.log('\n🕐 Date & Time Testing:
-');
+    console.log('\n🕐 Date & Time Testing:');
     const dateTimeResult = await tahu.useTool('dateTime', 'America/New_York');
     console.log('Date & Time:', dateTimeResult);
 
@@ -63,8 +58,7 @@ async function comprehensiveOllamaDemo() {
     
 
     // --- 3. Agent Management Testing ---
-    console.log('--- 3. Agent Management Testing ---
-');
+    console.log('--- 3. Agent Management Testing ---');
 
     const travelAgent = tahu
       .builder()
@@ -86,8 +80,7 @@ async function comprehensiveOllamaDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 4. Knowledge Training and Retrieval (RAG) Testing ---
-    console.log('--- 4. Knowledge Training and Retrieval (RAG) Testing ---
-');
+    console.log('--- 4. Knowledge Training and Retrieval (RAG) Testing ---');
 
     const knowledgeBaseName = 'ollama_rag_docs';
     const storeType = 'sqlite';
@@ -121,8 +114,7 @@ async function comprehensiveOllamaDemo() {
     console.log('\n' + '='.repeat(50) + '\n');
 
     // --- 5. Debug Mode and Response Format Testing ---
-    console.log('--- 5. Debug Mode and Response Format Testing ---
-');
+    console.log('--- 5. Debug Mode and Response Format Testing ---');
 
     const tahuDebug = createTahu({
       provider: 'ollama',

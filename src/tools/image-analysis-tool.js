@@ -8,33 +8,39 @@ import imageSize from 'image-size';
 class ImageAnalysisTool {
   constructor() {
     this.name = 'imageAnalysis';
-    this.description = 'Analyze images for colors, dimensions, format, quality, and visual characteristics';
+    this.description =
+      'Analyze images for colors, dimensions, format, quality, and visual characteristics';
     this.parameters = {
-      imagePath: { 
-        type: 'string', 
-        description: 'Path to the image file to analyze' 
+      imagePath: {
+        type: 'string',
+        description: 'Path to the image file to analyze',
       },
-      analysisType: { 
-        type: 'string', 
-        description: 'Type of analysis: basic, colors, quality, full', 
-        default: 'full' 
+      analysisType: {
+        type: 'string',
+        description: 'Type of analysis: basic, colors, quality, full',
+        default: 'full',
       },
-      extractPalette: { 
-        type: 'boolean', 
-        description: 'Extract color palette from image', 
-        default: true 
+      extractPalette: {
+        type: 'boolean',
+        description: 'Extract color palette from image',
+        default: true,
       },
-      colorCount: { 
-        type: 'number', 
-        description: 'Number of colors to extract in palette', 
-        default: 5 
-      }
+      colorCount: {
+        type: 'number',
+        description: 'Number of colors to extract in palette',
+        default: 5,
+      },
     };
   }
 
   async execute(params) {
     try {
-      const { imagePath, analysisType = 'full', extractPalette = true, colorCount = 5 } = params;
+      const {
+        imagePath,
+        analysisType = 'full',
+        extractPalette = true,
+        colorCount = 5,
+      } = params;
 
       // Validate image file exists
       if (!fs.existsSync(imagePath)) {
@@ -45,7 +51,7 @@ class ImageAnalysisTool {
         filePath: imagePath,
         fileName: path.basename(imagePath),
         timestamp: new Date().toISOString(),
-        analysis: {}
+        analysis: {},
       };
 
       // Basic file information
@@ -54,7 +60,7 @@ class ImageAnalysisTool {
         size: stats.size,
         sizeFormatted: this.formatFileSize(stats.size),
         lastModified: stats.mtime,
-        extension: path.extname(imagePath).toLowerCase()
+        extension: path.extname(imagePath).toLowerCase(),
       };
 
       // Image dimensions and format
@@ -65,11 +71,16 @@ class ImageAnalysisTool {
           height: dimensions.height,
           aspectRatio: (dimensions.width / dimensions.height).toFixed(2),
           format: dimensions.type,
-          megapixels: ((dimensions.width * dimensions.height) / 1000000).toFixed(2)
+          megapixels: (
+            (dimensions.width * dimensions.height) /
+            1000000
+          ).toFixed(2),
         };
       } catch (error) {
         console.warn(`Could not get image dimensions: ${error.message}`);
-        result.analysis.dimensions = { error: 'Could not determine dimensions' };
+        result.analysis.dimensions = {
+          error: 'Could not determine dimensions',
+        };
       }
 
       // Advanced analysis with Sharp
@@ -80,7 +91,7 @@ class ImageAnalysisTool {
       try {
         const image = sharp(imagePath);
         const metadata = await image.metadata();
-        
+
         result.analysis.metadata = {
           format: metadata.format,
           space: metadata.space,
@@ -90,31 +101,38 @@ class ImageAnalysisTool {
           hasAlpha: metadata.hasAlpha,
           hasProfile: metadata.hasProfile,
           isProgressive: metadata.isProgressive,
-          compression: metadata.compression
+          compression: metadata.compression,
         };
 
         // Quality assessment
         if (analysisType === 'quality' || analysisType === 'full') {
-          result.analysis.quality = await this.assessImageQuality(image, metadata);
+          result.analysis.quality = await this.assessImageQuality(
+            image,
+            metadata
+          );
         }
 
         // Color analysis
-        if (extractPalette && (analysisType === 'colors' || analysisType === 'full')) {
-          result.analysis.colors = await this.analyzeColors(imagePath, colorCount);
+        if (
+          extractPalette &&
+          (analysisType === 'colors' || analysisType === 'full')
+        ) {
+          result.analysis.colors = await this.analyzeColors(
+            imagePath,
+            colorCount
+          );
         }
 
         // Statistical analysis
         if (analysisType === 'full') {
           result.analysis.statistics = await this.getImageStatistics(image);
         }
-
       } catch (error) {
         console.warn(`Advanced analysis failed: ${error.message}`);
         result.analysis.advancedAnalysis = { error: error.message };
       }
 
       return result;
-
     } catch (error) {
       console.error('Image analysis failed:', error);
       throw new Error(`Image analysis failed: ${error.message}`);
@@ -124,29 +142,37 @@ class ImageAnalysisTool {
   async assessImageQuality(image, metadata) {
     try {
       const stats = await image.stats();
-      
+
       // Calculate sharpness using Laplacian variance
       const { data } = await image
         .greyscale()
         .raw()
         .toBuffer({ resolveWithObject: true });
-      
-      const sharpness = this.calculateSharpness(data, metadata.width, metadata.height);
-      
+
+      const sharpness = this.calculateSharpness(
+        data,
+        metadata.width,
+        metadata.height
+      );
+
       return {
         sharpness: {
           score: sharpness,
-          assessment: this.assessSharpness(sharpness)
+          assessment: this.assessSharpness(sharpness),
         },
         brightness: {
-          mean: stats.channels.map(ch => ch.mean),
-          assessment: this.assessBrightness(stats.channels[0].mean)
+          mean: stats.channels.map((ch) => ch.mean),
+          assessment: this.assessBrightness(stats.channels[0].mean),
         },
         contrast: {
-          std: stats.channels.map(ch => ch.std),
-          assessment: this.assessContrast(stats.channels[0].std)
+          std: stats.channels.map((ch) => ch.std),
+          assessment: this.assessContrast(stats.channels[0].std),
         },
-        overall: this.getOverallQuality(sharpness, stats.channels[0].mean, stats.channels[0].std)
+        overall: this.getOverallQuality(
+          sharpness,
+          stats.channels[0].mean,
+          stats.channels[0].std
+        ),
       };
     } catch (error) {
       return { error: `Quality assessment failed: ${error.message}` };
@@ -157,19 +183,19 @@ class ImageAnalysisTool {
     try {
       const colors = await palette(imagePath, colorCount);
       const dominantColor = await prominent(imagePath);
-      
+
       return {
-        palette: colors.map(color => ({
+        palette: colors.map((color) => ({
           rgb: color,
           hex: this.rgbToHex(color),
-          hsl: this.rgbToHsl(color)
+          hsl: this.rgbToHsl(color),
         })),
         dominant: {
           rgb: dominantColor,
           hex: this.rgbToHex(dominantColor),
-          hsl: this.rgbToHsl(dominantColor)
+          hsl: this.rgbToHsl(dominantColor),
         },
-        colorCount: colors.length
+        colorCount: colors.length,
       };
     } catch (error) {
       return { error: `Color analysis failed: ${error.message}` };
@@ -191,10 +217,10 @@ class ImageAnalysisTool {
           minX: ch.minX,
           minY: ch.minY,
           maxX: ch.maxX,
-          maxY: ch.maxY
+          maxY: ch.maxY,
         })),
         isOpaque: stats.isOpaque,
-        entropy: stats.entropy
+        entropy: stats.entropy,
       };
     } catch (error) {
       return { error: `Statistics calculation failed: ${error.message}` };
@@ -206,18 +232,18 @@ class ImageAnalysisTool {
     let variance = 0;
     let mean = 0;
     const total = width * height;
-    
+
     // Calculate mean
     for (let i = 0; i < data.length; i++) {
       mean += data[i];
     }
     mean /= total;
-    
+
     // Calculate variance
     for (let i = 0; i < data.length; i++) {
       variance += Math.pow(data[i] - mean, 2);
     }
-    
+
     return variance / total;
   }
 
@@ -246,23 +272,23 @@ class ImageAnalysisTool {
 
   getOverallQuality(sharpness, brightness, contrast) {
     let score = 0;
-    
+
     // Sharpness contribution (40%)
     if (sharpness > 500) score += 40;
     else if (sharpness > 100) score += 30;
     else if (sharpness > 50) score += 20;
     else score += 10;
-    
+
     // Brightness contribution (30%)
     if (brightness >= 100 && brightness <= 180) score += 30;
     else if (brightness >= 80 && brightness <= 200) score += 20;
     else score += 10;
-    
+
     // Contrast contribution (30%)
     if (contrast > 40) score += 30;
     else if (contrast > 20) score += 20;
     else score += 10;
-    
+
     if (score >= 80) return 'Excellent';
     if (score >= 60) return 'Good';
     if (score >= 40) return 'Fair';
@@ -273,7 +299,7 @@ class ImageAnalysisTool {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 Bytes';
     const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
   }
 
   rgbToHex([r, g, b]) {
@@ -284,29 +310,33 @@ class ImageAnalysisTool {
     r /= 255;
     g /= 255;
     b /= 255;
-    
+
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
-    let h, s, l = (max + min) / 2;
-    
+    let h,
+      s,
+      l = (max + min) / 2;
+
     if (max === min) {
       h = s = 0;
     } else {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
       }
       h /= 6;
     }
-    
-    return [
-      Math.round(h * 360),
-      Math.round(s * 100),
-      Math.round(l * 100)
-    ];
+
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
   }
 }
 

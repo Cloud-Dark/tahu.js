@@ -91,13 +91,17 @@ describe('calculateTool', () => {
   test('should handle division by zero with error', async () => {
     const expression = '10 / 0';
     const result = await calculateTool.execute(expression);
-    expect(result).toContain('❌ Calculation error: Division by zero or an operation resulting in infinity.');
+    expect(result).toContain(
+      '❌ Calculation error: Division by zero or an operation resulting in infinity.'
+    );
   });
 
   test('should handle invalid function calls (e.g., sqrt(-1)) with error', async () => {
     const expression = 'sqrt(-1)';
     const result = await calculateTool.execute(expression);
-    expect(result).toContain('❌ Calculation error: Operation resulted in a complex number. This tool only supports real numbers.');
+    expect(result).toContain(
+      '❌ Calculation error: Operation resulted in a complex number. This tool only supports real numbers.'
+    );
   });
 
   test('should handle unbalanced parentheses with error', async () => {
