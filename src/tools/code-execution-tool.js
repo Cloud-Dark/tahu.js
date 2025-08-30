@@ -39,10 +39,10 @@ class CodeExecutionTool {
         description: 'Environment variables',
         default: {} 
       },
-      workingDir: { 
-        type: 'string', 
+      workingDir: {
+        type: 'string',
         description: 'Working directory for execution',
-        default: null 
+        default: null
       }
     };
 
@@ -121,7 +121,7 @@ class CodeExecutionTool {
       /shutdown/g,           // System shutdown
       /reboot/g,             // System reboot
       /format\s+c:/g,        // Format drive
-      /:\(\)\{\s*:\|:\&\s*\};:/g, // Fork bomb
+      /:\(\)\{\s*:|:|&\s*\};:/g, // Fork bomb
       /while\s*true/g,       // Infinite loops (basic)
       /for\s*\(\s*;\s*;\s*\)/g, // C-style infinite loops
     ];
@@ -287,13 +287,7 @@ except Exception as e:
     const filename = path.join(this.tempDir, `${executionId}.sh`);
     
     // Add safety header
-    const wrappedCode = `#!/bin/bash
-set -e  # Exit on error
-set -u  # Exit on undefined variable
-set -o pipefail  # Exit on pipe failure
-
-${code}
-`;
+    const wrappedCode = `#!/bin/bash\nset -e  // Exit on error\nset -u  // Exit on undefined variable\nset -o pipefail  // Exit on pipe failure\n\n${code}\n`;
 
     fs.writeFileSync(filename, wrappedCode);
     fs.chmodSync(filename, '755');
@@ -356,6 +350,7 @@ ${code.split('\n').map(line => '    ' + line).join('\n')}
           process.kill();
           reject(new Error('Error output size limit exceeded'));
         }
+        // Capture stderr for error reporting, but don't reject immediately
       });
 
       process.on('close', (code) => {
@@ -368,6 +363,7 @@ ${code.split('\n').map(line => '    ' + line).join('\n')}
       });
 
       process.on('error', (error) => {
+        // This catches errors like command not found, or permission issues
         reject(new Error(`Execution failed: ${error.message}`));
       });
 
@@ -396,7 +392,7 @@ ${code.split('\n').map(line => '    ' + line).join('\n')}
       languages: this.supportedLanguages,
       examples: {
         javascript: 'console.log("Hello from JavaScript!");',
-        python: 'print("Hello from Python!")',
+        python: 'print("Hello from Python!")', 
         bash: 'echo "Hello from Bash!"',
         powershell: 'Write-Host "Hello from PowerShell!"'
       }

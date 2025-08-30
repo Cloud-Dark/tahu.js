@@ -1,7 +1,0 @@
-feat: Add streaming, guardrails, and enhanced logging
-
-- Implemented streaming functionality for LLM calls in `LLMManager`.
-- Added new configuration options for streaming, guardrails, and max log entries in `tahu.js`.
-- Introduced `LoggerManager` for enhanced logging capabilities.
-- Added `tahu-guardrails` plugin for content moderation and safety.
-- Updated `package.json` with new dependencies (winston).
